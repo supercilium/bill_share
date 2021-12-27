@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma-rtl.min.css"
+    />
+  </head>
+  <body class="container is-max-desktop mt-6">
+    <h1 class="is-size-1">popo</h1>
+    <form id="form" class="mt-5" action="">
+      <label class="label">
+        Enter your name
+        <input class="input" type="text" name="username" />
+      </label>
+      <button class="button">Start party</button>
+      <!-- <input id="input" autocomplete="off" /><button>Send</button> -->
+    </form>
+    <script src="https://cdn.socket.io/4.3.1/socket.io.min.js"></script>
+    <script>
+      var form = document.forms[0];
+      var input = form.elements[0];
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        input.classList.remove("is-danger");
+
+        if (input.value) {
+          const response = await fetch(`/party/${input.value}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          })
+
+          if (response.ok) {
+            const data = await response.text();
+            window.location = `/party/${data}`;
+          } else {
+            console.log(response.status)
+          }
+
+        } else {
+          input.classList.add("is-danger");
+        }
+      });
+    </script>
+  </body>
+</html>
