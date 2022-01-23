@@ -27,7 +27,8 @@
 
 # party json:
 
-```{
+```
+{
     "name": "party name",
     "users": [
         {
