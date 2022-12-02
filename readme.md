@@ -59,3 +59,26 @@
     ]
 }
 ```
+
+actions
+
+"create party":
+{ user: "Rus", partyName: "party one" } -> party: { id: "uuid for party", name: "party one", owner: { name: "Rus", id: "uuid for Rus" }, users: [], item: [] }
+
+? "finish party": - no one can add items & users
+partyId
+
+"add user":
+user, partyId -> { id, name, owner: { name, id }, users: [{ name, id }], items: [] }
+
+"remove user":
+userId, partyId -> { id, name, owner: { name, id }, users: [], items: [] }
+
+"add item":
+userId, partyId, item -> { id: "uuid for party", name: "party one", owner: { name: "Rus", id: "uuid for Rus" }, users: [], items: [{ id: itemId }] }
+
+"update item":
+userId, partyId, itemId, item: {...newItemData} => { id: "uuid for party", name: "party one", owner: { name: "Rus", id: "uuid for Rus" }, users: [], items: [{ ...newItemData }] }
+
+"remove item":
+userId, partyId, itemId => { id: "uuid for party", name: "party one", owner: { name: "Rus", id: "uuid for Rus" }, users: [], items: [] }
