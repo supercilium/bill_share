@@ -28,14 +28,6 @@ function App() {
     socket.on("disconnect", () => {
       setIsConnected(false);
     });
-    socket.on("add user", (data) => {
-      setLastMessage(data);
-      console.log(data);
-    });
-    socket.on("remove user", (data) => {
-      setLastMessage(data);
-      console.log(data);
-    });
     socket.on("add item", (data) => {
       setLastMessage(data);
       console.log(data);

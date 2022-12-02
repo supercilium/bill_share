@@ -5,8 +5,6 @@ import { getPartyById } from "../__api__/party";
 import { socket } from "../__api__/socket";
 
 export const Party = () => {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-
   const { partyId } = useParams();
   const [party, setParty] = useState<PartyInterface | null>(null);
   const fetchParty = async (id: string) => {
@@ -19,19 +17,32 @@ export const Party = () => {
   };
 
   useEffect(() => {
+    socket.on("add user", (data) => {
+      setParty(data);
+    });
+    socket.on("remove user", (data) => {
+      setParty(data);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, []);
+
+  useEffect(() => {
     if (partyId) {
       fetchParty(partyId);
     }
   }, [partyId]);
 
   const handleAddUser = () => {
-    socket.emit("add user", JSON.stringify({ userId: "someUserId", partyId }));
-  };
-  const handleRemoveUser = () => {
     socket.emit(
-      "remove user",
-      JSON.stringify({ userId: "someUserId", partyId })
+      "add user",
+      JSON.stringify({ userName: "someUserId", partyId })
     );
+  };
+  const handleRemoveUser = (userId: string) => {
+    socket.emit("remove user", JSON.stringify({ userId, partyId }));
   };
   const handleAddItem = () => {
     socket.emit(
@@ -53,20 +64,56 @@ export const Party = () => {
   };
 
   if (!party) {
-    return <div>No party</div>;
+    return (
+      <div className="container">
+        <h2 className="title is-2 my-5">No party</h2>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <div>Welcome to {party?.id}</div>
-      <div>
-        Link to this party: <span>{window.location.href}</span>
+    <div className="container">
+      <h2 className="title is-2 my-5">Welcome to {party?.name}</h2>
+      <div className="columns">
+        <div className="column">
+          <p className="subtitle is-4 my-4">Party maker: {party.master.name}</p>
+          {party.users.length > 0 ? (
+            <>
+              {party.users.map((user) => (
+                <p
+                  key={user.id}
+                  className="is-size-4 is-flex is-align-items-center"
+                >
+                  {user.name}{" "}
+                  <button
+                    type="button"
+                    className="delete ml-2"
+                    onClick={() => handleRemoveUser(user.id)}
+                  ></button>
+                </p>
+              ))}
+            </>
+          ) : null}
+        </div>
+        <p className="subtitle is-4 my-4 column">
+          Link to this party:{" "}
+          <span className="tag is-medium">{window.location.href}</span>
+        </p>
       </div>
-      <button onClick={handleAddUser}>Add user</button>
-      <button onClick={handleRemoveUser}>Remove user</button>
-      <button onClick={handleAddItem}>Add item</button>
-      <button onClick={handleUpdateItem}>Update item</button>
-      <button onClick={handleRemoveItem}>Remove item</button>
+      <div className="buttons">
+        <button className="button" onClick={handleAddUser}>
+          Add user
+        </button>
+        <button className="button" onClick={handleAddItem}>
+          Add item
+        </button>
+        <button className="button" onClick={handleUpdateItem}>
+          Update item
+        </button>
+        <button className="button" onClick={handleRemoveItem}>
+          Remove item
+        </button>
+      </div>
     </div>
   );
 };

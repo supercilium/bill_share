@@ -27,13 +27,15 @@ app.get('/party/:partyId', (req, res) => {
   const party = parties.get(partyId);
   if (!party) {
     res.sendStatus(400)
+    return;
   }
   res.send({ id: partyId, ...party });
 })
 
 app.post('/party', (req, res) => {
   const partyId = getUniqueID();
-  parties.set(partyId, { master: req.body.userName, userList: [] })
+  const masterId = getUniqueID();
+  parties.set(partyId, { master: { name: req.body.userName, id: masterId }, name: req.body.partyName, users: [] })
   console.log(parties.entries());
   res.send({ partyId });
 })
@@ -44,7 +46,7 @@ app.put('/party/:partyId', (req, res) => {
   if (!party) {
     res.sendStatus(400)
   }
-  parties.set(partyId, { ...party, users: [...(party.users || []), req.body.userName] })
+  parties.set(partyId, { ...party, users: [...(party.users || []), { name: req.body.userName, id: getUniqueID() }] })
   console.log(parties);
   res.send({ id: partyId, ...parties.get(partyId) });
 })
@@ -65,14 +67,17 @@ io.on("connection", function (socket) {
   console.log("Made socket connection");
 
   socket.on('add user', (msg) => {
-    const { userId, partyId } = JSON.parse(msg)
-    console.log('user %s joined party %s', userId, partyId);
+    const { userName, partyId } = JSON.parse(msg)
+    console.log(parties);
+
+    console.log('user %s joined party %s', userName, partyId);
     const party = parties.get(partyId);
     if (!party) {
       io.emit('add user', { error: 'No such party' })
       return;
     }
-    io.emit('add user', { userList: party.userList });
+    parties.set(partyId, { ...party, users: [...(party.users || []), { name: userName, id: getUniqueID() }] })
+    io.emit('add user', { id: partyId, ...parties.get(partyId) });
   });
 
   socket.on('remove user', (msg) => {
@@ -83,7 +88,12 @@ io.on("connection", function (socket) {
       io.emit('remove user', { error: 'No such party' })
       return;
     }
-    io.emit('remove user', { userList: party.userList });
+    if (!party.users) {
+      io.emit('remove user', { error: 'No such user' })
+      return;
+    }
+    parties.set(partyId, { ...party, users: [...(party.users).filter(({ id }: { id: string }) => id !== userId)] })
+    io.emit('remove user', { id: partyId, ...parties.get(partyId) });
   });
 
   socket.on('add item', (msg) => {
@@ -94,7 +104,7 @@ io.on("connection", function (socket) {
       io.emit('add item', { error: 'No such party' })
       return;
     }
-    io.emit('add item', { userList: party.userList });
+    io.emit('add item', { users: party.users });
   });
 
   socket.on('update item', (msg) => {
@@ -105,7 +115,7 @@ io.on("connection", function (socket) {
       io.emit('update item', { error: 'No such party' })
       return;
     }
-    io.emit('update item', { userList: party.userList });
+    io.emit('update item', { users: party.users });
   });
 
   socket.on('remove item', (msg) => {
@@ -116,7 +126,7 @@ io.on("connection", function (socket) {
       io.emit('remove item', { error: 'No such party' })
       return;
     }
-    io.emit('remove item', { userList: party.userList });
+    io.emit('remove item', { users: party.users });
   });
 
   socket.on('disconnect', () => {
