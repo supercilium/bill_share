@@ -65,21 +65,18 @@ io.on("connection", function (socket) {
   console.log("Made socket connection");
 
   socket.on('add user', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('add user', { message: msg });
-  });
-
-  socket.on('user join', ({ userId, partyId }) => {
+    const { userId, partyId } = JSON.parse(msg)
     console.log('user %s joined party %s', userId, partyId);
     const party = parties.get(partyId);
     if (!party) {
-      io.emit('user join', { error: 'No such party' })
+      io.emit('add user', { error: 'No such party' })
       return;
     }
-    io.emit('user join', { userList: party.userList });
+    io.emit('add user', { userList: party.userList });
   });
 
-  socket.on('remove user', ({ userId, partyId }) => {
+  socket.on('remove user', (msg) => {
+    const { userId, partyId } = JSON.parse(msg)
     console.log('user %s left party %s', userId, partyId);
     const party = parties.get(partyId);
     if (!party) {
@@ -89,8 +86,9 @@ io.on("connection", function (socket) {
     io.emit('remove user', { userList: party.userList });
   });
 
-  socket.on('add item', ({ userId, partyId, itemId }) => {
-    console.log('user %s add %itemId to party %s', userId, itemId, partyId);
+  socket.on('add item', (msg) => {
+    const { userId, partyId, itemId } = JSON.parse(msg)
+    console.log('user %s add %s to party %s', userId, itemId, partyId);
     const party = parties.get(partyId);
     if (!party) {
       io.emit('add item', { error: 'No such party' })
@@ -99,8 +97,9 @@ io.on("connection", function (socket) {
     io.emit('add item', { userList: party.userList });
   });
 
-  socket.on('update item', ({ userId, partyId, itemId }) => {
-    console.log('user %s updated %itemId in party %s', userId, itemId, partyId);
+  socket.on('update item', (msg) => {
+    const { userId, partyId, itemId } = JSON.parse(msg)
+    console.log('user %s updated %s in party %s', userId, itemId, partyId);
     const party = parties.get(partyId);
     if (!party) {
       io.emit('update item', { error: 'No such party' })
@@ -109,8 +108,9 @@ io.on("connection", function (socket) {
     io.emit('update item', { userList: party.userList });
   });
 
-  socket.on('remove item', ({ userId, partyId, itemId }) => {
-    console.log('user %s removed %itemId from party %s', userId, itemId, partyId);
+  socket.on('remove item', (msg) => {
+    const { userId, partyId, itemId } = JSON.parse(msg)
+    console.log('user %s removed %s from party %s', userId, itemId, partyId);
     const party = parties.get(partyId);
     if (!party) {
       io.emit('remove item', { error: 'No such party' })
