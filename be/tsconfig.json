@@ -12,13 +12,13 @@
     "paths": {
       "*": [
         "node_modules/*",
-        "src/*"
+        "be/src/*"
       ]
     },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
   },
   "include": [
-    "src/**/*"
+    "be/src/**/*"
   ]
 }
