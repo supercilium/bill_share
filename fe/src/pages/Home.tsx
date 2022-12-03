@@ -62,7 +62,7 @@ export const Home = () => {
             </div>
             <div className="field">
               <label htmlFor="partyName" className="label">
-                Enter your name
+                Enter your party name
               </label>
               <input
                 className="input"

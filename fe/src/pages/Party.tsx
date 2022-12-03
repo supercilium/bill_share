@@ -16,16 +16,16 @@ export const Party = () => {
     }
   };
 
+  const eventHandler = (data: Event) => {
+    // setParty(data);
+    console.log(data);
+  };
+
   useEffect(() => {
-    socket.on("add user", (data) => {
-      setParty(data);
-    });
-    socket.on("remove user", (data) => {
-      setParty(data);
-    });
+    socket.addEventListener("message", eventHandler);
 
     return () => {
-      socket.off("message");
+      socket.removeEventListener("message", eventHandler);
     };
   }, []);
 
@@ -36,30 +36,41 @@ export const Party = () => {
   }, [partyId]);
 
   const handleAddUser = () => {
-    socket.emit(
-      "add user",
-      JSON.stringify({ userName: "someUserId", partyId })
+    socket.send(
+      JSON.stringify({ type: "add user", userName: "someUserId", partyId })
     );
   };
   const handleRemoveUser = (userId: string) => {
-    socket.emit("remove user", JSON.stringify({ userId, partyId }));
+    socket.send(JSON.stringify({ type: "remove user", userId, partyId }));
   };
   const handleAddItem = () => {
-    socket.emit(
-      "add item",
-      JSON.stringify({ userId: "someUserId", partyId, itemId: "someItemId" })
+    socket.send(
+      JSON.stringify({
+        type: "add item",
+        userId: "someUserId",
+        partyId,
+        itemId: "someItemId",
+      })
     );
   };
   const handleUpdateItem = () => {
-    socket.emit(
-      "update item",
-      JSON.stringify({ userId: "someUserId", partyId, itemId: "someItemId" })
+    socket.send(
+      JSON.stringify({
+        type: "update item",
+        userId: "someUserId",
+        partyId,
+        itemId: "someItemId",
+      })
     );
   };
   const handleRemoveItem = () => {
-    socket.emit(
-      "remove item",
-      JSON.stringify({ userId: "someUserId", partyId, itemId: "someItemId" })
+    socket.send(
+      JSON.stringify({
+        type: "remove item",
+        userId: "someUserId",
+        partyId,
+        itemId: "someItemId",
+      })
     );
   };
 

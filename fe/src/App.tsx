@@ -17,33 +17,33 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [isConnected, setIsConnected] = useState(socket.readyState === 1);
   const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
-    socket.on("connect", () => {
+    socket.addEventListener("connect", () => {
       setIsConnected(true);
       console.log("is connected");
     });
-    socket.on("disconnect", () => {
+    socket.addEventListener("disconnect", () => {
       setIsConnected(false);
     });
-    socket.on("add item", (data) => {
-      setLastMessage(data);
-      console.log(data);
-    });
-    socket.on("update item", (data) => {
-      setLastMessage(data);
-      console.log(data);
-    });
-    socket.on("remove item", (data) => {
-      setLastMessage(data);
-      console.log(data);
-    });
+    // socket.on("add item", (data) => {
+    //   setLastMessage(data);
+    //   console.log(data);
+    // });
+    // socket.on("update item", (data) => {
+    //   setLastMessage(data);
+    //   console.log(data);
+    // });
+    // socket.on("remove item", (data) => {
+    //   setLastMessage(data);
+    //   console.log(data);
+    // });
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("message");
+      socket.removeEventListener("connect", () => {});
+      socket.removeEventListener("disconnect", () => {});
+      socket.removeEventListener("message", () => {});
     };
   }, []);
 
