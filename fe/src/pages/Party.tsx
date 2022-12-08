@@ -21,9 +21,9 @@ export const Party = () => {
     }
   };
 
-  const eventHandler = (data: Event) => {
-    // setParty(data);
-    console.log(data);
+  const eventHandler = (event: MessageEvent<string>) => {
+    setParty(JSON.parse(event.data));
+    console.log(event);
   };
 
   useEffect(() => {
@@ -69,13 +69,13 @@ export const Party = () => {
       })
     );
   };
-  const handleRemoveItem = () => {
+  const handleRemoveItem = (id: string) => {
     socket.send(
       JSON.stringify({
         type: "remove item",
         userId: id,
         partyId,
-        itemId: "someItemId",
+        itemId: id,
       })
     );
   };
@@ -126,11 +126,19 @@ export const Party = () => {
       <h2 className="title is-2 my-5">
         Hello, {name}! Welcome to {party?.name}
       </h2>
+      <p className="subtitle is-4 my-4">
+        Link to this party:{" "}
+        <span className="tag is-medium">{window.location.href}</span>
+      </p>
+      <p className="subtitle is-4 my-4">Party maker: {party.owner.name}</p>
+
       <div className="columns">
         <div className="column">
-          <p className="subtitle is-4 my-4">Party maker: {party.owner.name}</p>
           {party.users.length > 0 ? (
             <>
+              <p className="subtitle is-4 my-4">
+                Here we have some guys having fun:
+              </p>
               {party.users.map((user) => (
                 <p
                   key={user.id}
@@ -147,10 +155,31 @@ export const Party = () => {
             </>
           ) : null}
         </div>
-        <p className="subtitle is-4 my-4 column">
-          Link to this party:{" "}
-          <span className="tag is-medium">{window.location.href}</span>
-        </p>
+        <div className="column">
+          {party.users.length > 0 ? (
+            <>
+              <p className="subtitle is-4 my-4">
+                And they have something to share:
+              </p>
+              {party.items.map((item) => (
+                <p
+                  key={item.id}
+                  className="is-size-4 is-flex is-align-items-center"
+                >
+                  {item.name}{" "}
+                  {item.price.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                  })}
+                  <button
+                    type="button"
+                    className="delete ml-2"
+                    onClick={() => handleRemoveItem(item.id)}
+                  ></button>
+                </p>
+              ))}
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="block">
         <h3 className="title is-4 my-2">Adding a user</h3>
@@ -211,9 +240,6 @@ export const Party = () => {
         <div className="buttons">
           <button className="button" onClick={handleUpdateItem}>
             Update item
-          </button>
-          <button className="button" onClick={handleRemoveItem}>
-            Remove item
           </button>
         </div>
       </div>
