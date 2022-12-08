@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { PartyInterface } from "../types/party";
-import { getPartyById } from "../__api__/party";
+import { createUser, getPartyById } from "../__api__/party";
 import { socket } from "../__api__/socket";
 
 export const Party = () => {
   const { partyId } = useParams();
+  const { id, userName: name } =
+    JSON.parse(localStorage.getItem("user") || "{}") || {};
   const [party, setParty] = useState<PartyInterface | null>(null);
   const [userName, setUserName] = useState<string | undefined>();
   const [itemName, setItemName] = useState<string | undefined>();
@@ -50,7 +52,7 @@ export const Party = () => {
     socket.send(
       JSON.stringify({
         type: "add item",
-        userId: "someUserId",
+        userId: id,
         partyId,
         itemName: itemName,
         itemPrice: itemPrice,
@@ -61,7 +63,7 @@ export const Party = () => {
     socket.send(
       JSON.stringify({
         type: "update item",
-        userId: "someUserId",
+        userId: id,
         partyId,
         itemId: "someItemId",
       })
@@ -71,11 +73,17 @@ export const Party = () => {
     socket.send(
       JSON.stringify({
         type: "remove item",
-        userId: "someUserId",
+        userId: id,
         partyId,
         itemId: "someItemId",
       })
     );
+  };
+  const handleCreateUser = async () => {
+    const response = await createUser({ userName, partyId });
+    localStorage.setItem("user", JSON.stringify(response));
+
+    setUserName(undefined);
   };
 
   if (!party) {
@@ -86,9 +94,38 @@ export const Party = () => {
     );
   }
 
+  if (!id) {
+    return (
+      <div className="container">
+        <h2 className="title is-2 my-5">Enter your name</h2>
+        <div className="field">
+          <label htmlFor="username" className="label">
+            Enter your name
+          </label>
+          <input
+            className="input"
+            type="text"
+            name="username"
+            value={userName}
+            onChange={({ target }) => setUserName(target.value)}
+          />
+        </div>
+        <button
+          type="submit"
+          className="button"
+          onClick={() => handleCreateUser()}
+        >
+          Join party
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
-      <h2 className="title is-2 my-5">Welcome to {party?.name}</h2>
+      <h2 className="title is-2 my-5">
+        Hello, {name}! Welcome to {party?.name}
+      </h2>
       <div className="columns">
         <div className="column">
           <p className="subtitle is-4 my-4">Party maker: {party.owner.name}</p>

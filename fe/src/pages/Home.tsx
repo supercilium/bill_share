@@ -25,6 +25,7 @@ export const Home = () => {
     event.preventDefault();
     const response = await createParty({ userName, partyName });
     if ("id" in response) {
+      localStorage.setItem("user", JSON.stringify(response.owner));
       navigate(`/party/${response?.id}`);
     }
   };

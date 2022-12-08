@@ -20,3 +20,8 @@ export const createParty = async (input: Record<any, any>) => {
   const data = await fetchAPI<PartyInterface>(`/party`, { method: 'POST', body: JSON.stringify(input) })
   return data;
 }
+
+export const createUser = async (input: Record<any, any>) => {
+  const data = await fetchAPI<PartyInterface>(`/user/${input.partyId}`, { method: 'POST', body: JSON.stringify({ userName: input.userName }) })
+  return data;
+}
