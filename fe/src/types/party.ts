@@ -2,7 +2,7 @@ import { User } from "./user";
 
 export interface PartyInterface {
   name: string;
-  master: User;
+  owner: User;
   id: string;
   users: Array<User>;
 }

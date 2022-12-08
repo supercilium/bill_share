@@ -24,8 +24,8 @@ export const Home = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response = await createParty({ userName, partyName });
-    if ("partyId" in response) {
-      navigate(`/party/${response?.partyId}`);
+    if ("id" in response) {
+      navigate(`/party/${response?.id}`);
     }
   };
 
@@ -81,7 +81,7 @@ export const Home = () => {
         {parties?.length > 0 && (
           <div className="block">
             <h2 className="title is-3 mt-2 mb-6">... or join existing</h2>
-            {parties.map(({ id, name, master }) => (
+            {parties.map(({ id, name }) => (
               <button
                 key={id}
                 type="button"
