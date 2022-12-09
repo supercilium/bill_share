@@ -59,13 +59,13 @@ export const Party = () => {
       })
     );
   };
-  const handleUpdateItem = () => {
+  const handleUpdateItem = (itemId: string) => {
     socket.send(
       JSON.stringify({
         type: "update item",
         userId: id,
         partyId,
-        itemId: "someItemId",
+        itemId,
       })
     );
   };
@@ -156,7 +156,7 @@ export const Party = () => {
           ) : null}
         </div>
         <div className="column">
-          {party.users.length > 0 ? (
+          {party.items.length > 0 ? (
             <>
               <p className="subtitle is-4 my-4">
                 And they have something to share:
@@ -164,7 +164,7 @@ export const Party = () => {
               {party.items.map((item) => (
                 <p
                   key={item.id}
-                  className="is-size-4 is-flex is-align-items-center"
+                  className="is-size-4 is-flex is-align-items-center mb-2"
                 >
                   {item.name}{" "}
                   {item.price.toLocaleString("en-US", {
@@ -175,6 +175,18 @@ export const Party = () => {
                     className="delete ml-2"
                     onClick={() => handleRemoveItem(item.id)}
                   ></button>
+                  <button
+                    className="button ml-2"
+                    onClick={() => handleUpdateItem(item.id)}
+                  >
+                    Update item
+                  </button>
+                  {item.users?.length > 0 &&
+                    item.users.map(({ id }) => (
+                      <span className="tag is-medium ml-2">
+                        {party.users.find((user) => user.id === id)?.name}
+                      </span>
+                    ))}
                 </p>
               ))}
             </>
@@ -232,16 +244,6 @@ export const Party = () => {
         >
           Add item
         </button>
-      </div>
-
-      <div className="block">
-        <h3 className="title is-4 my-2">Postponed</h3>
-
-        <div className="buttons">
-          <button className="button" onClick={handleUpdateItem}>
-            Update item
-          </button>
-        </div>
       </div>
     </div>
   );
