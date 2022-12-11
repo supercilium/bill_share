@@ -266,7 +266,7 @@ export const Party = () => {
             <h2 className="title is-2 my-5">No party</h2>
           ) : (
             <h2 className="title is-2 my-5">
-              Hello, {currentUser.userName}! Welcome to {party?.name}
+              Hello, {currentUser.name}! Welcome to {party?.name}
             </h2>
           )}
         </Header>
