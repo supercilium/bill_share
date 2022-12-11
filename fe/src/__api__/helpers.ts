@@ -4,9 +4,11 @@ export function getURL(path: RequestInfo) {
 }
 
 export interface ErrorRequest {
-  error: string;
+  error: number;
   message: string;
-  statusCode: number;
+  reason: string;
+  status: string;
+  timestamp: string;
 }
 
 export type FetchType = <JSON = unknown>(input: RequestInfo, init?: RequestInit) => Promise<JSON | ErrorRequest>

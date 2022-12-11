@@ -1,6 +1,6 @@
 import { FC, ReactNode } from "react";
 
-export const Block: FC<{ title?: string; children: ReactNode[] }> = ({
+export const Block: FC<{ title?: string; children: ReactNode }> = ({
   title,
   children,
 }) => {

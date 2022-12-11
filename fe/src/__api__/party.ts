@@ -7,12 +7,12 @@ export const getParties = async () => {
 }
 
 export const getPartyById = async (id: string) => {
-  const data = await fetchAPI(`/party/${id}`)
+  const data = await fetchAPI<PartyInterface>(`/party/${id}`)
   return data;
 }
 
 export const putPartyById = async (id: string, input: Record<any, any>) => {
-  const data = await fetchAPI(`/party/${id}`, { method: 'PUT', body: JSON.stringify(input) })
+  const data = await fetchAPI<PartyInterface>(`/party/${id}`, { method: 'PUT', body: JSON.stringify(input) })
   return data;
 }
 

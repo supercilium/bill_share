@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Footer, Header, Main } from "../components";
+import { PartyForm } from "../containers/PartyForm";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createUser, getPartyById } from "../__api__/party";
@@ -11,6 +13,8 @@ export const Party = () => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
+  const { register, handleSubmit, watch } = useForm<PartyInterface>();
+
   const [party, setParty] = useState<PartyInterface | null>(null);
   const [userName, setUserName] = useState<string | undefined>();
   const [itemName, setItemName] = useState<string | undefined>();
@@ -18,7 +22,11 @@ export const Party = () => {
   const fetchParty = async (id: string) => {
     try {
       const parties = await getPartyById(id);
-      setParty(parties as PartyInterface);
+      if ("error" in parties) {
+        setParty(null);
+      } else {
+        setParty(parties as PartyInterface);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -165,7 +173,7 @@ export const Party = () => {
                     className="is-size-4 is-flex is-align-items-center mb-2"
                   >
                     {item.name}{" "}
-                    {item.price.toLocaleString("en-US", {
+                    {item.price?.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                     })}
                     <button
@@ -191,6 +199,7 @@ export const Party = () => {
             ) : null}
           </div>
         </Columns>
+        <PartyForm party={party} />
         <Block title="Adding a user">
           <div className="field">
             <label htmlFor="userName" className="label">
@@ -257,12 +266,12 @@ export const Party = () => {
             <h2 className="title is-2 my-5">No party</h2>
           ) : (
             <h2 className="title is-2 my-5">
-              Hello, {currentUser.name}! Welcome to {party?.name}
+              Hello, {currentUser.userName}! Welcome to {party?.name}
             </h2>
           )}
         </Header>
       }
-      Footer={<Footer>foo-footer</Footer>}
+      Footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
       Main={<Main>{renderMain()}</Main>}
     />
   );

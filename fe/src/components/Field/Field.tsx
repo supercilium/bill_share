@@ -1,18 +1,17 @@
 import { FC } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
-export const Field: FC<{ label: string }> = ({ label }) => {
+export const Field: FC<{
+  label: string;
+  inputProps: React.InputHTMLAttributes<HTMLInputElement> &
+    UseFormRegisterReturn;
+}> = ({ label, inputProps }) => {
   return (
     <div className="field">
-      <label htmlFor="userName" className="label">
+      <label htmlFor={inputProps.name} className="label">
         {label}
       </label>
-      <input
-        className="input"
-        type="text"
-        // name="userName"
-        // value={userName}
-        // onChange={({ target }) => setUserName(target.value)}
-      />
+      <input className="input" {...inputProps} />
     </div>
   );
 };

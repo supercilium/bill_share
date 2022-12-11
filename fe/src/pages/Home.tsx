@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Footer, Header, Main } from "../components";
+import { Field, Footer, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createParty, getParties, putPartyById } from "../__api__/party";
 
+interface CreatePartyInterface {
+  partyName: string;
+  userName: string;
+}
+
 export const Home = () => {
   const [parties, setParties] = useState<PartyInterface[]>([]);
-  const [userName, setUserName] = useState<string>("");
-  const [partyName, setPartyName] = useState<string>("");
+  const { register, handleSubmit, watch } = useForm<CreatePartyInterface>();
   const navigate = useNavigate();
   const getPartyList = async () => {
     try {
@@ -23,9 +28,8 @@ export const Home = () => {
     getPartyList();
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const response = await createParty({ userName, partyName });
+  const onSubmit: SubmitHandler<CreatePartyInterface> = async (data) => {
+    const response = await createParty(data);
     if ("id" in response) {
       localStorage.setItem("user", JSON.stringify(response.owner));
       navigate(`/party/${response?.id}`);
@@ -33,6 +37,7 @@ export const Home = () => {
   };
 
   const handleClick = async (id: string) => {
+    const userName = watch("userName");
     await putPartyById(id, { userName });
     navigate(`/party/${id}`);
   };
@@ -51,35 +56,19 @@ export const Home = () => {
             id="start-new-party"
             className="mt-5"
             action=""
-            onSubmit={(e) => handleSubmit(e)}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="columns">
               <div className="block column">
                 <h2 className="title is-3 my-2">Create your party</h2>
-                <div className="field">
-                  <label htmlFor="username" className="label">
-                    Enter your name
-                  </label>
-                  <input
-                    className="input"
-                    type="text"
-                    name="username"
-                    value={userName}
-                    onChange={({ target }) => setUserName(target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor="partyName" className="label">
-                    Enter your party name
-                  </label>
-                  <input
-                    className="input"
-                    type="text"
-                    name="partyName"
-                    value={partyName}
-                    onChange={({ target }) => setPartyName(target.value)}
-                  />
-                </div>
+                <Field
+                  label="Enter your name"
+                  inputProps={{ type: "text", ...register("userName") }}
+                />
+                <Field
+                  label="Enter your party name"
+                  inputProps={{ type: "text", ...register("partyName") }}
+                />
                 <button type="submit" className="button">
                   Start party
                 </button>
