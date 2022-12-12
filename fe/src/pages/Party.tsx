@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
@@ -13,7 +12,6 @@ export const Party = () => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
-  const { register, handleSubmit, watch } = useForm<PartyInterface>();
 
   const [party, setParty] = useState<PartyInterface | null>(null);
   const [userName, setUserName] = useState<string | undefined>();
@@ -39,9 +37,17 @@ export const Party = () => {
 
   useEffect(() => {
     socket.addEventListener("message", eventHandler);
+    socket.addEventListener("connect", () => {
+      console.log("is connected");
+    });
+    socket.addEventListener("disconnect", () => {
+      console.log("is disconnected");
+    });
 
     return () => {
       socket.removeEventListener("message", eventHandler);
+      socket.removeEventListener("connect", () => {});
+      socket.removeEventListener("disconnect", () => {});
     };
   }, []);
 
@@ -67,26 +73,6 @@ export const Party = () => {
         partyId,
         itemName: itemName,
         itemPrice: itemPrice,
-      })
-    );
-  };
-  const handleUpdateItem = (itemId: string) => {
-    socket.send(
-      JSON.stringify({
-        type: "update item",
-        userId: currentUser.id,
-        partyId,
-        itemId,
-      })
-    );
-  };
-  const handleRemoveItem = (id: string) => {
-    socket.send(
-      JSON.stringify({
-        type: "remove item",
-        userId: currentUser.id,
-        partyId,
-        itemId: id,
       })
     );
   };
@@ -161,45 +147,9 @@ export const Party = () => {
               </>
             ) : null}
           </div>
-          <div>
-            {party.items.length > 0 ? (
-              <>
-                <p className="subtitle is-4 my-4">
-                  And they have something to share:
-                </p>
-                {party.items.map((item) => (
-                  <p
-                    key={item.id}
-                    className="is-size-4 is-flex is-align-items-center mb-2"
-                  >
-                    {item.name}{" "}
-                    {item.price?.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                    })}
-                    <button
-                      type="button"
-                      className="delete ml-2"
-                      onClick={() => handleRemoveItem(item.id)}
-                    ></button>
-                    <button
-                      className="button ml-2"
-                      onClick={() => handleUpdateItem(item.id)}
-                    >
-                      Update item
-                    </button>
-                    {item.users?.length > 0 &&
-                      item.users.map(({ id }) => (
-                        <span className="tag is-medium ml-2">
-                          {party.users.find((user) => user.id === id)?.name}
-                        </span>
-                      ))}
-                  </p>
-                ))}
-              </>
-            ) : null}
-          </div>
+          <div />
         </Columns>
-        <PartyForm party={party} />
+        <PartyForm party={party} currentUser={currentUser} />
         <Block title="Adding a user">
           <div className="field">
             <label htmlFor="userName" className="label">
