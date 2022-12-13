@@ -12,14 +12,11 @@ export const PartyForm: FC<{
 }> = ({ party, currentUser }) => {
   const { users } = party;
   const { partyId } = useParams();
-  const { register, reset, formState } = useForm<PartyInterface>({
+  const { register, reset } = useForm<PartyInterface>({
     defaultValues: party,
     mode: "onBlur",
   });
-  const handleChangeItem = async (
-    data: Partial<Omit<Item, "users">>,
-    _fieldName: any
-  ) => {
+  const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
     socket.send(
       JSON.stringify({
         type: "update item",
@@ -57,7 +54,6 @@ export const PartyForm: FC<{
 
   useEffect(() => {
     reset(party);
-    console.log(formState.isDirty);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 
@@ -66,7 +62,7 @@ export const PartyForm: FC<{
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `120px 60px 60px 60px 3rem repeat(${users.length}, 2rem)`,
+          gridTemplateColumns: `120px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
           gap: "16px",
         }}
       >
@@ -89,7 +85,7 @@ export const PartyForm: FC<{
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: `120px 60px 60px 60px 3rem repeat(${users.length}, 2rem)`,
+                gridTemplateColumns: `120px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
                 gap: "16px",
               }}
               key={item.id}
@@ -99,11 +95,15 @@ export const PartyForm: FC<{
                   inputProps={{
                     type: "text",
                     ...register(`items.${i}.name`),
-                    onBlur: ({ target }) =>
-                      handleChangeItem(
-                        { id: item.id, name: target.value },
-                        `items.${i}.name`
-                      ),
+                    onBlur: ({ target }) => {
+                      if (target.value === item.name) {
+                        return new Promise(() => {});
+                      }
+                      return handleChangeItem({
+                        id: item.id,
+                        name: target.value,
+                      });
+                    },
                   }}
                 />
                 <button
@@ -117,11 +117,16 @@ export const PartyForm: FC<{
                   inputProps={{
                     type: "number",
                     ...register(`items.${i}.amount`),
-                    onBlur: ({ target }) =>
-                      handleChangeItem(
-                        { id: item.id, amount: +target.value },
-                        `items.${i}.amount`
-                      ),
+                    onBlur: ({ target }) => {
+                      if (+target.value === item.amount) {
+                        return new Promise(() => {});
+                      }
+
+                      return handleChangeItem({
+                        id: item.id,
+                        amount: +target.value,
+                      });
+                    },
                   }}
                 />
               </span>
@@ -130,11 +135,16 @@ export const PartyForm: FC<{
                   inputProps={{
                     type: "number",
                     ...register(`items.${i}.price`),
-                    onBlur: ({ target }) =>
-                      handleChangeItem(
-                        { id: item.id, price: +target.value },
-                        `items.${i}.price`
-                      ),
+                    onBlur: ({ target }) => {
+                      if (+target.value === item.price) {
+                        return new Promise(() => {});
+                      }
+
+                      return handleChangeItem({
+                        id: item.id,
+                        price: +target.value,
+                      });
+                    },
                   }}
                 />
               </span>
@@ -143,11 +153,16 @@ export const PartyForm: FC<{
                   inputProps={{
                     type: "number",
                     ...register(`items.${i}.discount`),
-                    onBlur: ({ target }) =>
-                      handleChangeItem(
-                        { id: item.id, discount: +target.value },
-                        `items.${i}.discount`
-                      ),
+                    onBlur: ({ target }) => {
+                      if (+target.value === item.discount) {
+                        return new Promise(() => {});
+                      }
+
+                      return handleChangeItem({
+                        id: item.id,
+                        discount: +target.value,
+                      });
+                    },
                   }}
                 />
               </span>
@@ -156,13 +171,10 @@ export const PartyForm: FC<{
                 className="is-size-4 checkbox mr-4"
                 {...register(`items.${i}.equally`)}
                 onChange={({ target }) =>
-                  handleChangeItem(
-                    {
-                      id: item.id,
-                      equally: target.checked,
-                    },
-                    `items.${i}.equally`
-                  )
+                  handleChangeItem({
+                    id: item.id,
+                    equally: target.checked,
+                  })
                 }
               />
               {users.map(({ id }) => (
