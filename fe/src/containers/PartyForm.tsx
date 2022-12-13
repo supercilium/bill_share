@@ -1,6 +1,8 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { Block } from "../components";
+import { Block, Field } from "../components";
+import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
 import { socket } from "../__api__/socket";
 
@@ -10,13 +12,35 @@ export const PartyForm: FC<{
 }> = ({ party, currentUser }) => {
   const { users } = party;
   const { partyId } = useParams();
-  const handleChange = async (userId: string, itemId: string) => {
+  const { register, reset, formState } = useForm<PartyInterface>({
+    defaultValues: party,
+    mode: "onBlur",
+  });
+  const handleChangeItem = async (
+    data: Partial<Omit<Item, "users">>,
+    _fieldName: any
+  ) => {
     socket.send(
       JSON.stringify({
         type: "update item",
+        userId: currentUser.id,
+        partyId,
+        ...data,
+      })
+    );
+  };
+  const handleChangeUserInItem = async (
+    shouldAddUser: boolean,
+    userId: string,
+    itemId: string
+  ) => {
+    socket.send(
+      JSON.stringify({
+        type: shouldAddUser ? "add user to item" : "remove user from item",
         userId,
         partyId,
         itemId,
+        value: 1,
       })
     );
   };
@@ -31,18 +55,26 @@ export const PartyForm: FC<{
     );
   };
 
+  useEffect(() => {
+    reset(party);
+    console.log(formState.isDirty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [party]);
+
   return (
     <Block title="Party form">
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `120px 60px 60px repeat(${users.length}, 25px)`,
+          gridTemplateColumns: `120px 60px 60px 60px 3rem repeat(${users.length}, 2rem)`,
           gap: "16px",
         }}
       >
         <span className="is-size-6">Item name</span>
         <span className="is-size-6">Amount</span>
         <span className="is-size-6">Price</span>
+        <span className="is-size-6">Discount</span>
+        <span className="is-size-6">Equally</span>
         {users.map(({ id, name }) => (
           <span key={id} className="is-size-6">
             {name}
@@ -51,36 +83,102 @@ export const PartyForm: FC<{
       </div>
 
       <form>
-        {party.items.map((item) => (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `120px 60px 60px repeat(${users.length}, 25px)`,
-              gap: "16px",
-            }}
-            key={item.id}
-          >
-            <span className="is-size-4 is-flex is-align-items-center ">
-              {item.name}
-              <button
-                type="button"
-                className="delete ml-2"
-                onClick={() => handleRemoveItem(item.id)}
-              ></button>
-            </span>
-            <span className="is-size-4">{item.amount}</span>
-            <span className="is-size-4">{item.price}</span>
-            {users.map(({ id }) => (
+        {party.items.map((itemProps, i) => {
+          const { users: itemUsers, ...item } = itemProps;
+          return (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `120px 60px 60px 60px 3rem repeat(${users.length}, 2rem)`,
+                gap: "16px",
+              }}
+              key={item.id}
+            >
+              <span className="is-size-4 is-flex is-align-items-center ">
+                <Field
+                  inputProps={{
+                    type: "text",
+                    ...register(`items.${i}.name`),
+                    onBlur: ({ target }) =>
+                      handleChangeItem(
+                        { id: item.id, name: target.value },
+                        `items.${i}.name`
+                      ),
+                  }}
+                />
+                <button
+                  type="button"
+                  className="delete ml-2"
+                  onClick={() => handleRemoveItem(item.id)}
+                />
+              </span>
+              <span className="is-size-4">
+                <Field
+                  inputProps={{
+                    type: "number",
+                    ...register(`items.${i}.amount`),
+                    onBlur: ({ target }) =>
+                      handleChangeItem(
+                        { id: item.id, amount: +target.value },
+                        `items.${i}.amount`
+                      ),
+                  }}
+                />
+              </span>
+              <span className="is-size-4">
+                <Field
+                  inputProps={{
+                    type: "number",
+                    ...register(`items.${i}.price`),
+                    onBlur: ({ target }) =>
+                      handleChangeItem(
+                        { id: item.id, price: +target.value },
+                        `items.${i}.price`
+                      ),
+                  }}
+                />
+              </span>
+              <span className="is-size-4">
+                <Field
+                  inputProps={{
+                    type: "number",
+                    ...register(`items.${i}.discount`),
+                    onBlur: ({ target }) =>
+                      handleChangeItem(
+                        { id: item.id, discount: +target.value },
+                        `items.${i}.discount`
+                      ),
+                  }}
+                />
+              </span>
               <input
-                key={id}
                 type="checkbox"
-                className="is-size-4 checkbox"
-                checked={!!item.users?.find((user) => user.id === id)}
-                onChange={() => handleChange(id, item.id)}
+                className="is-size-4 checkbox mr-4"
+                {...register(`items.${i}.equally`)}
+                onChange={({ target }) =>
+                  handleChangeItem(
+                    {
+                      id: item.id,
+                      equally: target.checked,
+                    },
+                    `items.${i}.equally`
+                  )
+                }
               />
-            ))}
-          </div>
-        ))}
+              {users.map(({ id }) => (
+                <input
+                  key={id}
+                  type="checkbox"
+                  className="is-size-4 checkbox"
+                  checked={!!itemUsers?.find((user) => user.id === id)}
+                  onChange={({ target }) =>
+                    handleChangeUserInItem(target.checked, id, item.id)
+                  }
+                />
+              ))}
+            </div>
+          );
+        })}
       </form>
     </Block>
   );
