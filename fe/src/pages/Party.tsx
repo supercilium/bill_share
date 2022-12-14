@@ -1,22 +1,43 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { Block, Columns, Footer, Header, Main } from "../components";
+import { Block, Columns, Field, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createUser, getPartyById } from "../__api__/party";
 import { socket } from "../__api__/socket";
 
+interface ItemCreationInterface {
+  itemName: string;
+  itemPrice: number;
+  amount: number;
+}
+
 export const Party = () => {
   const { partyId } = useParams();
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
+  const addItemFormHandlers = useForm<ItemCreationInterface>({
+    defaultValues: {
+      itemName: "",
+      itemPrice: 0,
+      amount: 1,
+    },
+  });
+  const { isValid: isAddItemFormValid, isDirty: isAddItemFormDirty } =
+    addItemFormHandlers.formState;
+  const addUserFormHandlers = useForm<{ userName: string }>({
+    defaultValues: {
+      userName: "",
+    },
+  });
+  const { isValid: isAddUserFormValid, isDirty: isAddUserFormDirty } =
+    addUserFormHandlers.formState;
 
   const [party, setParty] = useState<PartyInterface | null>(null);
   const [userName, setUserName] = useState<string | undefined>();
-  const [itemName, setItemName] = useState<string | undefined>();
-  const [itemPrice, setItemPrice] = useState<number | undefined>();
   const fetchParty = async (id: string) => {
     try {
       const parties = await getPartyById(id);
@@ -57,24 +78,25 @@ export const Party = () => {
     }
   }, [partyId, currentUser]);
 
-  const handleAddUser = () => {
-    socket.send(
-      JSON.stringify({ type: "add user", userName: userName, partyId })
-    );
+  const handleAddUser = ({ userName }: { userName: string }) => {
+    socket.send(JSON.stringify({ type: "add user", userName, partyId }));
+    addUserFormHandlers.reset();
   };
   const handleRemoveUser = (userId: string) => {
     socket.send(JSON.stringify({ type: "remove user", userId, partyId }));
   };
-  const handleAddItem = () => {
+  const handleAddItem = (data: ItemCreationInterface) => {
     socket.send(
       JSON.stringify({
         type: "add item",
         userId: currentUser.id,
         partyId,
-        itemName: itemName,
-        itemPrice: itemPrice,
+        itemName: data.itemName,
+        itemPrice: data.itemPrice,
+        amount: data.amount,
       })
     );
+    addItemFormHandlers.reset();
   };
   const handleCreateUser = async () => {
     const response = await createUser({ userName, partyId });
@@ -118,19 +140,49 @@ export const Party = () => {
     }
     return (
       <>
-        <p className="subtitle is-4 my-4">
-          Link to this party:{" "}
-          <span className="tag is-medium">{window.location.href}</span>
-        </p>
-        <p className="subtitle is-4 my-4">Party maker: {party.owner.name}</p>
+        <Block>
+          <p className="subtitle is-4 my-1">
+            Link to this party:{" "}
+            <span className="tag is-medium">{window.location.href}</span>
+          </p>
+          <p className="subtitle is-4 my-1">Party maker: {party.owner.name}</p>
+        </Block>
 
         <Columns>
           <div>
+            <Block title="You can add new participant">
+              <form
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "200px 100px",
+                  gap: "16px",
+                  alignItems: "flex-end",
+                }}
+                onSubmit={addUserFormHandlers.handleSubmit(handleAddUser)}
+              >
+                <Field
+                  label="User name"
+                  inputProps={{
+                    type: "text",
+                    placeholder: "Enter user name",
+                    ...addUserFormHandlers.register("userName", {
+                      required: true,
+                    }),
+                  }}
+                />
+                <button
+                  className="button mb-3"
+                  type="submit"
+                  disabled={!isAddUserFormValid || !isAddUserFormDirty}
+                >
+                  Add user
+                </button>
+              </form>
+            </Block>
+          </div>
+          <div>
             {party.users.length > 0 ? (
-              <>
-                <p className="subtitle is-4 my-4">
-                  Here we have some guys having fun:
-                </p>
+              <Block title="And remove one of these guys">
                 {party.users.map((user) => (
                   <p
                     key={user.id}
@@ -144,65 +196,57 @@ export const Party = () => {
                     ></button>
                   </p>
                 ))}
-              </>
+              </Block>
             ) : null}
           </div>
-          <div />
         </Columns>
         <PartyForm party={party} currentUser={currentUser} />
-        <Block title="Adding a user">
-          <div className="field">
-            <label htmlFor="userName" className="label">
-              Enter user name
-            </label>
-            <input
-              className="input"
-              type="text"
-              name="userName"
-              value={userName}
-              onChange={({ target }) => setUserName(target.value)}
-            />
-          </div>
-          <button
-            className="button"
-            disabled={!userName}
-            onClick={handleAddUser}
+        <Block title="Add new item to share">
+          <form
+            style={{
+              display: "grid",
+              gridTemplateColumns: "200px 60px 70px 100px",
+              gap: "16px",
+              alignItems: "flex-end",
+            }}
+            onSubmit={addItemFormHandlers.handleSubmit(handleAddItem)}
           >
-            Add user
-          </button>
-        </Block>
-        <Block title="Adding an item">
-          <div className="field">
-            <label htmlFor="itemName" className="label">
-              Enter item name
-            </label>
-            <input
-              className="input"
-              type="text"
-              name="itemName"
-              value={itemName}
-              onChange={({ target }) => setItemName(target.value)}
+            <Field
+              label="Item name"
+              inputProps={{
+                type: "text",
+                placeholder: "Enter item name",
+                ...addItemFormHandlers.register("itemName", { required: true }),
+              }}
             />
-          </div>
-          <div className="field">
-            <label htmlFor="itemPrice" className="label">
-              Enter item price
-            </label>
-            <input
-              className="input"
-              type="number"
-              name="itemPrice"
-              value={itemPrice}
-              onChange={({ target }) => setItemPrice(+target.value)}
+            <Field
+              label="Amount"
+              inputProps={{
+                type: "number",
+                ...addItemFormHandlers.register("amount", {
+                  required: true,
+                  min: 1,
+                }),
+              }}
             />
-          </div>
-          <button
-            className="button"
-            disabled={!itemName || !itemPrice}
-            onClick={handleAddItem}
-          >
-            Add item
-          </button>
+            <Field
+              label="Price"
+              inputProps={{
+                type: "number",
+                ...addItemFormHandlers.register("itemPrice", {
+                  required: true,
+                  min: 0,
+                }),
+              }}
+            />
+            <button
+              type="submit"
+              className="button mb-3"
+              disabled={!isAddItemFormValid || !isAddItemFormDirty}
+            >
+              Add item
+            </button>
+          </form>
         </Block>
       </>
     );

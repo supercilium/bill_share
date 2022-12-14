@@ -62,7 +62,7 @@ export const PartyForm: FC<{
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `120px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
+          gridTemplateColumns: `200px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
           gap: "16px",
         }}
       >
@@ -85,12 +85,20 @@ export const PartyForm: FC<{
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: `120px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
+                gridTemplateColumns: `200px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
                 gap: "16px",
               }}
+              className="my-3"
               key={item.id}
             >
               <span className="is-size-4 is-flex is-align-items-center ">
+                <button
+                  type="button"
+                  className="delete mr-2"
+                  title="Remove item"
+                  onClick={() => handleRemoveItem(item.id)}
+                />
+
                 <Field
                   inputProps={{
                     type: "text",
@@ -105,11 +113,6 @@ export const PartyForm: FC<{
                       });
                     },
                   }}
-                />
-                <button
-                  type="button"
-                  className="delete ml-2"
-                  onClick={() => handleRemoveItem(item.id)}
                 />
               </span>
               <span className="is-size-4">
