@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Field, Footer, Header, Main } from "../components";
@@ -6,7 +6,7 @@ import { PartyForm } from "../containers/PartyForm";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createUser, getPartyById } from "../__api__/party";
-import { socket } from "../__api__/socket";
+import { createSocket } from "../__api__/socket";
 
 interface ItemCreationInterface {
   itemName: string;
@@ -16,6 +16,8 @@ interface ItemCreationInterface {
 
 export const Party = () => {
   const { partyId } = useParams();
+  const socketRef = useRef<WebSocket | null>(null);
+  const socket = socketRef.current;
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
@@ -45,6 +47,9 @@ export const Party = () => {
         setParty(null);
       } else {
         setParty(parties as PartyInterface);
+        if (!socket || socket.readyState === 3) {
+          socketRef.current = createSocket(partyId as string);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -57,26 +62,33 @@ export const Party = () => {
   };
 
   useEffect(() => {
-    socket.addEventListener("message", eventHandler);
-    socket.addEventListener("connect", () => {
-      console.log("is connected");
-    });
-    socket.addEventListener("disconnect", () => {
-      console.log("is disconnected");
-    });
+    if (socket) {
+      socket.addEventListener("message", eventHandler);
+      socket.addEventListener("connect", () => {
+        console.log("is connected");
+      });
+      socket.addEventListener("disconnect", () => {
+        console.log("is disconnected");
+      });
 
-    return () => {
-      socket.removeEventListener("message", eventHandler);
-      socket.removeEventListener("connect", () => {});
-      socket.removeEventListener("disconnect", () => {});
-    };
-  }, []);
+      return () => {
+        socket.removeEventListener("message", eventHandler);
+        socket.removeEventListener("connect", () => {});
+        socket.removeEventListener("disconnect", () => {});
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (partyId) {
       fetchParty(partyId);
     }
-  }, [partyId, currentUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!socket || socket.readyState !== 1) {
+    return <div>No socket connection</div>;
+  }
 
   const handleAddUser = ({ userName }: { userName: string }) => {
     socket.send(JSON.stringify({ type: "add user", userName, partyId }));
@@ -200,7 +212,7 @@ export const Party = () => {
             ) : null}
           </div>
         </Columns>
-        <PartyForm party={party} currentUser={currentUser} />
+        <PartyForm party={party} currentUser={currentUser} socket={socket} />
         <Block title="Add new item to share">
           <form
             style={{
@@ -270,3 +282,5 @@ export const Party = () => {
     />
   );
 };
+
+Party.whyDidYouRender = true;

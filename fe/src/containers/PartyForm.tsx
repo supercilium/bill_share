@@ -4,12 +4,12 @@ import { useParams } from "react-router";
 import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
-import { socket } from "../__api__/socket";
 
 export const PartyForm: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
-}> = ({ party, currentUser }) => {
+  socket: WebSocket;
+}> = ({ party, currentUser, socket }) => {
   const { users } = party;
   const { partyId } = useParams();
   const { register, reset } = useForm<PartyInterface>({
