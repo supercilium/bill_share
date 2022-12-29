@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Field, Footer, Header, Main } from "../components";
@@ -6,7 +6,7 @@ import { PartyForm } from "../containers/PartyForm";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createUser, getPartyById } from "../__api__/party";
-import { createSocket } from "../__api__/socket";
+import { socketClient } from "../__api__/socket";
 
 interface ItemCreationInterface {
   itemName: string;
@@ -16,11 +16,10 @@ interface ItemCreationInterface {
 
 export const Party = () => {
   const { partyId } = useParams();
-  const socketRef = useRef<WebSocket | null>(null);
-  const socket = socketRef.current;
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
+  const { socket } = socketClient;
   const addItemFormHandlers = useForm<ItemCreationInterface>({
     defaultValues: {
       itemName: "",
@@ -47,9 +46,6 @@ export const Party = () => {
         setParty(null);
       } else {
         setParty(parties as PartyInterface);
-        if (!socket || socket.readyState === 3) {
-          socketRef.current = createSocket(partyId as string);
-        }
       }
     } catch (err) {
       console.log(err);
@@ -62,7 +58,7 @@ export const Party = () => {
   };
 
   useEffect(() => {
-    if (socket) {
+    if (socketClient.connected) {
       socket.addEventListener("message", eventHandler);
       socket.addEventListener("connect", () => {
         console.log("is connected");
@@ -77,17 +73,25 @@ export const Party = () => {
         socket.removeEventListener("disconnect", () => {});
       };
     }
-  }, [socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socketClient.connected]);
 
   useEffect(() => {
     if (partyId) {
+      if (!socketClient.connected) {
+        socketClient.connect(partyId);
+      }
       fetchParty(partyId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!socket || socket.readyState !== 1) {
+  if (!socket || socket.readyState === 3 || socket.readyState === 2) {
     return <div>No socket connection</div>;
+  }
+
+  if (socket.readyState === 0) {
+    return <div>Loading...</div>;
   }
 
   const handleAddUser = ({ userName }: { userName: string }) => {

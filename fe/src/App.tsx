@@ -15,7 +15,6 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  console.count();
   return <RouterProvider router={router} />;
 };
 
