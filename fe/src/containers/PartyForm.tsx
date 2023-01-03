@@ -58,6 +58,14 @@ export const PartyForm: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 
+  if (!party.items.length) {
+    return (
+      <p className="is-size-5 my-6 has-text-grey-light">
+        Your table is empty...
+      </p>
+    );
+  }
+
   return (
     <Block title="Party form">
       <div
