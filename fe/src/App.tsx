@@ -7,9 +7,10 @@ import {
   faCrown,
   faWineGlassEmpty,
   faBeerMugEmpty,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faCrown, faWineGlassEmpty, faBeerMugEmpty);
+library.add(faCrown, faWineGlassEmpty, faBeerMugEmpty, faCopy);
 
 const router = createBrowserRouter([
   {

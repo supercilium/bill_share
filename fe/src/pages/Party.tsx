@@ -178,6 +178,9 @@ export const Party = () => {
               className="tag is-medium"
               style={{ cursor: "pointer" }}
             >
+              <span className="mr-1 icon has-text-grey">
+                <FontAwesomeIcon icon="copy" />
+              </span>
               {window.location.href}
             </span>
           </p>
