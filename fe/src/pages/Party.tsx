@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
 import { Block, Columns, Field, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
@@ -217,7 +218,7 @@ export const Party = () => {
           </div>
           <div>
             {party.users.length > 0 ? (
-              <Block title="And remove one of these guys">
+              <Block title="And remove any of these guys">
                 {party.users.map((user) => (
                   <p
                     key={user.id}
@@ -231,8 +232,11 @@ export const Party = () => {
                         onClick={() => handleRemoveUser(user.id)}
                       ></button>
                     ) : (
-                      <span className="ml-2 tag is-small">
-                        Add crown icon here
+                      <span
+                        className="ml-2 icon has-text-grey-light"
+                        title="Master of the party"
+                      >
+                        <FontAwesomeIcon icon="crown" />
                       </span>
                     )}
                   </p>

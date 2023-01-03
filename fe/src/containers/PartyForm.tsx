@@ -1,6 +1,7 @@
 import { FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
@@ -60,8 +61,14 @@ export const PartyForm: FC<{
 
   if (!party.items.length) {
     return (
-      <p className="is-size-5 my-6 has-text-grey-light">
-        Your table is empty...
+      <p className="is-size-5 my-6 has-text-grey-light is-flex is-align-items-center">
+        Your table is empty... Start to add some items{" "}
+        <span
+          className="ml-1 icon has-text-grey-light"
+          title="Master of the party"
+        >
+          <FontAwesomeIcon icon="beer-mug-empty" />
+        </span>
       </p>
     );
   }
