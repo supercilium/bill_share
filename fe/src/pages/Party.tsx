@@ -169,7 +169,16 @@ export const Party = () => {
         <Block>
           <p className="subtitle is-4 my-1">
             Link to this party:{" "}
-            <span className="tag is-medium">{window.location.href}</span>
+            <span
+              onClick={() =>
+                navigator.clipboard.writeText(window.location.href)
+              }
+              title="Click to copy"
+              className="tag is-medium"
+              style={{ cursor: "pointer" }}
+            >
+              {window.location.href}
+            </span>
           </p>
           <p className="subtitle is-4 my-1">Party maker: {party.owner.name}</p>
         </Block>
