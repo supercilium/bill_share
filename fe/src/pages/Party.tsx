@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Field, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
+import { ErrorLayout } from "../layouts/error";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { createUser, getPartyById } from "../__api__/party";
@@ -16,10 +17,11 @@ interface ItemCreationInterface {
 
 export const Party = () => {
   const { partyId } = useParams();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const socket = socketClient.socket;
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
-  const { socket } = socketClient;
   const addItemFormHandlers = useForm<ItemCreationInterface>({
     defaultValues: {
       itemName: "",
@@ -41,57 +43,67 @@ export const Party = () => {
   const [userName, setUserName] = useState<string | undefined>();
   const fetchParty = async (id: string) => {
     try {
+      setIsLoading(true);
       const parties = await getPartyById(id);
       if ("error" in parties) {
         setParty(null);
       } else {
         setParty(parties as PartyInterface);
+        console.log(parties.id);
+        if (!socketClient.connected) {
+          socketClient.connect(id, eventHandler);
+        }
       }
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
-  const eventHandler = (event: MessageEvent<string>) => {
+  const eventHandler = useCallback((event: MessageEvent<string>) => {
     setParty(JSON.parse(event.data));
     console.log(event);
-  };
-
-  useEffect(() => {
-    if (socketClient.connected) {
-      socket.addEventListener("message", eventHandler);
-      socket.addEventListener("connect", () => {
-        console.log("is connected");
-      });
-      socket.addEventListener("disconnect", () => {
-        console.log("is disconnected");
-      });
-
-      return () => {
-        socket.removeEventListener("message", eventHandler);
-        socket.removeEventListener("connect", () => {});
-        socket.removeEventListener("disconnect", () => {});
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socketClient.connected]);
+  }, []);
 
   useEffect(() => {
     if (partyId) {
-      if (!socketClient.connected) {
-        socketClient.connect(partyId);
-      }
       fetchParty(partyId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!socket || socket.readyState === 3 || socket.readyState === 2) {
-    return <div>No socket connection</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  if (socket.readyState === 0) {
-    return <div>Loading...</div>;
+  if (!party) {
+    return (
+      <ErrorLayout
+        title="Looks like there is no such party"
+        error={
+          <>
+            Try to update page or go to{" "}
+            <a className="button ml-2" href="/">
+              home page
+            </a>
+          </>
+        }
+      />
+    );
+  }
+
+  if (
+    !socket ||
+    socket.readyState === 3 ||
+    socket.readyState === 2 ||
+    socketClient.error
+  ) {
+    return (
+      <ErrorLayout
+        title="Ooops! Something went wrong"
+        error="No socket connection"
+      />
+    );
   }
 
   const handleAddUser = ({ userName }: { userName: string }) => {
@@ -122,9 +134,6 @@ export const Party = () => {
   };
 
   const renderMain = () => {
-    if (!party) {
-      return null;
-    }
     if (
       !currentUser.id ||
       ![...party.users, party.owner].find((user) => user.id === currentUser.id)
@@ -216,7 +225,7 @@ export const Party = () => {
             ) : null}
           </div>
         </Columns>
-        <PartyForm party={party} currentUser={currentUser} socket={socket} />
+        <PartyForm party={party} currentUser={currentUser} />
         <Block title="Add new item to share">
           <form
             style={{
@@ -272,13 +281,9 @@ export const Party = () => {
     <PlainLayout
       Header={
         <Header>
-          {!party ? (
-            <h2 className="title is-2 my-5">No party</h2>
-          ) : (
-            <h2 className="title is-2 my-5">
-              Hello, {currentUser.name}! Welcome to {party?.name}
-            </h2>
-          )}
+          <h2 className="title is-2 my-5">
+            Hello, {currentUser.name}! Welcome to {party?.name}
+          </h2>
         </Header>
       }
       Footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
@@ -286,5 +291,3 @@ export const Party = () => {
     />
   );
 };
-
-Party.whyDidYouRender = true;

@@ -4,20 +4,21 @@ import { useParams } from "react-router";
 import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
+import { socketClient } from "../__api__/socket";
 
 export const PartyForm: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
-  socket: WebSocket;
-}> = ({ party, currentUser, socket }) => {
+}> = ({ party, currentUser }) => {
   const { users } = party;
   const { partyId } = useParams();
   const { register, reset } = useForm<PartyInterface>({
     defaultValues: party,
     mode: "onBlur",
   });
+
   const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
-    socket.send(
+    socketClient.socket.send(
       JSON.stringify({
         type: "update item",
         userId: currentUser.id,
@@ -31,7 +32,7 @@ export const PartyForm: FC<{
     userId: string,
     itemId: string
   ) => {
-    socket.send(
+    socketClient.socket.send(
       JSON.stringify({
         type: shouldAddUser ? "add user to item" : "remove user from item",
         userId,
@@ -42,7 +43,7 @@ export const PartyForm: FC<{
     );
   };
   const handleRemoveItem = (id: string) => {
-    socket.send(
+    socketClient.socket.send(
       JSON.stringify({
         type: "remove item",
         userId: currentUser.id,
@@ -71,11 +72,15 @@ export const PartyForm: FC<{
         <span className="is-size-6">Price</span>
         <span className="is-size-6">Discount</span>
         <span className="is-size-6">Equally</span>
-        {users.map(({ id, name }) => (
-          <span key={id} className="is-size-6">
-            {name}
-          </span>
-        ))}
+        {users?.length > 0 ? (
+          users.map(({ id, name }) => (
+            <span key={id} className="is-size-6">
+              {name}
+            </span>
+          ))
+        ) : (
+          <div />
+        )}
       </div>
 
       <form>
