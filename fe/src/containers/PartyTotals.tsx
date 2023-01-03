@@ -6,7 +6,10 @@ export const PartyTotals: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
 }> = ({ party, currentUser }) => {
-  console.log(party);
+  if (!party.items.length) {
+    return null;
+  }
+
   return (
     <Block>
       <div

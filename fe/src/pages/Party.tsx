@@ -215,11 +215,17 @@ export const Party = () => {
                     className="is-size-4 is-flex is-align-items-center"
                   >
                     {user.name}{" "}
-                    <button
-                      type="button"
-                      className="delete ml-2"
-                      onClick={() => handleRemoveUser(user.id)}
-                    ></button>
+                    {user.id !== party.owner.id ? (
+                      <button
+                        type="button"
+                        className="delete ml-2"
+                        onClick={() => handleRemoveUser(user.id)}
+                      ></button>
+                    ) : (
+                      <span className="ml-2 tag is-small">
+                        Add crown icon here
+                      </span>
+                    )}
                   </p>
                 ))}
               </Block>
