@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Columns, Field, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
+import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
@@ -226,6 +227,7 @@ export const Party = () => {
           </div>
         </Columns>
         <PartyForm party={party} currentUser={currentUser} />
+        <PartyTotals party={party} currentUser={currentUser} />
         <Block title="Add new item to share">
           <form
             style={{

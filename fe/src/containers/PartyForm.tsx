@@ -74,7 +74,14 @@ export const PartyForm: FC<{
         <span className="is-size-6">Equally</span>
         {users?.length > 0 ? (
           users.map(({ id, name }) => (
-            <span key={id} className="is-size-6">
+            <span
+              key={id}
+              className={`is-size-6${
+                id === currentUser.id ? " has-text-info" : ""
+              }`}
+              style={{ transform: "rotate(-42deg)" }}
+              title={name}
+            >
               {name}
             </span>
           ))

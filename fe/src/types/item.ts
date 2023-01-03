@@ -5,5 +5,5 @@ export interface Item {
     amount: number;
     equally: boolean;
     discount?: number;
-    users: Array<{ id: string; }>;
+    users: Array<{ id: string; value: number }>;
 }
