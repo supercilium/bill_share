@@ -6,6 +6,21 @@ import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
 import { socketClient } from "../__api__/socket";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup
+  .object({
+    items: yup.array().of(
+      yup.object().shape({
+        name: yup.string().required(),
+        price: yup.number().min(0).integer().default(0).required(),
+        amount: yup.number().min(1).integer().required(),
+        discount: yup.number().min(0).max(1).default(0),
+      })
+    ),
+  })
+  .required();
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -13,10 +28,12 @@ export const PartyForm: FC<{
 }> = ({ party, currentUser }) => {
   const { users } = party;
   const { partyId } = useParams();
-  const { register, reset } = useForm<PartyInterface>({
+  const { register, reset, formState } = useForm<PartyInterface>({
+    resolver: yupResolver(schema),
     defaultValues: party,
-    mode: "onBlur",
+    mode: "all",
   });
+  const { isValid, errors } = formState;
 
   const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
     socketClient.socket.send(
@@ -124,11 +141,12 @@ export const PartyForm: FC<{
                 />
 
                 <Field
+                  error={errors.items?.[i]?.name}
                   inputProps={{
                     type: "text",
                     ...register(`items.${i}.name`),
                     onBlur: ({ target }) => {
-                      if (target.value === item.name) {
+                      if (target.value === item.name || !isValid) {
                         return new Promise(() => {});
                       }
                       return handleChangeItem({
@@ -141,14 +159,13 @@ export const PartyForm: FC<{
               </span>
               <span className="is-size-4">
                 <Field
+                  error={errors.items?.[i]?.amount}
                   inputProps={{
                     type: "number",
-                    ...register(`items.${i}.amount`, {
-                      required: true,
-                      min: 0,
-                    }),
+                    min: 1,
+                    ...register(`items.${i}.amount`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.amount) {
+                      if (+target.value === item.amount || !isValid) {
                         return new Promise(() => {});
                       }
 
@@ -162,14 +179,15 @@ export const PartyForm: FC<{
               </span>
               <span className="is-size-4">
                 <Field
+                  error={errors.items?.[i]?.price}
                   inputProps={{
                     type: "number",
-                    ...register(`items.${i}.price`, {
-                      required: true,
-                      min: 0,
-                    }),
+                    min: 0,
+                    ...register(`items.${i}.price`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.price) {
+                      console.log(isValid);
+                      console.log(errors);
+                      if (+target.value === item.price || !isValid) {
                         return new Promise(() => {});
                       }
 
@@ -183,15 +201,15 @@ export const PartyForm: FC<{
               </span>
               <span className="is-size-4">
                 <Field
+                  error={errors.items?.[i]?.discount}
                   inputProps={{
                     type: "number",
                     step: 0.1,
-                    ...register(`items.${i}.discount`, {
-                      min: 0,
-                      max: 1,
-                    }),
+                    min: 0,
+                    max: 1,
+                    ...register(`items.${i}.discount`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.discount) {
+                      if (+target.value === item.discount || !isValid) {
                         return new Promise(() => {});
                       }
 

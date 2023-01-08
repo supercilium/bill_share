@@ -2,6 +2,16 @@ import { Block, Field } from "../components";
 import { useForm } from "react-hook-form";
 import { socketClient } from "../__api__/socket";
 import { useParams } from "react-router";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup
+  .object({
+    item: yup.string().required(),
+    price: yup.number().min(0).integer().default(0).required(),
+    amount: yup.number().min(1).integer().required(),
+  })
+  .required();
 
 interface ItemCreationInterface {
   item: string;
@@ -15,13 +25,15 @@ export const AddItemForm = () => {
 
   const socket = socketClient.socket;
   const formHandlers = useForm<ItemCreationInterface>({
+    resolver: yupResolver(schema),
     defaultValues: {
       item: "",
       price: 0,
       amount: 1,
     },
+    mode: "all",
   });
-  const { isValid, isDirty } = formHandlers.formState;
+  const { isValid, isDirty, errors } = formHandlers.formState;
 
   const handleAddItem = (data: ItemCreationInterface) => {
     socket.send(
@@ -49,30 +61,29 @@ export const AddItemForm = () => {
       >
         <Field
           label="Item name"
+          error={errors.item}
           inputProps={{
             type: "text",
             placeholder: "Enter item name",
-            ...formHandlers.register("item", { required: true }),
+            ...formHandlers.register("item"),
           }}
         />
         <Field
           label="Amount"
+          error={errors.amount}
           inputProps={{
             type: "number",
-            ...formHandlers.register("amount", {
-              required: true,
-              min: 1,
-            }),
+            min: 1,
+            ...formHandlers.register("amount"),
           }}
         />
         <Field
           label="Price"
+          error={errors.price}
           inputProps={{
             type: "number",
-            ...formHandlers.register("price", {
-              required: true,
-              min: 0,
-            }),
+            min: 0,
+            ...formHandlers.register("price"),
           }}
         />
         <button

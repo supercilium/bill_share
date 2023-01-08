@@ -1,11 +1,12 @@
 import { FC } from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 export const Field: FC<{
   label?: string;
+  error?: FieldError;
   inputProps: React.InputHTMLAttributes<HTMLInputElement> &
     UseFormRegisterReturn;
-}> = ({ label, inputProps }) => {
+}> = ({ label, inputProps, error }) => {
   return (
     <div className="field">
       {label && (
@@ -13,7 +14,7 @@ export const Field: FC<{
           {label}
         </label>
       )}
-      <input className="input" {...inputProps} />
+      <input className={`input${error ? " is-danger" : ""}`} {...inputProps} />
     </div>
   );
 };
