@@ -134,7 +134,6 @@ export const Party = () => {
               {window.location.href}
             </span>
           </p>
-          <p className="subtitle is-4 my-1">Party maker: {party.owner.name}</p>
         </Block>
 
         <Columns>
