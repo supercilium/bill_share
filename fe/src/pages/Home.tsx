@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Field, Footer, Header, Main } from "../components";
+import { Field, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { createParty } from "../__api__/party";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -47,7 +47,6 @@ export const Home = () => {
           <h1 className="title is-1">Party for everybody</h1>
         </Header>
       }
-      Footer={<Footer>foo-footer</Footer>}
       Main={
         <Main>
           <form

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
-import { Block, Columns, Footer, Header, Main } from "../components";
+import { Block, Columns, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
 import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
@@ -13,6 +13,7 @@ import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
 import { AddUserForm } from "../containers/AddUserForm";
 import { AddItemForm } from "../containers/AddItemForm";
+import { Loader } from "../components/Loader";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -63,7 +64,14 @@ export const Party = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{ minHeight: "100vh" }}
+        className="is-flex is-align-items-center is-flex-direction-column is-justify-content-center"
+      >
+        <Loader />
+      </div>
+    );
   }
 
   if (!party) {
@@ -178,7 +186,6 @@ export const Party = () => {
           </h2>
         </Header>
       }
-      Footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
       Main={<Main>{renderMain()}</Main>}
     />
   );

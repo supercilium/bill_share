@@ -1,9 +1,10 @@
 import { FC, ReactNode } from "react";
+import { Footer as FooterComponent } from "../components";
 
 interface PlainLayoutInterface {
   Header: ReactNode;
   Aside?: ReactNode;
-  Footer: ReactNode;
+  Footer?: ReactNode;
   Main: ReactNode;
 }
 
@@ -21,7 +22,13 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
       <div>{Header}</div>
       <div className="is-flex-grow-5">{Main}</div>
       {Aside && <div>{Aside}</div>}
-      <div>{Footer}</div>
+      <div>
+        {Footer || (
+          <FooterComponent>
+            There is nothing better than a good party! ❤️
+          </FooterComponent>
+        )}
+      </div>
     </div>
   );
 };
