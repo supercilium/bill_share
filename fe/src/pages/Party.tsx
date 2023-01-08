@@ -12,8 +12,8 @@ import { createUser, getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 
 interface ItemCreationInterface {
-  itemName: string;
-  itemPrice: number;
+  item: string;
+  price: number;
   amount: number;
 }
 
@@ -26,16 +26,16 @@ export const Party = () => {
   );
   const addItemFormHandlers = useForm<ItemCreationInterface>({
     defaultValues: {
-      itemName: "",
-      itemPrice: 0,
+      item: "",
+      price: 0,
       amount: 1,
     },
   });
   const { isValid: isAddItemFormValid, isDirty: isAddItemFormDirty } =
     addItemFormHandlers.formState;
-  const addUserFormHandlers = useForm<{ userName: string }>({
+  const addUserFormHandlers = useForm<{ user: string }>({
     defaultValues: {
-      userName: "",
+      user: "",
     },
   });
   const { isValid: isAddUserFormValid, isDirty: isAddUserFormDirty } =
@@ -117,8 +117,8 @@ export const Party = () => {
     );
   }
 
-  const handleAddUser = ({ userName }: { userName: string }) => {
-    socket.send(JSON.stringify({ type: "add user", userName, partyId }));
+  const handleAddUser = ({ user }: { user: string }) => {
+    socket.send(JSON.stringify({ type: "add user", user, partyId }));
     addUserFormHandlers.reset();
   };
   const handleRemoveUser = (userId: string) => {
@@ -130,8 +130,8 @@ export const Party = () => {
         type: "add item",
         userId: currentUser.id,
         partyId,
-        itemName: data.itemName,
-        itemPrice: data.itemPrice,
+        item: data.item,
+        price: data.price,
         amount: data.amount,
       })
     );
@@ -213,7 +213,7 @@ export const Party = () => {
                   inputProps={{
                     type: "text",
                     placeholder: "Enter user name",
-                    ...addUserFormHandlers.register("userName", {
+                    ...addUserFormHandlers.register("user", {
                       required: true,
                     }),
                   }}
@@ -274,7 +274,7 @@ export const Party = () => {
               inputProps={{
                 type: "text",
                 placeholder: "Enter item name",
-                ...addItemFormHandlers.register("itemName", { required: true }),
+                ...addItemFormHandlers.register("item", { required: true }),
               }}
             />
             <Field
@@ -291,7 +291,7 @@ export const Party = () => {
               label="Price"
               inputProps={{
                 type: "number",
-                ...addItemFormHandlers.register("itemPrice", {
+                ...addItemFormHandlers.register("price", {
                   required: true,
                   min: 0,
                 }),
