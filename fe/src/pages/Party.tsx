@@ -63,8 +63,17 @@ export const Party = () => {
   };
 
   const eventHandler = useCallback((event: MessageEvent<string>) => {
-    setParty(JSON.parse(event.data));
-    console.log(event);
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === "error") {
+        console.error(data.message);
+        return;
+      }
+      setParty(data);
+      console.log(event);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   useEffect(() => {

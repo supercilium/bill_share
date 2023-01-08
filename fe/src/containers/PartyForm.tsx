@@ -62,7 +62,7 @@ export const PartyForm: FC<{
   if (!party.items.length) {
     return (
       <p className="is-size-5 my-6 has-text-grey-light is-flex is-align-items-center">
-        Your table is empty... Start to add some items{" "}
+        Your table is empty... Start adding items{" "}
         <span className="ml-1 icon has-text-grey-light">
           <FontAwesomeIcon icon="beer-mug-empty" />
         </span>
@@ -143,7 +143,10 @@ export const PartyForm: FC<{
                 <Field
                   inputProps={{
                     type: "number",
-                    ...register(`items.${i}.amount`),
+                    ...register(`items.${i}.amount`, {
+                      required: true,
+                      min: 0,
+                    }),
                     onBlur: ({ target }) => {
                       if (+target.value === item.amount) {
                         return new Promise(() => {});
@@ -161,7 +164,10 @@ export const PartyForm: FC<{
                 <Field
                   inputProps={{
                     type: "number",
-                    ...register(`items.${i}.price`),
+                    ...register(`items.${i}.price`, {
+                      required: true,
+                      min: 0,
+                    }),
                     onBlur: ({ target }) => {
                       if (+target.value === item.price) {
                         return new Promise(() => {});
@@ -179,7 +185,11 @@ export const PartyForm: FC<{
                 <Field
                   inputProps={{
                     type: "number",
-                    ...register(`items.${i}.discount`),
+                    step: 0.1,
+                    ...register(`items.${i}.discount`, {
+                      min: 0,
+                      max: 1,
+                    }),
                     onBlur: ({ target }) => {
                       if (+target.value === item.discount) {
                         return new Promise(() => {});
