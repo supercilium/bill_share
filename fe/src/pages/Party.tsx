@@ -8,8 +8,10 @@ import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
-import { createUser, getPartyById } from "../__api__/party";
+import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
+import { JoinPartyForm } from "../containers/JoinPartyForm";
+import { User } from "../types/user";
 
 interface ItemCreationInterface {
   item: string;
@@ -21,7 +23,7 @@ export const Party = () => {
   const { partyId } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = socketClient.socket;
-  const [currentUser, setCurrentUser] = useState(
+  const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
   const addItemFormHandlers = useForm<ItemCreationInterface>({
@@ -42,7 +44,6 @@ export const Party = () => {
     addUserFormHandlers.formState;
 
   const [party, setParty] = useState<PartyInterface | null>(null);
-  const [userName, setUserName] = useState<string | undefined>();
   const fetchParty = async (id: string) => {
     try {
       setIsLoading(true);
@@ -137,42 +138,13 @@ export const Party = () => {
     );
     addItemFormHandlers.reset();
   };
-  const handleCreateUser = async () => {
-    const response = await createUser({ userName, partyId });
-    localStorage.setItem("user", JSON.stringify(response));
-
-    setCurrentUser(response);
-  };
 
   const renderMain = () => {
     if (
       !currentUser.id ||
       ![...party.users, party.owner].find((user) => user.id === currentUser.id)
     ) {
-      return (
-        <div className="container">
-          <h2 className="title is-2 my-5">Enter your name</h2>
-          <div className="field">
-            <label htmlFor="username" className="label">
-              Enter your name
-            </label>
-            <input
-              className="input"
-              type="text"
-              name="username"
-              value={userName}
-              onChange={({ target }) => setUserName(target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="button"
-            onClick={() => handleCreateUser()}
-          >
-            Join party
-          </button>
-        </div>
-      );
+      return <JoinPartyForm setCurrentUser={setCurrentUser} />;
     }
     return (
       <>

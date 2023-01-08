@@ -1,4 +1,5 @@
 import { PartyInterface } from "../types/party";
+import { User } from "../types/user";
 import { fetchAPI } from "./helpers";
 
 export const getParties = async () => {
@@ -22,6 +23,6 @@ export const createParty = async (input: Record<any, any>) => {
 }
 
 export const createUser = async (input: Record<any, any>) => {
-  const data = await fetchAPI<PartyInterface>(`/user`, { method: 'POST', body: JSON.stringify(input) })
+  const data = await fetchAPI<User>(`/user`, { method: 'POST', body: JSON.stringify(input) })
   return data;
 }
