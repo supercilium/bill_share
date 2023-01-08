@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
-import { Block, Columns, Field, Footer, Header, Main } from "../components";
+import { Block, Columns, Footer, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
 import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
@@ -12,12 +11,8 @@ import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
-
-interface ItemCreationInterface {
-  item: string;
-  price: number;
-  amount: number;
-}
+import { AddUserForm } from "../containers/AddUserForm";
+import { AddItemForm } from "../containers/AddItemForm";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -26,23 +21,6 @@ export const Party = () => {
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
-  const addItemFormHandlers = useForm<ItemCreationInterface>({
-    defaultValues: {
-      item: "",
-      price: 0,
-      amount: 1,
-    },
-  });
-  const { isValid: isAddItemFormValid, isDirty: isAddItemFormDirty } =
-    addItemFormHandlers.formState;
-  const addUserFormHandlers = useForm<{ user: string }>({
-    defaultValues: {
-      user: "",
-    },
-  });
-  const { isValid: isAddUserFormValid, isDirty: isAddUserFormDirty } =
-    addUserFormHandlers.formState;
-
   const [party, setParty] = useState<PartyInterface | null>(null);
   const fetchParty = async (id: string) => {
     try {
@@ -118,25 +96,8 @@ export const Party = () => {
     );
   }
 
-  const handleAddUser = ({ user }: { user: string }) => {
-    socket.send(JSON.stringify({ type: "add user", user, partyId }));
-    addUserFormHandlers.reset();
-  };
   const handleRemoveUser = (userId: string) => {
     socket.send(JSON.stringify({ type: "remove user", userId, partyId }));
-  };
-  const handleAddItem = (data: ItemCreationInterface) => {
-    socket.send(
-      JSON.stringify({
-        type: "add item",
-        userId: currentUser.id,
-        partyId,
-        item: data.item,
-        price: data.price,
-        amount: data.amount,
-      })
-    );
-    addItemFormHandlers.reset();
   };
 
   const renderMain = () => {
@@ -170,35 +131,7 @@ export const Party = () => {
 
         <Columns>
           <div>
-            <Block title="You can add new participant">
-              <form
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "200px 100px",
-                  gap: "16px",
-                  alignItems: "flex-end",
-                }}
-                onSubmit={addUserFormHandlers.handleSubmit(handleAddUser)}
-              >
-                <Field
-                  label="User name"
-                  inputProps={{
-                    type: "text",
-                    placeholder: "Enter user name",
-                    ...addUserFormHandlers.register("user", {
-                      required: true,
-                    }),
-                  }}
-                />
-                <button
-                  className="button mb-3"
-                  type="submit"
-                  disabled={!isAddUserFormValid || !isAddUserFormDirty}
-                >
-                  Add user
-                </button>
-              </form>
-            </Block>
+            <AddUserForm />
           </div>
           <div>
             {party.users.length > 0 ? (
@@ -231,53 +164,7 @@ export const Party = () => {
         </Columns>
         <PartyForm party={party} currentUser={currentUser} />
         <PartyTotals party={party} currentUser={currentUser} />
-        <Block title="Add new item to share">
-          <form
-            style={{
-              display: "grid",
-              gridTemplateColumns: "200px 60px 70px 100px",
-              gap: "16px",
-              alignItems: "flex-end",
-            }}
-            onSubmit={addItemFormHandlers.handleSubmit(handleAddItem)}
-          >
-            <Field
-              label="Item name"
-              inputProps={{
-                type: "text",
-                placeholder: "Enter item name",
-                ...addItemFormHandlers.register("item", { required: true }),
-              }}
-            />
-            <Field
-              label="Amount"
-              inputProps={{
-                type: "number",
-                ...addItemFormHandlers.register("amount", {
-                  required: true,
-                  min: 1,
-                }),
-              }}
-            />
-            <Field
-              label="Price"
-              inputProps={{
-                type: "number",
-                ...addItemFormHandlers.register("price", {
-                  required: true,
-                  min: 0,
-                }),
-              }}
-            />
-            <button
-              type="submit"
-              className="button mb-3"
-              disabled={!isAddItemFormValid || !isAddItemFormDirty}
-            >
-              Add item
-            </button>
-          </form>
-        </Block>
+        <AddItemForm />
       </>
     );
   };
