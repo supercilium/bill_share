@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Block, Field } from "../components";
@@ -8,6 +8,7 @@ import { PartyInterface } from "../types/party";
 import { socketClient } from "../__api__/socket";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { FormSettings } from "../contexts/PartySettingsContext";
 
 const schema = yup
   .object({
@@ -34,6 +35,8 @@ export const PartyForm: FC<{
     mode: "all",
   });
   const { isValid, errors } = formState;
+  const { watch } = useFormContext<FormSettings>();
+  const partySettings = watch();
 
   const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
     socketClient.socket.send(
@@ -92,15 +95,23 @@ export const PartyForm: FC<{
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `200px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
+          gridTemplateColumns: `200px 60px 70px ${
+            partySettings.isDiscountVisible ? "60px " : ""
+          }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
+            users.length
+          }, 2rem)`,
           gap: "16px",
         }}
       >
         <span className="is-size-6">Item name</span>
         <span className="is-size-6">Amount</span>
         <span className="is-size-6">Price</span>
-        <span className="is-size-6">Discount</span>
-        <span className="is-size-6">Equally</span>
+        {partySettings.isDiscountVisible && (
+          <span className="is-size-6">Discount</span>
+        )}
+        {partySettings.isEquallyVisible && (
+          <span className="is-size-6">Equally</span>
+        )}
         {users?.length > 0 ? (
           users.map(({ id, name }) => (
             <span
@@ -126,7 +137,11 @@ export const PartyForm: FC<{
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: `200px 60px 70px 60px 3rem repeat(${users.length}, 2rem)`,
+                gridTemplateColumns: `200px 60px 70px ${
+                  partySettings.isDiscountVisible ? "60px " : ""
+                }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
+                  users.length
+                }, 2rem)`,
                 gap: "16px",
               }}
               className="my-3"
@@ -199,39 +214,43 @@ export const PartyForm: FC<{
                   }}
                 />
               </span>
-              <span className="is-size-4">
-                <Field
-                  error={errors.items?.[i]?.discount}
-                  inputProps={{
-                    type: "number",
-                    step: 0.1,
-                    min: 0,
-                    max: 1,
-                    ...register(`items.${i}.discount`),
-                    onBlur: ({ target }) => {
-                      if (+target.value === item.discount || !isValid) {
-                        return new Promise(() => {});
-                      }
+              {partySettings.isDiscountVisible && (
+                <span className="is-size-4">
+                  <Field
+                    error={errors.items?.[i]?.discount}
+                    inputProps={{
+                      type: "number",
+                      step: 0.1,
+                      min: 0,
+                      max: 1,
+                      ...register(`items.${i}.discount`),
+                      onBlur: ({ target }) => {
+                        if (+target.value === item.discount || !isValid) {
+                          return new Promise(() => {});
+                        }
 
-                      return handleChangeItem({
-                        id: item.id,
-                        discount: +target.value,
-                      });
-                    },
-                  }}
+                        return handleChangeItem({
+                          id: item.id,
+                          discount: +target.value,
+                        });
+                      },
+                    }}
+                  />
+                </span>
+              )}
+              {partySettings.isEquallyVisible && (
+                <input
+                  type="checkbox"
+                  className="is-size-4 checkbox mr-4"
+                  {...register(`items.${i}.equally`)}
+                  onChange={({ target }) =>
+                    handleChangeItem({
+                      id: item.id,
+                      equally: target.checked,
+                    })
+                  }
                 />
-              </span>
-              <input
-                type="checkbox"
-                className="is-size-4 checkbox mr-4"
-                {...register(`items.${i}.equally`)}
-                onChange={({ target }) =>
-                  handleChangeItem({
-                    id: item.id,
-                    equally: target.checked,
-                  })
-                }
-              />
+              )}
               {users.map(({ id }) => (
                 <input
                   key={id}

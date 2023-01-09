@@ -14,6 +14,8 @@ import { User } from "../types/user";
 import { AddUserForm } from "../containers/AddUserForm";
 import { AddItemForm } from "../containers/AddItemForm";
 import { Loader } from "../components/Loader";
+import { PartySettings } from "../containers/PartySettings";
+import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -116,7 +118,7 @@ export const Party = () => {
       return <JoinPartyForm setCurrentUser={setCurrentUser} />;
     }
     return (
-      <>
+      <PartySettingsProvider>
         <Block>
           <p className="subtitle is-4 my-1">
             Link to this party:{" "}
@@ -169,10 +171,11 @@ export const Party = () => {
             ) : null}
           </div>
         </Columns>
+        {party?.items?.length > 0 && <PartySettings />}
         <PartyForm party={party} currentUser={currentUser} />
         <PartyTotals party={party} currentUser={currentUser} />
         <AddItemForm />
-      </>
+      </PartySettingsProvider>
     );
   };
 

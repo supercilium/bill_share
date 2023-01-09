@@ -1,21 +1,30 @@
 import { FC } from "react";
+import { useFormContext } from "react-hook-form";
 import { Block } from "../components";
+import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyInterface } from "../types/party";
 
 export const PartyTotals: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
 }> = ({ party, currentUser }) => {
+  const { watch } = useFormContext<FormSettings>();
+
   if (!party.items.length) {
     return null;
   }
+  const partySettings = watch();
 
   return (
     <Block>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `200px 60px 70px 60px 3rem repeat(${party.users.length}, 2rem)`,
+          gridTemplateColumns: `200px 60px 70px ${
+            partySettings.isDiscountVisible ? "60px " : ""
+          }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
+            party.users.length
+          }, 2rem)`,
           gap: "16px",
         }}
       >
@@ -27,13 +36,15 @@ export const PartyTotals: FC<{
             0
           )}
         </span>
-        <span className="is-size-6">
-          {party.items.reduce(
-            (acc, item) => acc + item.price * (item.discount || 0),
-            0
-          )}
-        </span>
-        <span className="is-size-6" />
+        {partySettings.isDiscountVisible && (
+          <span className="is-size-6">
+            {party.items.reduce(
+              (acc, item) => acc + item.price * (item.discount || 0),
+              0
+            )}
+          </span>
+        )}
+        {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
           party.users.map(({ id }) => (
             <span

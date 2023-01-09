@@ -1,20 +1,85 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+
+const getBulmaInputClassName = (
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"]
+) => {
+  switch (type) {
+    case "text":
+    case "number":
+    case undefined:
+      return "input";
+    default:
+      return type;
+  }
+};
+
+const getBulmaLabelClassName = (
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"]
+) => {
+  switch (type) {
+    case "text":
+    case "number":
+    case undefined:
+      return "label";
+    default:
+      return type;
+  }
+};
 
 export const Field: FC<{
   label?: string;
+  labels?: string[];
   error?: FieldError;
   inputProps: React.InputHTMLAttributes<HTMLInputElement> &
     UseFormRegisterReturn;
-}> = ({ label, inputProps, error }) => {
+}> = ({ label, labels, inputProps, error }) => {
+  const { type } = inputProps;
+  const classNameInput = getBulmaInputClassName(type);
+  const classNameLabel = getBulmaLabelClassName(type);
+
+  if (type === "radio" && Array.isArray(inputProps.value)) {
+    return (
+      <div className="field">
+        <div className="control">
+          {inputProps.value.map((value, i) => (
+            <React.Fragment key={value}>
+              {labels && (
+                <label className={`${classNameLabel} mr-2`}>
+                  <input {...inputProps} value={value} />
+                  {labels?.[i]}
+                </label>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="field">
-      {label && (
-        <label htmlFor={inputProps.name} className="label">
+      {label && type !== "checkbox" && (
+        <label htmlFor={inputProps.name} className={classNameLabel}>
           {label}
         </label>
       )}
-      <input className={`input${error ? " is-danger" : ""}`} {...inputProps} />
+      <div className="control">
+        {(!label || type !== "checkbox") && (
+          <input
+            className={`${classNameInput}${error ? " is-danger" : ""}`}
+            {...inputProps}
+          />
+        )}
+        {label && type === "checkbox" && (
+          <label className={classNameLabel}>
+            <input
+              className={`${classNameInput}${error ? " is-danger" : ""}`}
+              {...inputProps}
+            />
+            {label}
+          </label>
+        )}
+      </div>
     </div>
   );
 };
