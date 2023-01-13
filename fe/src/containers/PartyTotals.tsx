@@ -2,6 +2,7 @@ import { FC } from "react";
 import { useFormContext } from "react-hook-form";
 import { Block } from "../components";
 import { FormSettings } from "../contexts/PartySettingsContext";
+import { PartyFormLayout } from "../layouts/partyFormLayout";
 import { PartyInterface } from "../types/party";
 
 export const PartyTotals: FC<{
@@ -17,16 +18,10 @@ export const PartyTotals: FC<{
 
   return (
     <Block>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `200px 60px 70px ${
-            partySettings.isDiscountVisible ? "60px " : ""
-          }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
-            party.users.length
-          }, 2rem)`,
-          gap: "16px",
-        }}
+      <PartyFormLayout
+        isDiscountVisible={partySettings.isDiscountVisible}
+        isEquallyVisible={partySettings.isEquallyVisible}
+        amountOfUsers={party.users.length}
       >
         <span className="is-size-6" />
         <span className="is-size-6" />
@@ -74,7 +69,7 @@ export const PartyTotals: FC<{
         ) : (
           <div />
         )}
-      </div>
+      </PartyFormLayout>
     </Block>
   );
 };

@@ -16,6 +16,8 @@ import { AddItemForm } from "../containers/AddItemForm";
 import { Loader } from "../components/Loader";
 import { PartySettings } from "../containers/PartySettings";
 import { PartySettingsProvider } from "../contexts/PartySettingsContext";
+import { UserPartyForm } from "../containers/UserPartyForm";
+import { MainFormView } from "../containers/MainFormView";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -25,6 +27,7 @@ export const Party = () => {
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
   const [party, setParty] = useState<PartyInterface | null>(null);
+
   const fetchParty = async (id: string) => {
     try {
       setIsLoading(true);
@@ -172,8 +175,15 @@ export const Party = () => {
           </div>
         </Columns>
         {party?.items?.length > 0 && <PartySettings />}
-        <PartyForm party={party} currentUser={currentUser} />
-        <PartyTotals party={party} currentUser={currentUser} />
+        <MainFormView
+          UserView={<UserPartyForm party={party} currentUser={currentUser} />}
+          PartyView={
+            <>
+              <PartyForm party={party} currentUser={currentUser} />
+              <PartyTotals party={party} currentUser={currentUser} />
+            </>
+          }
+        />
         <AddItemForm />
       </PartySettingsProvider>
     );

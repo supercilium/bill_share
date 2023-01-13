@@ -1,14 +1,15 @@
 import { FC, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
 import { socketClient } from "../__api__/socket";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { FormSettings } from "../contexts/PartySettingsContext";
+import { PartyFormLayout } from "../layouts/partyFormLayout";
+import { EmptyPartyLayout } from "../layouts/emptyParty";
 
 const schema = yup
   .object({
@@ -80,29 +81,21 @@ export const PartyForm: FC<{
   }, [party]);
 
   if (!party.items.length) {
-    return (
-      <p className="is-size-5 my-6 has-text-grey-light is-flex is-align-items-center">
-        Your table is empty... Start adding items{" "}
-        <span className="ml-1 icon has-text-grey-light">
-          <FontAwesomeIcon icon="beer-mug-empty" bounce={true} />
-        </span>
-      </p>
-    );
+    return <EmptyPartyLayout />;
   }
+
+  const partyLayoutProps: Omit<
+    React.ComponentProps<typeof PartyFormLayout>,
+    "children"
+  > = {
+    amountOfUsers: users.length,
+    isDiscountVisible: partySettings.isDiscountVisible,
+    isEquallyVisible: partySettings.isEquallyVisible,
+  };
 
   return (
     <Block title="Party form">
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `200px 60px 70px ${
-            partySettings.isDiscountVisible ? "60px " : ""
-          }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
-            users.length
-          }, 2rem)`,
-          gap: "16px",
-        }}
-      >
+      <PartyFormLayout {...partyLayoutProps}>
         <span className="is-size-6">Item name</span>
         <span className="is-size-6">Amount</span>
         <span className="is-size-6">Price</span>
@@ -128,22 +121,14 @@ export const PartyForm: FC<{
         ) : (
           <div />
         )}
-      </div>
+      </PartyFormLayout>
 
       <form>
         {party.items.map((itemProps, i) => {
           const { users: itemUsers, ...item } = itemProps;
           return (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: `200px 60px 70px ${
-                  partySettings.isDiscountVisible ? "60px " : ""
-                }${partySettings.isEquallyVisible ? "3rem " : ""}repeat(${
-                  users.length
-                }, 2rem)`,
-                gap: "16px",
-              }}
+            <PartyFormLayout
+              {...partyLayoutProps}
               className="my-3"
               key={item.id}
             >
@@ -200,8 +185,6 @@ export const PartyForm: FC<{
                     min: 0,
                     ...register(`items.${i}.price`),
                     onBlur: ({ target }) => {
-                      console.log(isValid);
-                      console.log(errors);
                       if (+target.value === item.price || !isValid) {
                         return new Promise(() => {});
                       }
@@ -262,7 +245,7 @@ export const PartyForm: FC<{
                   }
                 />
               ))}
-            </div>
+            </PartyFormLayout>
           );
         })}
       </form>
