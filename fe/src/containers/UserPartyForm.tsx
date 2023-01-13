@@ -26,8 +26,8 @@ const schema = yup
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
-  currentUser: { id: string; name: string };
-}> = ({ party, currentUser }) => {
+  userId: string;
+}> = ({ party, userId }) => {
   const { partyId } = useParams();
   const { register, reset, formState } = useForm<PartyInterface>({
     resolver: yupResolver(schema),
@@ -52,7 +52,7 @@ export const UserPartyForm: FC<{
   const restItems: Array<Item & { originalIndex: number }> = [];
 
   party.items.forEach((item, i) => {
-    const userIndex = item.users.findIndex(({ id }) => currentUser.id === id);
+    const userIndex = item.users.findIndex(({ id }) => userId === id);
     if (userIndex >= 0) {
       const participants = item.users.filter((user) => user.value > 0);
       userItems.push({
@@ -72,7 +72,7 @@ export const UserPartyForm: FC<{
     socketClient.socket.send(
       JSON.stringify({
         type: shouldAddUser ? "add user to item" : "remove user from item",
-        userId: currentUser.id,
+        userId,
         partyId,
         itemId: id,
         value: 0,
@@ -83,7 +83,7 @@ export const UserPartyForm: FC<{
     socketClient.socket.send(
       JSON.stringify({
         type: "update item",
-        userId: currentUser.id,
+        userId,
         partyId,
         ...data,
       })

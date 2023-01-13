@@ -2,12 +2,15 @@ import { FC, ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../contexts/PartySettingsContext";
 
-export const MainFormView: FC<{
-  UserView: ReactNode;
+interface Props {
+  UserView: FC<{ user?: string }>;
   PartyView: ReactNode;
-}> = ({ UserView, PartyView }) => {
+}
+
+export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
   const { watch } = useFormContext<FormSettings>();
 
   const view = watch("view", "user");
-  return <>{view === "user" ? UserView : PartyView}</>;
+  const user = watch("user", "");
+  return <>{view === "user" ? <UserView user={user} /> : PartyView}</>;
 };

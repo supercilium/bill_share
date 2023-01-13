@@ -36,7 +36,7 @@ export const PartyForm: FC<{
     mode: "all",
   });
   const { isValid, errors } = formState;
-  const { watch } = useFormContext<FormSettings>();
+  const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
 
   const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
@@ -109,11 +109,15 @@ export const PartyForm: FC<{
           users.map(({ id, name }) => (
             <span
               key={id}
-              className={`is-size-6${
+              className={`is-clickable is-size-6${
                 id === currentUser.id ? " has-text-info" : ""
               }`}
               style={{ transform: "rotate(-42deg)" }}
-              title={name}
+              title="Open detailed view"
+              onClick={() => {
+                setValue("user", id);
+                setValue("view", "user");
+              }}
             >
               {name}
             </span>
