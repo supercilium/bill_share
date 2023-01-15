@@ -18,6 +18,7 @@ import { PartySettings } from "../containers/PartySettings";
 import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
+import { sendEvent } from "../utils/eventHandlers";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -79,7 +80,7 @@ export const Party = () => {
     );
   }
 
-  if (!party) {
+  if (!party || !partyId) {
     return (
       <ErrorLayout
         title="Looks like there is no such party"
@@ -110,7 +111,7 @@ export const Party = () => {
   }
 
   const handleRemoveUser = (userId: string) => {
-    socket.send(JSON.stringify({ type: "remove user", userId, partyId }));
+    sendEvent({ type: "remove user", userId, partyId });
   };
 
   const renderMain = () => {

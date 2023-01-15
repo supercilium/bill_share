@@ -1,17 +1,9 @@
 import { Block, Field } from "../components";
 import { useForm } from "react-hook-form";
-import { socketClient } from "../__api__/socket";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-const schema = yup
-  .object({
-    item: yup.string().required(),
-    price: yup.number().min(0).integer().default(0).required(),
-    amount: yup.number().min(1).integer().required(),
-  })
-  .required();
+import { sendEvent } from "../utils/eventHandlers";
+import { addItemSchema } from "../utils/validation";
 
 interface ItemCreationInterface {
   item: string;
@@ -23,9 +15,8 @@ export const AddItemForm = () => {
   const { partyId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
-  const socket = socketClient.socket;
   const formHandlers = useForm<ItemCreationInterface>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(addItemSchema),
     defaultValues: {
       item: "",
       price: 0,
@@ -36,16 +27,14 @@ export const AddItemForm = () => {
   const { isValid, isDirty, errors } = formHandlers.formState;
 
   const handleAddItem = (data: ItemCreationInterface) => {
-    socket.send(
-      JSON.stringify({
-        type: "add item",
-        userId: currentUser.id,
-        partyId,
-        item: data.item,
-        price: data.price,
-        amount: data.amount,
-      })
-    );
+    sendEvent({
+      type: "add item",
+      userId: currentUser.id,
+      partyId: partyId as string,
+      itemId: data.item,
+      price: data.price,
+      amount: data.amount,
+    });
     formHandlers.reset();
   };
   return (

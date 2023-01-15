@@ -13,22 +13,20 @@ export interface ErrorRequest {
 
 export type FetchType = <JSON = unknown>(input: RequestInfo, init?: RequestInit) => Promise<JSON | ErrorRequest>
 
-// Helper to make GET requests to Strapi
 export const fetchAPI: FetchType = async (input, init) => {
   const requestInfo: RequestInfo = typeof input === 'string' ? getURL(input) : { ...input, url: getURL(input.url) };
+  const { headers, ...rest } = init || {};
   const response = await fetch(requestInfo, {
     headers: {
       "Content-Type": "application/json",
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-      ...init?.headers
+      ...(headers || {})
     },
-    ...init
+    ...(rest || {})
   });
   if (response.ok) {
     const data = await response.json();
     return data;
   } else {
-    console.log(response.status)
     const err = await response.json()
     return err as ErrorRequest;
   }

@@ -1,32 +1,25 @@
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Field } from "../components";
-import { socketClient } from "../__api__/socket";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-const schema = yup
-  .object({
-    user: yup.string().required(),
-  })
-  .required();
+import { sendEvent } from "../utils/eventHandlers";
+import { addUserSchema } from "../utils/validation";
 
 export const AddUserForm = () => {
-  const socket = socketClient.socket;
   const { partyId } = useParams();
 
-  const formHandlers = useForm<{ user: string }>({
-    resolver: yupResolver(schema),
+  const formHandlers = useForm<{ userName: string }>({
+    resolver: yupResolver(addUserSchema),
     defaultValues: {
-      user: "",
+      userName: "",
     },
     mode: "all",
   });
 
   const { isValid, isDirty, errors } = formHandlers.formState;
 
-  const handleAddUser = ({ user }: { user: string }) => {
-    socket.send(JSON.stringify({ type: "add user", user, partyId }));
+  const handleAddUser = ({ userName }: { userName: string }) => {
+    sendEvent({ type: "add user", userName, partyId: partyId as string });
     formHandlers.reset();
   };
 
@@ -42,12 +35,12 @@ export const AddUserForm = () => {
         onSubmit={formHandlers.handleSubmit(handleAddUser)}
       >
         <Field
-          error={errors.user}
+          error={errors.userName}
           label="User name"
           inputProps={{
             type: "text",
             placeholder: "Enter user name",
-            ...formHandlers.register("user", {
+            ...formHandlers.register("userName", {
               required: true,
             }),
           }}

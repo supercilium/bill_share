@@ -2,27 +2,14 @@ import { FC, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { Block, Field } from "../components";
 import { Item } from "../types/item";
 import { PartyInterface } from "../types/party";
-import { socketClient } from "../__api__/socket";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../layouts/partyFormLayout";
 import { EmptyPartyLayout } from "../layouts/emptyParty";
-
-const schema = yup
-  .object({
-    items: yup.array().of(
-      yup.object().shape({
-        name: yup.string().required(),
-        price: yup.number().min(0).integer().default(0).required(),
-        amount: yup.number().min(1).integer().required(),
-        discount: yup.number().min(0).max(1).default(0),
-      })
-    ),
-  })
-  .required();
+import { sendEvent } from "../utils/eventHandlers";
+import { itemsSchema } from "../utils/validation";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -31,7 +18,7 @@ export const PartyForm: FC<{
   const { users } = party;
   const { partyId } = useParams();
   const { register, reset, formState } = useForm<PartyInterface>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(itemsSchema),
     defaultValues: party,
     mode: "all",
   });
@@ -39,51 +26,46 @@ export const PartyForm: FC<{
   const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
 
-  const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
-    socketClient.socket.send(
-      JSON.stringify({
-        type: "update item",
-        userId: currentUser.id,
-        partyId,
-        ...data,
-      })
-    );
+  useEffect(() => {
+    reset(party);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [party]);
+
+  if (!party.items.length || !partyId) {
+    return <EmptyPartyLayout />;
+  }
+  const handleChangeItem = async ({
+    id,
+    ...data
+  }: Partial<Omit<Item, "users">>) => {
+    sendEvent({
+      type: "update item",
+      userId: currentUser.id,
+      partyId,
+      itemId: id as string,
+      ...data,
+    });
   };
   const handleChangeUserInItem = async (
     shouldAddUser: boolean,
     userId: string,
     itemId: string
   ) => {
-    socketClient.socket.send(
-      JSON.stringify({
-        type: shouldAddUser ? "add user to item" : "remove user from item",
-        userId,
-        partyId,
-        itemId,
-        value: 1,
-      })
-    );
+    sendEvent({
+      type: shouldAddUser ? "add user item" : "remove user item",
+      userId,
+      partyId,
+      itemId,
+    });
   };
   const handleRemoveItem = (id: string) => {
-    socketClient.socket.send(
-      JSON.stringify({
-        type: "remove item",
-        userId: currentUser.id,
-        partyId,
-        itemId: id,
-      })
-    );
+    sendEvent({
+      type: "remove item",
+      userId: currentUser.id,
+      partyId,
+      itemId: id,
+    });
   };
-
-  useEffect(() => {
-    reset(party);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [party]);
-
-  if (!party.items.length) {
-    return <EmptyPartyLayout />;
-  }
-
   const partyLayoutProps: Omit<
     React.ComponentProps<typeof PartyFormLayout>,
     "children"

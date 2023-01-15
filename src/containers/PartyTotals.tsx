@@ -4,6 +4,11 @@ import { Block } from "../components";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../layouts/partyFormLayout";
 import { PartyInterface } from "../types/party";
+import {
+  getPartyTotal,
+  getPartyUserTotal,
+  getTotalDiscount,
+} from "../utils/calculation";
 
 export const PartyTotals: FC<{
   party: PartyInterface;
@@ -25,19 +30,9 @@ export const PartyTotals: FC<{
       >
         <span className="is-size-6" />
         <span className="is-size-6" />
-        <span className="is-size-6">
-          {party.items.reduce(
-            (acc, item) => acc + item.price - item.price * (item.discount || 0),
-            0
-          )}
-        </span>
+        <span className="is-size-6">{getPartyTotal(party.items)}</span>
         {partySettings.isDiscountVisible && (
-          <span className="is-size-6">
-            {party.items.reduce(
-              (acc, item) => acc + item.price * (item.discount || 0),
-              0
-            )}
-          </span>
+          <span className="is-size-6">{getTotalDiscount(party.items)}</span>
         )}
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
@@ -49,21 +44,7 @@ export const PartyTotals: FC<{
                 id === currentUser.id ? " has-text-info" : ""
               }`}
             >
-              {party.items
-                .reduce((acc, item) => {
-                  const participants = item.users.filter(
-                    (user) => user.value > 0
-                  );
-                  if (participants.some((user) => user.id === id)) {
-                    return (
-                      acc +
-                      (item.price - item.price * (item.discount || 0)) /
-                        participants.length
-                    );
-                  }
-                  return acc;
-                }, 0)
-                .toFixed(2)}
+              {getPartyUserTotal(party.items, id)}
             </span>
           ))
         ) : (

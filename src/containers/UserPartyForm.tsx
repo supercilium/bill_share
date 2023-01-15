@@ -1,28 +1,16 @@
 import { FC, useEffect } from "react";
-import * as yup from "yup";
 import { useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Block, Columns, Field } from "../components";
 import { PartyInterface } from "../types/party";
-import { socketClient } from "../__api__/socket";
 import { useParams } from "react-router";
 import { Item } from "../types/item";
 import { UserFormLayout } from "../layouts/userFormLayout";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { EmptyPartyLayout } from "../layouts/emptyParty";
-
-const schema = yup
-  .object({
-    items: yup.array().of(
-      yup.object().shape({
-        name: yup.string().required(),
-        price: yup.number().min(0).integer().default(0).required(),
-        amount: yup.number().min(1).integer().required(),
-        discount: yup.number().min(0).max(1).default(0),
-      })
-    ),
-  })
-  .required();
+import { splitItems } from "../utils/calculation";
+import { sendEvent } from "../utils/eventHandlers";
+import { itemsSchema } from "../utils/validation";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -30,7 +18,7 @@ export const UserPartyForm: FC<{
 }> = ({ party, userId }) => {
   const { partyId } = useParams();
   const { register, reset, formState } = useForm<PartyInterface>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(itemsSchema),
     defaultValues: party,
     mode: "all",
   });
@@ -43,51 +31,28 @@ export const UserPartyForm: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 
-  if (!party.items?.length) {
+  if (!party.items?.length || !partyId) {
     return <EmptyPartyLayout />;
   }
-  const userItems: Array<
-    Item & { originalIndex: number; originalUserIndex: number; total: number }
-  > = [];
-  const restItems: Array<Item & { originalIndex: number }> = [];
-
-  party.items.forEach((item, i) => {
-    const userIndex = item.users.findIndex(({ id }) => userId === id);
-    if (userIndex >= 0) {
-      const participants = item.users.filter((user) => user.value > 0);
-      userItems.push({
-        ...item,
-        originalIndex: i,
-        originalUserIndex: userIndex,
-        total:
-          (item.price - item.price * (item.discount || 0)) /
-          participants.length,
-      });
-    } else {
-      restItems.push({ ...item, originalIndex: i });
-    }
-  });
+  const [userItems, restItems] = splitItems(party.items, userId);
 
   const handleChangeUserInItem = (id: string, shouldAddUser: boolean) => {
-    socketClient.socket.send(
-      JSON.stringify({
-        type: shouldAddUser ? "add user to item" : "remove user from item",
-        userId,
-        partyId,
-        itemId: id,
-        value: 0,
-      })
-    );
+    sendEvent({
+      type: shouldAddUser ? "add user item" : "remove user item",
+      userId,
+      partyId,
+      itemId: id,
+    });
   };
-  const handleChangeItem = async (data: Partial<Omit<Item, "users">>) => {
-    socketClient.socket.send(
-      JSON.stringify({
-        type: "update item",
-        userId,
-        partyId,
-        ...data,
-      })
-    );
+  const handleChangeItem = async (
+    data: Partial<Omit<Item, "id" | "users">> & { itemId: string }
+  ) => {
+    sendEvent({
+      type: "update item",
+      userId,
+      partyId,
+      ...data,
+    });
   };
 
   return (
@@ -133,7 +98,7 @@ export const UserPartyForm: FC<{
                               return new Promise(() => {});
                             }
                             return handleChangeItem({
-                              id: item.id,
+                              itemId: item.id,
                               name: target.value,
                             });
                           },
@@ -180,7 +145,7 @@ export const UserPartyForm: FC<{
                             }
 
                             return handleChangeItem({
-                              id: item.id,
+                              itemId: item.id,
                               price: +target.value,
                             });
                           },
@@ -203,7 +168,7 @@ export const UserPartyForm: FC<{
                               }
 
                               return handleChangeItem({
-                                id: item.id,
+                                itemId: item.id,
                                 discount: +target.value,
                               });
                             },
@@ -223,7 +188,7 @@ export const UserPartyForm: FC<{
                         ...register(`items.${item.originalIndex}.equally`),
                         onChange: ({ target }) =>
                           handleChangeItem({
-                            id: item.id,
+                            itemId: item.id,
                             equally: target.checked,
                           }),
                       }}
