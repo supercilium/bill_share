@@ -5,11 +5,7 @@ import { PlainLayout } from "../layouts/plain";
 import { createParty } from "../__api__/party";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
-interface CreatePartyInterface {
-  partyName: string;
-  userName: string;
-}
+import { CreatePartyInterface } from "../types/party";
 
 const schema = yup
   .object({

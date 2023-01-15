@@ -27,6 +27,7 @@ export const PartyTotals: FC<{
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={party.users.length}
+        isEqually={!party.items.some(({ equally }) => !equally)}
       >
         <span className="is-size-6" />
         <span className="is-size-6" />

@@ -66,6 +66,18 @@ export const PartyForm: FC<{
       itemId: id,
     });
   };
+  const handleUpdateUserItem = async (data: {
+    itemId: string;
+    value: number;
+    userId: string;
+  }) => {
+    sendEvent({
+      type: "update user item",
+      partyId,
+      ...data,
+    });
+  };
+
   const partyLayoutProps: Omit<
     React.ComponentProps<typeof PartyFormLayout>,
     "children"
@@ -73,6 +85,7 @@ export const PartyForm: FC<{
     amountOfUsers: users.length,
     isDiscountVisible: partySettings.isDiscountVisible,
     isEquallyVisible: partySettings.isEquallyVisible,
+    isEqually: !party.items.some(({ equally }) => !equally),
   };
 
   return (
@@ -220,17 +233,48 @@ export const PartyForm: FC<{
                   }
                 />
               )}
-              {users.map(({ id }) => (
-                <input
-                  key={id}
-                  type="checkbox"
-                  className="is-size-4 checkbox"
-                  checked={!!itemUsers?.find((user) => user.id === id)}
-                  onChange={({ target }) =>
-                    handleChangeUserInItem(target.checked, id, item.id)
-                  }
-                />
-              ))}
+              {users.map(({ id }) => {
+                if (item.equally) {
+                  return (
+                    <input
+                      key={id}
+                      type="checkbox"
+                      className="is-size-4 checkbox"
+                      checked={!!itemUsers?.find((user) => user.id === id)}
+                      onChange={({ target }) =>
+                        handleChangeUserInItem(target.checked, id, item.id)
+                      }
+                    />
+                  );
+                }
+                const userIndex = itemUsers.findIndex((user) => user.id === id);
+
+                return (
+                  <Field
+                    key={id}
+                    // error={errors.items?.[i]?.users?[userIndex].value}
+                    inputProps={{
+                      type: "number",
+                      min: 1,
+                      ...register(`items.${i}.users.${userIndex}.value`),
+                      onBlur: ({ target }) => {
+                        if (
+                          +target.value === itemUsers[userIndex]?.value ||
+                          !isValid
+                        ) {
+                          return new Promise(() => {});
+                        }
+
+                        return handleUpdateUserItem({
+                          itemId: item.id,
+                          value: +target.value,
+                          userId: id,
+                        });
+                      },
+                    }}
+                  />
+                );
+              })}
             </PartyFormLayout>
           );
         })}

@@ -54,6 +54,17 @@ export const UserPartyForm: FC<{
       ...data,
     });
   };
+  const handleUpdateUserItem = async (data: {
+    itemId: string;
+    value: number;
+  }) => {
+    sendEvent({
+      type: "update user item",
+      userId,
+      partyId,
+      ...data,
+    });
+  };
 
   return (
     <Block title="Your score in party">
@@ -114,17 +125,20 @@ export const UserPartyForm: FC<{
                             ...register(
                               `items.${item.originalIndex}.users.${item.originalUserIndex}.value`
                             ),
-                            //   TODO: update user's value
-                            //   onBlur: ({ target }) => {
-                            //     if (+target.value === item.amount || !isValid) {
-                            //       return new Promise(() => {});
-                            //     }
+                            onBlur: ({ target }) => {
+                              if (
+                                +target.value ===
+                                  item.users[item.originalUserIndex].value ||
+                                !isValid
+                              ) {
+                                return new Promise(() => {});
+                              }
 
-                            //     return handleChangeItem({
-                            //       id: item.id,
-                            //       amount: +target.value,
-                            //     });
-                            //   },
+                              return handleUpdateUserItem({
+                                itemId: item.id,
+                                value: +target.value,
+                              });
+                            },
                           }}
                         />
                       ) : (

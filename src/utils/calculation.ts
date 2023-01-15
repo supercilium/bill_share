@@ -2,9 +2,9 @@ import { Item } from "../types/item";
 
 export const getItemParticipants = (item: Item) => item.users.filter((user) => user.value > 0);
 
-export const getItemTotal = (item: Item) => (item.price - item.price * (item.discount || 0));
+export const getItemTotal = (item: Item, amount: number) => (item.price - item.price * (item.discount || 0)) * amount;
 
-export const getPartyTotal = (items: Item[]) => items.reduce((acc, item) => acc + getItemTotal(item), 0)
+export const getPartyTotal = (items: Item[]) => items.reduce((acc, item) => acc + getItemTotal(item, item.amount), 0)
 
 export const getTotalDiscount = (items: Item[]) => items.reduce(
     (acc, item) => acc + item.price * (item.discount || 0),
@@ -14,8 +14,9 @@ export const getTotalDiscount = (items: Item[]) => items.reduce(
 export const getPartyUserTotal = (items: Item[], id: string) => items
     .reduce((acc, item) => {
         const participants = getItemParticipants(item);
-        if (participants.some((user) => user.id === id)) {
-            return acc + getItemTotal(item) / participants.length;
+        const userIndex = participants.findIndex((user) => user.id === id);
+        if (userIndex >= 0) {
+            return acc + (item.equally ? getItemTotal(item, item.amount) / participants.length : getItemTotal(item, item.users[userIndex].value));
         }
         return acc;
     }, 0)
@@ -37,7 +38,7 @@ export const splitItems = (items: Item[], userId: string): [Array<
                 ...item,
                 originalIndex: i,
                 originalUserIndex: userIndex,
-                total: getItemTotal(item) / participants.length,
+                total: item.equally ? getItemTotal(item, item.amount) / participants.length : getItemTotal(item, item.users[userIndex].value),
             });
         } else {
             restItems.push({ ...item, originalIndex: i });

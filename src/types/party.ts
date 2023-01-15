@@ -8,3 +8,8 @@ export interface PartyInterface {
   users: Array<User>;
   items: Array<Item>;
 }
+
+export interface CreatePartyInterface {
+  partyName: string;
+  userName: string;
+}

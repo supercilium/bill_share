@@ -10,7 +10,7 @@ export const JoinPartyForm: FC<{
 
   const [userName, setUserName] = useState<string | undefined>();
   const handleCreateUser = async () => {
-    const response = await createUser({ userName, partyId });
+    const response = await createUser({ userName, partyId: partyId as string });
 
     if ("error" in response) {
       console.log(response.error);

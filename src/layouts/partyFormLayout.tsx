@@ -6,8 +6,15 @@ export const PartyFormLayout: FC<
     amountOfUsers: number;
     isDiscountVisible: boolean;
     isEquallyVisible: boolean;
+    isEqually: boolean;
   } & React.AllHTMLAttributes<HTMLAttributes<HTMLDivElement>>
-> = ({ children, amountOfUsers, isDiscountVisible, isEquallyVisible }) => {
+> = ({
+  children,
+  amountOfUsers,
+  isDiscountVisible,
+  isEquallyVisible,
+  isEqually,
+}) => {
   return (
     <div
       className="my-3"
@@ -15,7 +22,9 @@ export const PartyFormLayout: FC<
         display: "grid",
         gridTemplateColumns: `200px 60px 70px ${
           isDiscountVisible ? "60px " : ""
-        }${isEquallyVisible ? "3rem " : ""}repeat(${amountOfUsers}, 2rem)`,
+        }${isEquallyVisible ? "3rem " : ""}repeat(${amountOfUsers}, ${
+          isEqually ? "2rem" : "60px"
+        })`,
         gap: "16px",
       }}
     >
