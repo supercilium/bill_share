@@ -1,1 +1,0 @@
-export { partyRouter } from './party';

@@ -1,0 +1,35 @@
+{
+    "owner": {
+        "name": "user",
+        "id": "4977e816-71fe-46dc-a772-6665aa9ce88f"
+    },
+    "name": "колбасов",
+    "id": "c607504e-25af-4f62-87dd-88bba64878b2",
+    "type": "add item",
+    "items": [
+        {
+            "name": "item",
+            "id": "eb2a3abc-e0a6-41c1-8d06-ed44d3f5f33a",
+            "price": 100,
+            "amount": 3,
+            "equally": true,
+            "discount": 0.1,
+            "users": [
+                {
+                    "id": "c7dd71eb-44f7-4463-9416-5d4482e8be3a",
+                    "value": 3
+                }
+            ]
+        }
+    ],
+    "users": [
+        {
+            "name": "Popoeshnick",
+            "id": "c7dd71eb-44f7-4463-9416-5d4482e8be3a"
+        },
+        {
+            "name": "user",
+            "id": "4977e816-71fe-46dc-a772-6665aa9ce88f"
+        }
+    ]
+}
