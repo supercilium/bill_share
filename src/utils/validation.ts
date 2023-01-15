@@ -16,7 +16,7 @@ export const addUserSchema = object({
 }).required();
 
 export const addItemSchema = object({
-    item: string().required(),
+    name: string().required(),
     price: number().min(0).integer().default(0).required(),
     amount: number().min(1).integer().required(),
 }).required();

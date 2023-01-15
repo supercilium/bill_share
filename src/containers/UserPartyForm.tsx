@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Block, Columns, Field } from "../components";
@@ -75,9 +75,8 @@ export const UserPartyForm: FC<{
 
             {userItems.map((item, i) => {
               return (
-                <>
+                <React.Fragment key={item.id}>
                   <UserFormLayout
-                    key={item.id}
                     isDiscountVisible={partySettings.isDiscountVisible}
                     isEquallyVisible={partySettings.isEquallyVisible}
                   >
@@ -194,7 +193,7 @@ export const UserPartyForm: FC<{
                       }}
                     />
                   )}
-                </>
+                </React.Fragment>
               );
             })}
             <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">

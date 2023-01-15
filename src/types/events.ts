@@ -17,7 +17,7 @@ export interface UserEventData {
 export interface ItemEventData extends Partial<Omit<Item, 'id' | 'users'>> {
     userId: string;
     partyId: string;
-    itemId: string;
+    itemId?: string;
 }
 
 export interface ItemUserEventData {

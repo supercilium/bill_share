@@ -4,26 +4,31 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { sendEvent } from "../utils/eventHandlers";
 import { addItemSchema } from "../utils/validation";
+import { useState } from "react";
 
 interface ItemCreationInterface {
-  item: string;
+  name: string;
   price: number;
   amount: number;
 }
 
+type PriceType = "per item" | "full";
+
 export const AddItemForm = () => {
   const { partyId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const [priceType, setPriceType] = useState<PriceType>("full");
 
   const formHandlers = useForm<ItemCreationInterface>({
     resolver: yupResolver(addItemSchema),
     defaultValues: {
-      item: "",
+      name: "",
       price: 0,
       amount: 1,
     },
     mode: "all",
   });
+
   const { isValid, isDirty, errors } = formHandlers.formState;
 
   const handleAddItem = (data: ItemCreationInterface) => {
@@ -31,12 +36,12 @@ export const AddItemForm = () => {
       type: "add item",
       userId: currentUser.id,
       partyId: partyId as string,
-      itemId: data.item,
-      price: data.price,
-      amount: data.amount,
+      ...data,
+      price: priceType === "full" ? data.price / data.amount : data.price,
     });
     formHandlers.reset();
   };
+
   return (
     <Block title="Add new item to share">
       <form
@@ -50,11 +55,12 @@ export const AddItemForm = () => {
       >
         <Field
           label="Item name"
-          error={errors.item}
+          error={errors.name}
           inputProps={{
             type: "text",
             placeholder: "Enter item name",
-            ...formHandlers.register("item"),
+            autoComplete: "off",
+            ...formHandlers.register("name"),
           }}
         />
         <Field
@@ -83,6 +89,37 @@ export const AddItemForm = () => {
           Add item
         </button>
       </form>
+      <div>
+        <div className="field">
+          <div className="control">
+            <label className={`radio mr-5`}>
+              <input
+                type="radio"
+                value="full"
+                className="radio mr-2"
+                checked={priceType === "full"}
+                onChange={({ target }) =>
+                  setPriceType(target.value as PriceType)
+                }
+              />
+              Enter full price
+            </label>
+
+            <label className={`radio`}>
+              <input
+                type="radio"
+                value="per item"
+                className="radio mr-2"
+                checked={priceType === "per item"}
+                onChange={({ target }) =>
+                  setPriceType(target.value as PriceType)
+                }
+              />
+              Enter price per item
+            </label>
+          </div>
+        </div>
+      </div>
     </Block>
   );
 };
