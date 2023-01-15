@@ -251,6 +251,7 @@ export const UserPartyForm: FC<{
                 </UserFormLayout>
                 {restItems.map((item) => (
                   <div
+                    key={item.id}
                     className="is-clickable"
                     onClick={() => handleChangeUserInItem(item.id, true)}
                     title="Add to my bill"
