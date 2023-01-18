@@ -1,6 +1,6 @@
 import { Item } from "../types/item";
 
-export const getItemParticipants = (item: Item) => item.equally ? item.users : item.users.filter((user) => user.value > 0);
+export const getItemParticipants = (item: Item) => item.equally ? item.users.filter((user) => user.value >= 0) : item.users.filter((user) => user.value > 0);
 
 export const getItemTotal = (item: Item, amount: number) => (item.price - item.price * (item.discount || 0)) * (amount || 0);
 
@@ -31,7 +31,7 @@ export const splitItems = (items: Item[], userId: string): [Array<
     const restItems: Array<Item & { originalIndex: number }> = [];
 
     items.forEach((item, i) => {
-        const userIndex = item.users.findIndex(({ id }) => userId === id);
+        const userIndex = item.users.findIndex(({ id, value }) => userId === id);
         if (userIndex >= 0) {
             const participants = getItemParticipants(item);
             userItems.push({

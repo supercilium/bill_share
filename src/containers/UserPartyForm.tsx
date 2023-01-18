@@ -125,7 +125,7 @@ export const UserPartyForm: FC<{
                               error={errors.items?.[i]?.amount}
                               inputProps={{
                                 type: "number",
-                                min: 1,
+                                min: 0,
                                 ...register(
                                   `items.${item.originalIndex}.users.${item.originalUserIndex}.value`
                                 ),
