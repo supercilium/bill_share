@@ -255,7 +255,7 @@ export const PartyForm: FC<{
                     // error={errors.items?.[i]?.users?[userIndex].value}
                     inputProps={{
                       type: "number",
-                      min: 1,
+                      min: 0,
                       ...register(`items.${i}.users.${userIndex}.value`),
                       onBlur: ({ target }) => {
                         if (

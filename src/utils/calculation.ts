@@ -1,8 +1,8 @@
 import { Item } from "../types/item";
 
-export const getItemParticipants = (item: Item) => item.users.filter((user) => user.value > 0);
+export const getItemParticipants = (item: Item) => item.equally ? item.users : item.users.filter((user) => user.value > 0);
 
-export const getItemTotal = (item: Item, amount: number) => (item.price - item.price * (item.discount || 0)) * amount;
+export const getItemTotal = (item: Item, amount: number) => (item.price - item.price * (item.discount || 0)) * (amount || 0);
 
 export const getPartyTotal = (items: Item[]) => items.reduce((acc, item) => acc + getItemTotal(item, item.amount), 0)
 

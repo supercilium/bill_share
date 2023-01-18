@@ -71,149 +71,165 @@ export const UserPartyForm: FC<{
       <form>
         <Columns>
           <div className="box mt-4">
-            <p className="is-size-4">In your bill</p>
-            <UserFormLayout
-              isDiscountVisible={partySettings.isDiscountVisible}
-              isEquallyVisible={partySettings.isEquallyVisible}
-            >
-              <span className="is-size-6">Item name</span>
-              <span className="is-size-6">Amount</span>
-              <span className="is-size-6">Price</span>
-              {partySettings.isDiscountVisible && (
-                <span className="is-size-6">Discount</span>
-              )}
-            </UserFormLayout>
-
-            {userItems.map((item, i) => {
-              return (
-                <React.Fragment key={item.id}>
-                  <UserFormLayout
-                    isDiscountVisible={partySettings.isDiscountVisible}
-                    isEquallyVisible={partySettings.isEquallyVisible}
-                  >
-                    <span className="is-size-4 is-flex is-align-items-center">
-                      <button
-                        type="button"
-                        className="delete mr-2"
-                        title="Remove item from my bill"
-                        onClick={() => handleChangeUserInItem(item.id, false)}
-                      />
-                      <Field
-                        error={errors.items?.[i]?.name}
-                        inputProps={{
-                          type: "text",
-                          ...register(`items.${item.originalIndex}.name`),
-                          onBlur: ({ target }) => {
-                            if (target.value === item.name || !isValid) {
-                              return new Promise(() => {});
-                            }
-                            return handleChangeItem({
-                              itemId: item.id,
-                              name: target.value,
-                            });
-                          },
-                        }}
-                      />
-                    </span>
-                    <span className="is-size-4">
-                      {!item.equally ? (
-                        <Field
-                          error={errors.items?.[i]?.amount}
-                          inputProps={{
-                            type: "number",
-                            min: 1,
-                            ...register(
-                              `items.${item.originalIndex}.users.${item.originalUserIndex}.value`
-                            ),
-                            onBlur: ({ target }) => {
-                              if (
-                                +target.value ===
-                                  item.users[item.originalUserIndex].value ||
-                                !isValid
-                              ) {
-                                return new Promise(() => {});
-                              }
-
-                              return handleUpdateUserItem({
-                                itemId: item.id,
-                                value: +target.value,
-                              });
-                            },
-                          }}
-                        />
-                      ) : (
-                        <span className="has-text-grey-light">-</span>
-                      )}
-                    </span>
-                    <span className="is-size-4">
-                      <Field
-                        error={errors.items?.[i]?.price}
-                        inputProps={{
-                          type: "number",
-                          min: 0,
-                          ...register(`items.${item.originalIndex}.price`),
-                          onBlur: ({ target }) => {
-                            if (+target.value === item.price || !isValid) {
-                              return new Promise(() => {});
-                            }
-
-                            return handleChangeItem({
-                              itemId: item.id,
-                              price: +target.value,
-                            });
-                          },
-                        }}
-                      />
-                    </span>
-                    {partySettings.isDiscountVisible && (
-                      <span className="is-size-4">
-                        <Field
-                          error={errors.items?.[i]?.discount}
-                          inputProps={{
-                            type: "number",
-                            step: 0.1,
-                            min: 0,
-                            max: 1,
-                            ...register(`items.${item.originalIndex}.discount`),
-                            onBlur: ({ target }) => {
-                              if (+target.value === item.discount || !isValid) {
-                                return new Promise(() => {});
-                              }
-
-                              return handleChangeItem({
-                                itemId: item.id,
-                                discount: +target.value,
-                              });
-                            },
-                          }}
-                        />
-                      </span>
-                    )}
-                    <span className="is-size-5 has-text-primary-dark">
-                      {item.total.toFixed(2)}
-                    </span>
-                  </UserFormLayout>
-                  {partySettings.isEquallyVisible && (
-                    <Field
-                      label=" Calculate item equally"
-                      inputProps={{
-                        type: "checkbox",
-                        ...register(`items.${item.originalIndex}.equally`),
-                        onChange: ({ target }) =>
-                          handleChangeItem({
-                            itemId: item.id,
-                            equally: target.checked,
-                          }),
-                      }}
-                    />
+            {userItems.length ? (
+              <>
+                <p className="is-size-4">In your bill</p>
+                <UserFormLayout
+                  isDiscountVisible={partySettings.isDiscountVisible}
+                  isEquallyVisible={partySettings.isEquallyVisible}
+                >
+                  <span className="is-size-6">Item name</span>
+                  <span className="is-size-6">Amount</span>
+                  <span className="is-size-6">Price</span>
+                  {partySettings.isDiscountVisible && (
+                    <span className="is-size-6">Discount</span>
                   )}
-                </React.Fragment>
-              );
-            })}
-            <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
-              Total:{" "}
-              {userItems.reduce((acc, item) => acc + item.total, 0).toFixed(2)}
-            </p>
+                </UserFormLayout>
+
+                {userItems.map((item, i) => {
+                  return (
+                    <React.Fragment key={item.id}>
+                      <UserFormLayout
+                        isDiscountVisible={partySettings.isDiscountVisible}
+                        isEquallyVisible={partySettings.isEquallyVisible}
+                      >
+                        <span className="is-size-4 is-flex is-align-items-center">
+                          <button
+                            type="button"
+                            className="delete mr-2"
+                            title="Remove item from my bill"
+                            onClick={() =>
+                              handleChangeUserInItem(item.id, false)
+                            }
+                          />
+                          <Field
+                            error={errors.items?.[i]?.name}
+                            inputProps={{
+                              type: "text",
+                              ...register(`items.${item.originalIndex}.name`),
+                              onBlur: ({ target }) => {
+                                if (target.value === item.name || !isValid) {
+                                  return new Promise(() => {});
+                                }
+                                return handleChangeItem({
+                                  itemId: item.id,
+                                  name: target.value,
+                                });
+                              },
+                            }}
+                          />
+                        </span>
+                        <span className="is-size-4">
+                          {!item.equally ? (
+                            <Field
+                              error={errors.items?.[i]?.amount}
+                              inputProps={{
+                                type: "number",
+                                min: 1,
+                                ...register(
+                                  `items.${item.originalIndex}.users.${item.originalUserIndex}.value`
+                                ),
+                                onBlur: ({ target }) => {
+                                  if (
+                                    +target.value ===
+                                      item.users[item.originalUserIndex]
+                                        .value ||
+                                    !isValid
+                                  ) {
+                                    return new Promise(() => {});
+                                  }
+
+                                  return handleUpdateUserItem({
+                                    itemId: item.id,
+                                    value: +target.value,
+                                  });
+                                },
+                              }}
+                            />
+                          ) : (
+                            <span className="has-text-grey-light">-</span>
+                          )}
+                        </span>
+                        <span className="is-size-4">
+                          <Field
+                            error={errors.items?.[i]?.price}
+                            inputProps={{
+                              type: "number",
+                              min: 0,
+                              ...register(`items.${item.originalIndex}.price`),
+                              onBlur: ({ target }) => {
+                                if (+target.value === item.price || !isValid) {
+                                  return new Promise(() => {});
+                                }
+
+                                return handleChangeItem({
+                                  itemId: item.id,
+                                  price: +target.value,
+                                });
+                              },
+                            }}
+                          />
+                        </span>
+                        {partySettings.isDiscountVisible && (
+                          <span className="is-size-4">
+                            <Field
+                              error={errors.items?.[i]?.discount}
+                              inputProps={{
+                                type: "number",
+                                step: 0.1,
+                                min: 0,
+                                max: 1,
+                                ...register(
+                                  `items.${item.originalIndex}.discount`
+                                ),
+                                onBlur: ({ target }) => {
+                                  if (
+                                    +target.value === item.discount ||
+                                    !isValid
+                                  ) {
+                                    return new Promise(() => {});
+                                  }
+
+                                  return handleChangeItem({
+                                    itemId: item.id,
+                                    discount: +target.value,
+                                  });
+                                },
+                              }}
+                            />
+                          </span>
+                        )}
+                        <span className="is-size-5 has-text-primary-dark">
+                          {item.total.toFixed(2)}
+                        </span>
+                      </UserFormLayout>
+                      {partySettings.isEquallyVisible && (
+                        <Field
+                          label=" Calculate item equally"
+                          inputProps={{
+                            type: "checkbox",
+                            ...register(`items.${item.originalIndex}.equally`),
+                            onChange: ({ target }) =>
+                              handleChangeItem({
+                                itemId: item.id,
+                                equally: target.checked,
+                              }),
+                          }}
+                        />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
+                  Total:{" "}
+                  {userItems
+                    .reduce((acc, item) => acc + item.total, 0)
+                    .toFixed(2)}
+                </p>
+              </>
+            ) : (
+              <EmptyPartyLayout />
+            )}
           </div>
           <div className="mt-4">
             {restItems.length > 0 && (
