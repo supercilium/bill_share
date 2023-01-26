@@ -197,8 +197,8 @@ export const Party = () => {
       Header={
         <Header>
           <h2 className="title is-2 my-5">
-            {currentUser.name ? `Hello, currentUser.name` : "Hello"}! Welcome to{" "}
-            {party?.name}
+            {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}! Welcome
+            to {party?.name}
           </h2>
         </Header>
       }
