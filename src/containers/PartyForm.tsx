@@ -89,7 +89,7 @@ export const PartyForm: FC<{
   };
 
   return (
-    <Block title="Party form">
+    <Block title="Full bill">
       <PartyFormLayout {...partyLayoutProps}>
         <span className="is-size-6">Item name</span>
         <span className="is-size-6">Amount</span>
@@ -101,20 +101,20 @@ export const PartyForm: FC<{
           <span className="is-size-6">Equally</span>
         )}
         {users?.length > 0 ? (
-          users.map(({ id, name }) => (
+          users.map((user) => (
             <span
-              key={id}
+              key={user.id}
               className={`is-clickable is-size-6${
-                id === currentUser.id ? " has-text-info" : ""
+                user.id === currentUser.id ? " has-text-info" : ""
               }`}
               style={{ transform: "rotate(-42deg)" }}
               title="Open detailed view"
               onClick={() => {
-                setValue("user", id);
+                setValue("user", user);
                 setValue("view", "user");
               }}
             >
-              {name}
+              {user.name}
             </span>
           ))
         ) : (
@@ -255,6 +255,7 @@ export const PartyForm: FC<{
                     // error={errors.items?.[i]?.users?[userIndex].value}
                     inputProps={{
                       type: "number",
+                      placeholder: "0",
                       min: 0,
                       ...register(`items.${i}.users.${userIndex}.value`),
                       onBlur: ({ target }) => {

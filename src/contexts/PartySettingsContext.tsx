@@ -1,11 +1,12 @@
 import React, { FC, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { User } from "../types/user";
 
 export interface FormSettings {
   isEquallyVisible: boolean;
   isDiscountVisible: boolean;
   view: "party" | "user";
-  user?: string;
+  user?: User;
 }
 
 export const PartySettingsProvider: FC<{

@@ -11,11 +11,12 @@ import { EmptyPartyLayout } from "../layouts/emptyParty";
 import { splitItems } from "../utils/calculation";
 import { sendEvent } from "../utils/eventHandlers";
 import { itemsSchema } from "../utils/validation";
+import { User } from "../types/user";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
-  userId: string;
-}> = ({ party, userId }) => {
+  user: User;
+}> = ({ party, user }) => {
   const { partyId } = useParams();
   const { register, reset, formState } = useForm<PartyInterface>({
     resolver: yupResolver(itemsSchema),
@@ -23,7 +24,7 @@ export const UserPartyForm: FC<{
     mode: "all",
   });
   const { isValid, errors } = formState;
-  const { watch } = useFormContext<FormSettings>();
+  const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export const UserPartyForm: FC<{
   if (!party.items?.length || !partyId) {
     return <EmptyPartyLayout />;
   }
+  const userId = user.id;
   const [userItems, restItems] = splitItems(party.items, userId);
 
   const handleChangeUserInItem = (id: string, shouldAddUser: boolean) => {
@@ -65,9 +67,30 @@ export const UserPartyForm: FC<{
       ...data,
     });
   };
+  const header = (
+    <Columns>
+      <div className="tabs">
+        <ul>
+          {party.users.map((one) => (
+            <li className={one.id === user.id ? "is-active" : ""} key={one.id}>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                onClick={() => {
+                  setValue("user", one);
+                }}
+              >
+                {one.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div />
+    </Columns>
+  );
 
   return (
-    <Block title="Your score in party">
+    <Block title={header}>
       <form>
         <Columns>
           <div className="box mt-4">

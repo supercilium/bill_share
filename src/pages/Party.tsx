@@ -178,7 +178,7 @@ export const Party = () => {
         {party?.items?.length > 0 && <PartySettings />}
         <MainFormView
           UserView={({ user }) => (
-            <UserPartyForm party={party} userId={user || currentUser.id} />
+            <UserPartyForm party={party} user={user || currentUser} />
           )}
           PartyView={
             <>
