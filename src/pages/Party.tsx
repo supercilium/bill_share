@@ -123,25 +123,6 @@ export const Party = () => {
     }
     return (
       <PartySettingsProvider>
-        <Block>
-          <p className="subtitle is-4 my-1">
-            Link to this party:{" "}
-            <span
-              onClick={() =>
-                navigator.clipboard.writeText(window.location.href)
-              }
-              title="Click to copy"
-              className="tag is-medium"
-              style={{ cursor: "pointer" }}
-            >
-              <span className="mr-1 icon has-text-grey">
-                <FontAwesomeIcon icon="copy" />
-              </span>
-              {window.location.href}
-            </span>
-          </p>
-        </Block>
-
         <Columns>
           <div>
             <AddUserForm />
@@ -196,9 +177,29 @@ export const Party = () => {
     <PlainLayout
       Header={
         <Header>
-          <h2 className="title is-2 my-5">
-            {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}! Welcome
-            to {party?.name}
+          <h2 className="title is-2 my-5 icon-text">
+            <a href="/" title="Home page" className="mr-4">
+              <FontAwesomeIcon
+                color="rgb(156,26,26)"
+                icon="champagne-glasses"
+              />
+            </a>
+            <span>
+              {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
+              Welcome to {party?.name}
+            </span>
+            <span>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                title="Copy link to the party"
+                className="ml-3 is-size-4"
+                onClick={() =>
+                  navigator.clipboard.writeText(window.location.href)
+                }
+              >
+                <FontAwesomeIcon icon="share-from-square" />
+              </a>
+            </span>
           </h2>
         </Header>
       }
