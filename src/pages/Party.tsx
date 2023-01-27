@@ -197,7 +197,7 @@ export const Party = () => {
                   navigator.clipboard.writeText(window.location.href)
                 }
               >
-                <FontAwesomeIcon icon="share-from-square" />
+                <FontAwesomeIcon icon="link" />
               </a>
             </span>
           </h2>

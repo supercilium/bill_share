@@ -9,7 +9,7 @@ import {
   faBeerMugEmpty,
   faSpinner,
   faChampagneGlasses,
-  faShareFromSquare,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -18,7 +18,7 @@ library.add(
   faBeerMugEmpty,
   faSpinner,
   faChampagneGlasses,
-  faShareFromSquare
+  faLink
 );
 
 const router = createBrowserRouter([
