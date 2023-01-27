@@ -269,9 +269,13 @@ export const UserPartyForm: FC<{
                 {restItems.map((item) => (
                   <div
                     key={item.id}
-                    className="is-clickable"
-                    onClick={() => handleChangeUserInItem(item.id, true)}
-                    title="Add to my bill"
+                    className={item.isMuted ? "has-text-grey" : "is-clickable"}
+                    onClick={() =>
+                      !item.isMuted && handleChangeUserInItem(item.id, true)
+                    }
+                    title={
+                      item.isMuted ? "Already in my bill" : "Add to my bill"
+                    }
                   >
                     <UserFormLayout
                       isDiscountVisible={false}

@@ -24,14 +24,14 @@ export const getPartyUserTotal = (items: Item[], id: string) => items
 
 export const splitItems = (items: Item[], userId: string): [Array<
     Item & { originalIndex: number; originalUserIndex: number; total: number }
->, Array<Item & { originalIndex: number }>] => {
+>, Array<Item & { originalIndex: number; isMuted?: boolean }>] => {
     const userItems: Array<
         Item & { originalIndex: number; originalUserIndex: number; total: number }
     > = [];
-    const restItems: Array<Item & { originalIndex: number }> = [];
+    const restItems: Array<Item & { originalIndex: number; isMuted?: boolean }> = [];
 
     items.forEach((item, i) => {
-        const userIndex = item.users.findIndex(({ id, value }) => userId === id);
+        const userIndex = item.users.findIndex(({ id }) => userId === id);
         if (userIndex >= 0) {
             const participants = getItemParticipants(item);
             userItems.push({
@@ -40,6 +40,9 @@ export const splitItems = (items: Item[], userId: string): [Array<
                 originalUserIndex: userIndex,
                 total: item.equally ? getItemTotal(item, item.amount) / participants.length : getItemTotal(item, item.users[userIndex].value),
             });
+            if (!item.equally && item.users[userIndex].value < item.amount) {
+                restItems.push({ ...item, originalIndex: i, isMuted: true });
+            }
         } else {
             restItems.push({ ...item, originalIndex: i });
         }
