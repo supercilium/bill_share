@@ -217,9 +217,9 @@ export const UserPartyForm: FC<{
                               error={errors.items?.[i]?.discount}
                               inputProps={{
                                 type: "number",
-                                step: 0.1,
+                                step: 5,
                                 min: 0,
-                                max: 1,
+                                max: 100,
                                 ...register(
                                   `items.${item.originalIndex}.discount`
                                 ),

@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { Block, Columns, Field } from "../components";
 import { useDebounce } from "../hooks/useDebounce";
 import { sendEvent } from "../utils/eventHandlers";
+import { socketClient } from "../__api__/socket";
 
 export const PartySettings = () => {
   const handlers = useFormContext();
@@ -24,7 +25,7 @@ export const PartySettings = () => {
   };
 
   useEffect(() => {
-    if ((debouncedDiscount + "").length > 0) {
+    if ((debouncedDiscount + "").length > 0 && socketClient.connected) {
       handleUpdateDiscount(+debouncedDiscount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
