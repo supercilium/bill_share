@@ -5,7 +5,7 @@
     },
     "name": "колбасов",
     "id": "c607504e-25af-4f62-87dd-88bba64878b2",
-    "type": "add item",
+    "discount": 10,
     "items": [
         {
             "name": "item",
@@ -13,7 +13,7 @@
             "price": 100,
             "amount": 3,
             "equally": true,
-            "discount": 0.1,
+            "discount": 10,
             "users": [
                 {
                     "id": "c7dd71eb-44f7-4463-9416-5d4482e8be3a",

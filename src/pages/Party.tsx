@@ -37,7 +37,6 @@ export const Party = () => {
         setParty(null);
       } else {
         setParty(parties as PartyInterface);
-        console.log(parties.id);
         if (!socketClient.connected) {
           socketClient.connect(id, eventHandler);
         }
@@ -56,7 +55,6 @@ export const Party = () => {
         return;
       }
       setParty(data);
-      console.log(event);
     } catch (err) {
       console.error(err);
     }
@@ -162,10 +160,10 @@ export const Party = () => {
             <UserPartyForm party={party} user={user || currentUser} />
           )}
           PartyView={
-            <>
+            <div className="box">
               <PartyForm party={party} currentUser={currentUser} />
               <PartyTotals party={party} currentUser={currentUser} />
-            </>
+            </div>
           }
         />
         <AddItemForm />

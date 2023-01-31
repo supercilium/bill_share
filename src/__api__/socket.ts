@@ -26,7 +26,6 @@ export const socketClient = {
             // }, 1000);
         }
         socketClient.socket.onmessage = (message: MessageEvent<string>) => {
-            console.log("message");
             cb(message);
         }
     }

@@ -10,6 +10,7 @@ import { PartyFormLayout } from "../layouts/partyFormLayout";
 import { EmptyPartyLayout } from "../layouts/emptyParty";
 import { sendEvent } from "../utils/eventHandlers";
 import { itemsSchema } from "../utils/validation";
+import { getBaseTotal } from "../utils/calculation";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -28,6 +29,8 @@ export const PartyForm: FC<{
 
   useEffect(() => {
     reset(party);
+    setValue("total", getBaseTotal(party.items));
+    setValue("discountPercent", party.discount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 
@@ -202,9 +205,9 @@ export const PartyForm: FC<{
                     error={errors.items?.[i]?.discount}
                     inputProps={{
                       type: "number",
-                      step: 0.1,
+                      step: 5,
                       min: 0,
-                      max: 1,
+                      max: 100,
                       ...register(`items.${i}.discount`),
                       onBlur: ({ target }) => {
                         if (+target.value === item.discount || !isValid) {

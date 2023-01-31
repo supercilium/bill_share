@@ -5,6 +5,7 @@ export interface PartyInterface {
   name: string;
   owner: User;
   id: string;
+  discount?: number;
   users: Array<User>;
   items: Array<Item>;
 }

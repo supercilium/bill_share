@@ -5,7 +5,10 @@ import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../layouts/partyFormLayout";
 import { PartyInterface } from "../types/party";
 import {
+  getBaseTotal,
   getPartyTotal,
+  getPartyUserBaseTotal,
+  getPartyUserDiscount,
   getPartyUserTotal,
   getTotalDiscount,
 } from "../utils/calculation";
@@ -14,12 +17,15 @@ export const PartyTotals: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
 }> = ({ party, currentUser }) => {
-  const { watch } = useFormContext<FormSettings>();
+  const { watch, setValue } = useFormContext<FormSettings>();
 
   if (!party.items.length) {
     return null;
   }
   const partySettings = watch();
+
+  const totalDiscount = getTotalDiscount(party.items);
+  const hasPartial = party.items.some(({ equally }) => !equally);
 
   return (
     <Block>
@@ -27,25 +33,127 @@ export const PartyTotals: FC<{
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={party.users.length}
-        isEqually={!party.items.some(({ equally }) => !equally)}
+        isEqually={!hasPartial}
       >
+        <span className="is-size-6 has-text-right">Base total</span>
         <span className="is-size-6" />
+        <span className="is-size-6">
+          {getBaseTotal(party.items).toFixed(2)}
+        </span>
+        {partySettings.isDiscountVisible && <span className="is-size-6" />}
+        {partySettings.isEquallyVisible && <span className="is-size-6" />}
+        {party.users?.length > 0 ? (
+          party.users.map((user) => (
+            <span
+              key={user.id}
+              style={
+                hasPartial
+                  ? undefined
+                  : { transform: "translateX(-4px) rotate(-42deg)" }
+              }
+              className={`is-size-6 is-clickable${
+                user.id === currentUser.id ? " has-text-info" : ""
+              }`}
+              title={`Open detailed view for ${user.name}`}
+              onClick={() => {
+                setValue("user", user);
+                setValue("view", "user");
+              }}
+            >
+              {getPartyUserBaseTotal(party.items, user.id).toFixed(2)}
+            </span>
+          ))
+        ) : (
+          <div />
+        )}
+      </PartyFormLayout>
+      <PartyFormLayout
+        isDiscountVisible={partySettings.isDiscountVisible}
+        isEquallyVisible={partySettings.isEquallyVisible}
+        amountOfUsers={party.users.length}
+        isEqually={!hasPartial}
+      >
+        <span className="is-size-6 has-text-right">Discount</span>
         <span className="is-size-6" />
-        <span className="is-size-6">{getPartyTotal(party.items)}</span>
+        <span className="is-size-6">
+          {+(partySettings.discount || 0).toFixed(2)}
+        </span>
         {partySettings.isDiscountVisible && (
-          <span className="is-size-6">{getTotalDiscount(party.items)}</span>
+          <span className="is-size-6">{totalDiscount.toFixed(2)}</span>
         )}
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
-          party.users.map(({ id }) => (
+          party.users.map((user) => (
             <span
-              key={id}
-              style={{ transform: "translateX(-4px) rotate(-42deg)" }}
-              className={`is-size-6${
-                id === currentUser.id ? " has-text-info" : ""
+              key={user.id}
+              style={
+                hasPartial
+                  ? undefined
+                  : { transform: "translateX(-4px) rotate(-42deg)" }
+              }
+              className={`is-size-6 is-clickable${
+                user.id === currentUser.id ? " has-text-info" : ""
               }`}
+              title={`Open detailed view for ${user.name}`}
+              onClick={() => {
+                setValue("user", user);
+                setValue("view", "user");
+              }}
             >
-              {getPartyUserTotal(party.items, id)}
+              {(
+                getPartyUserDiscount(party.items, user.id) +
+                getPartyUserBaseTotal(party.items, user.id) *
+                  (partySettings.discountPercent || 0) *
+                  0.01
+              ).toFixed(2)}
+            </span>
+          ))
+        ) : (
+          <div />
+        )}
+      </PartyFormLayout>
+      <hr className="my-3" />
+      <PartyFormLayout
+        isDiscountVisible={partySettings.isDiscountVisible}
+        isEquallyVisible={partySettings.isEquallyVisible}
+        amountOfUsers={party.users.length}
+        isEqually={!hasPartial}
+      >
+        <span className="is-size-6 has-text-right">Total</span>
+        <span className="is-size-6" />
+        <span className="is-size-6">
+          {(getPartyTotal(party.items) - (partySettings.discount || 0)).toFixed(
+            2
+          )}
+        </span>
+        {partySettings.isDiscountVisible && (
+          <span className="is-size-6">
+            {(totalDiscount + (partySettings.discount || 0)).toFixed(2)}
+          </span>
+        )}
+        {partySettings.isEquallyVisible && <span className="is-size-6" />}
+        {party.users?.length > 0 ? (
+          party.users.map((user) => (
+            <span
+              key={user.id}
+              style={
+                hasPartial
+                  ? undefined
+                  : { transform: "translateX(-4px) rotate(-42deg)" }
+              }
+              className={`is-size-6 is-clickable${
+                user.id === currentUser.id ? " has-text-info" : ""
+              }`}
+              title={`Open detailed view for ${user.name}`}
+              onClick={() => {
+                setValue("user", user);
+                setValue("view", "user");
+              }}
+            >
+              {(
+                getPartyUserTotal(party.items, user.id) *
+                (1 - 0.01 * (partySettings.discountPercent || 0))
+              ).toFixed(2)}
             </span>
           ))
         ) : (

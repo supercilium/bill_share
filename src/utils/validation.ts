@@ -6,7 +6,7 @@ export const itemsSchema = object({
             name: string().required(),
             price: number().min(0).integer().default(0).required(),
             amount: number().min(1).integer().required(),
-            discount: number().min(0).max(1).default(0),
+            discount: number().min(0).max(100).default(0),
         })
     ),
 }).required();

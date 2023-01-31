@@ -7,6 +7,9 @@ export interface FormSettings {
   isDiscountVisible: boolean;
   view: "party" | "user";
   user?: User;
+  discount?: number;
+  discountPercent?: number;
+  total: number;
 }
 
 export const PartySettingsProvider: FC<{
@@ -18,10 +21,16 @@ export const PartySettingsProvider: FC<{
       isEquallyVisible: false,
       view: "user",
       user: undefined,
+      total: 0,
+      discountPercent: 0,
+      discount: 0,
     },
   });
 
   const view = handlers.watch("view");
+  const discount = handlers.watch("discount");
+  const discountPercent = handlers.watch("discountPercent");
+  const total = handlers.watch("total");
 
   useEffect(() => {
     if (view === "party") {
@@ -29,6 +38,14 @@ export const PartySettingsProvider: FC<{
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
+
+  useEffect(() => {
+    if (!discountPercent || !total || !discount) {
+      return;
+    }
+    handlers.setValue("discountPercent", (discount * 100) / total);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
 
   return <FormProvider {...handlers}>{children}</FormProvider>;
 };

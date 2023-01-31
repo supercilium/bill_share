@@ -8,7 +8,12 @@ import { Item } from "../types/item";
 import { UserFormLayout } from "../layouts/userFormLayout";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { EmptyPartyLayout } from "../layouts/emptyParty";
-import { splitItems } from "../utils/calculation";
+import {
+  getBaseTotal,
+  getPartyUserBaseTotal,
+  getPartyUserDiscount,
+  splitItems,
+} from "../utils/calculation";
 import { sendEvent } from "../utils/eventHandlers";
 import { itemsSchema } from "../utils/validation";
 import { User } from "../types/user";
@@ -29,6 +34,8 @@ export const UserPartyForm: FC<{
 
   useEffect(() => {
     reset(party);
+    setValue("total", getBaseTotal(party.items));
+    setValue("discountPercent", party.discount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 
@@ -67,6 +74,11 @@ export const UserPartyForm: FC<{
       ...data,
     });
   };
+  const total = getPartyUserBaseTotal(userItems, user.id);
+  const discount =
+    getPartyUserDiscount(userItems, user.id) +
+    total * (partySettings.discountPercent || 0) * 0.01;
+
   const header = (
     <Columns>
       <div className="tabs">
@@ -170,7 +182,13 @@ export const UserPartyForm: FC<{
                               }}
                             />
                           ) : (
-                            <span className="has-text-grey-light">-</span>
+                            <span className="has-text-grey-light is-size-6">
+                              {`${item.amount}${
+                                item.participants > 1
+                                  ? ` / ${item.participants}`
+                                  : ""
+                              }`}
+                            </span>
                           )}
                         </span>
                         <span className="is-size-4">
@@ -243,18 +261,30 @@ export const UserPartyForm: FC<{
                     </React.Fragment>
                   );
                 })}
-                <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
-                  Total:{" "}
-                  {userItems
-                    .reduce((acc, item) => acc + item.total, 0)
-                    .toFixed(2)}
-                </p>
+                {discount ? (
+                  <>
+                    <p className="is-size-5 mt-2 has-text-grey has-text-right">
+                      Base cost: {total.toFixed(2)}
+                    </p>
+                    <p className="is-size-5 mt-2 has-text-grey has-text-right">
+                      Discount: {discount.toFixed(2)}
+                    </p>
+                    <hr className="my-3" />
+                    <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
+                      Total: {(total - discount).toFixed(2)}
+                    </p>
+                  </>
+                ) : (
+                  <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
+                    Total: {total.toFixed(2)}
+                  </p>
+                )}
               </>
             ) : (
               <EmptyPartyLayout />
             )}
           </div>
-          <div className="mt-4">
+          <div className="box mt-4">
             {restItems.length > 0 && (
               <>
                 <p className="is-size-4">Rest items</p>
