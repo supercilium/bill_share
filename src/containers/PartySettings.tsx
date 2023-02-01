@@ -209,7 +209,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                     if (total) {
                       handlers.setValue(
                         "discountPercent",
-                        Number(((+e.target.value * 100) / +total).toFixed(14))
+                        Number(((+e.target.value * 100) / +total).toFixed(13))
                       );
                     }
 
@@ -230,7 +230,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                     if (total) {
                       handlers.setValue(
                         "discount",
-                        Number((+e.target.value * +total * 0.01).toFixed(14))
+                        Number((+e.target.value * +total * 0.01).toFixed(2))
                       );
                     }
                     return discountPercentHandlers.onChange(e);

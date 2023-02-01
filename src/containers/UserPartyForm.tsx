@@ -35,8 +35,15 @@ export const UserPartyForm: FC<{
 
   useEffect(() => {
     reset(party);
-    setValue("total", getBaseTotal(party.items));
+    const total = getBaseTotal(party.items);
+    setValue("total", total);
     setValue("discountPercent", party.discount);
+    if (!partySettings.discount && party.discount) {
+      setValue(
+        "discount",
+        Number((+(party.discount || 0) * +total * 0.01).toFixed(2))
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 

@@ -76,7 +76,7 @@ export const PartyTotals: FC<{
         <span className="is-size-6 has-text-right">Discount</span>
         <span className="is-size-6" />
         <span className="is-size-6">
-          {+(partySettings.discount || 0).toFixed(2)}
+          {Number(partySettings.discount || 0).toFixed(2)}
         </span>
         {partySettings.isDiscountVisible && (
           <span className="is-size-6">{totalDiscount.toFixed(2)}</span>
