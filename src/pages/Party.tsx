@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
-import { Aside, Header, Main } from "../components";
+import { Aside, Block, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
 import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
@@ -17,6 +17,7 @@ import { PartySettings } from "../containers/PartySettings";
 import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
+import { PartyHeader } from "../containers/PartyHeader";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -120,10 +121,12 @@ export const Party = () => {
             <UserPartyForm party={party} user={user || currentUser} />
           )}
           PartyView={
-            <div className="box">
-              <PartyForm party={party} currentUser={currentUser} />
-              <PartyTotals party={party} currentUser={currentUser} />
-            </div>
+            <Block title={<PartyHeader users={party.users} />}>
+              <div className="box">
+                <PartyForm party={party} currentUser={currentUser} />
+                <PartyTotals party={party} currentUser={currentUser} />
+              </div>
+            </Block>
           }
         />
         <AddItemForm />

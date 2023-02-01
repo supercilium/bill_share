@@ -10,6 +10,7 @@ interface Props {
 
 export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
   const { watch, setValue, getValues } = useFormContext<FormSettings>();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -18,6 +19,7 @@ export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
       }
       if (e.key === "u" || e.key === "U") {
         setValue("view", "user");
+        setValue("user", currentUser);
       }
       if (e.key === "d" || e.key === "D") {
         setValue("isDiscountVisible", !getValues("isDiscountVisible"));

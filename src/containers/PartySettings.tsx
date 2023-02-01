@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Block, Columns, Field } from "../components";
-import { useUISettings } from "../contexts/UIsettings";
+import { IS_PARTY_HINTS_HIDDEN, useUISettings } from "../contexts/UIsettings";
 import { useDebounce } from "../hooks/useDebounce";
 import { PartyInterface } from "../types/party";
 import { sendEvent } from "../utils/eventHandlers";
@@ -62,6 +62,11 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             type: "checkbox",
             checked: areHintsVisible,
             onChange: (e) => {
+              if (!e.target.checked) {
+                localStorage.setItem(IS_PARTY_HINTS_HIDDEN, "HIDDEN");
+              } else {
+                localStorage.removeItem(IS_PARTY_HINTS_HIDDEN);
+              }
               setHintsVisibility(e.target.checked);
               return Promise.resolve(false);
             },

@@ -17,7 +17,7 @@ import {
 import { sendEvent } from "../utils/eventHandlers";
 import { itemsSchema } from "../utils/validation";
 import { User } from "../types/user";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PartyHeader } from "./PartyHeader";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -87,42 +87,8 @@ export const UserPartyForm: FC<{
     getPartyUserDiscount(userItems, user.id) +
     total * (partySettings.discountPercent || 0) * 0.01;
 
-  const header = (
-    <Columns>
-      <div className="tabs">
-        <ul>
-          <li key="very-first">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a
-              title="Back to party view"
-              onClick={() => {
-                setValue("view", "party");
-                setValue("user", undefined);
-              }}
-            >
-              <FontAwesomeIcon icon="people-group" />
-            </a>
-          </li>
-          {party.users.map((one) => (
-            <li className={one.id === user.id ? "is-active" : ""} key={one.id}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a
-                onClick={() => {
-                  setValue("user", one);
-                }}
-              >
-                {one.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div />
-    </Columns>
-  );
-
   return (
-    <Block title={header}>
+    <Block title={<PartyHeader users={party.users} />}>
       <form>
         <Columns>
           <div className="box mt-4">

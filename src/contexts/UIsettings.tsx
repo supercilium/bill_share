@@ -1,5 +1,7 @@
 import React, { FC, useContext, useState } from "react";
 
+export const IS_PARTY_HINTS_HIDDEN = "IS_PARTY_HINTS_HIDDEN";
+
 export interface UISettings {
   isAsideVisible: boolean;
   areHintsVisible: boolean;
@@ -18,7 +20,9 @@ export const UISettingsProvider: FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [isAsideVisible, setAsideVisibility] = useState(false);
-  const [areHintsVisible, setHintsVisibility] = useState(true);
+  const [areHintsVisible, setHintsVisibility] = useState(
+    !localStorage.getItem(IS_PARTY_HINTS_HIDDEN)
+  );
   const value = {
     isAsideVisible,
     areHintsVisible,
