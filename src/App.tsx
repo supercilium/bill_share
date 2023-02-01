@@ -10,7 +10,11 @@ import {
   faSpinner,
   faChampagneGlasses,
   faLink,
+  faXmark,
+  faBars,
+  faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
+import { UISettingsProvider } from "./contexts/UIsettings";
 
 library.add(
   faCrown,
@@ -18,7 +22,10 @@ library.add(
   faBeerMugEmpty,
   faSpinner,
   faChampagneGlasses,
-  faLink
+  faLink,
+  faXmark,
+  faBars,
+  faPeopleGroup
 );
 
 const router = createBrowserRouter([
@@ -33,7 +40,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <UISettingsProvider>
+      <RouterProvider router={router} />
+    </UISettingsProvider>
+  );
 };
 
 App.whyDidYouRender = true;

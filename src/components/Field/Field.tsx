@@ -32,7 +32,7 @@ export const Field: FC<{
   labels?: string[];
   error?: FieldError;
   inputProps: React.InputHTMLAttributes<HTMLInputElement> &
-    UseFormRegisterReturn;
+    Partial<UseFormRegisterReturn>;
 }> = ({ label, labels, inputProps, error }) => {
   const { type } = inputProps;
   const classNameInput = getBulmaInputClassName(type);

@@ -24,7 +24,9 @@ export const AddUserForm = () => {
   };
 
   return (
-    <Block title="You can add new participant">
+    <Block>
+      <p className="has-text-grey-dark is-size-5 mb-3">Add participant</p>
+
       <form
         style={{
           display: "grid",

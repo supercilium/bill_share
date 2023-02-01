@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
-import { Block, Columns, Header, Main } from "../components";
+import { Aside, Header, Main } from "../components";
 import { PartyForm } from "../containers/PartyForm";
 import { PartyTotals } from "../containers/PartyTotals";
 import { ErrorLayout } from "../layouts/error";
@@ -11,14 +11,12 @@ import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
-import { AddUserForm } from "../containers/AddUserForm";
 import { AddItemForm } from "../containers/AddItemForm";
 import { Loader } from "../components/Loader";
 import { PartySettings } from "../containers/PartySettings";
 import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
-import { sendEvent } from "../utils/eventHandlers";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -108,10 +106,6 @@ export const Party = () => {
     );
   }
 
-  const handleRemoveUser = (userId: string) => {
-    sendEvent({ type: "remove user", userId, partyId });
-  };
-
   const renderMain = () => {
     if (
       !currentUser.id ||
@@ -120,41 +114,7 @@ export const Party = () => {
       return <JoinPartyForm setCurrentUser={setCurrentUser} />;
     }
     return (
-      <PartySettingsProvider>
-        <Columns>
-          <div>
-            <AddUserForm />
-          </div>
-          <div>
-            {party.users.length > 0 ? (
-              <Block title="And remove any of these guys">
-                {party.users.map((user) => (
-                  <p
-                    key={user.id}
-                    className="is-size-4 is-flex is-align-items-center"
-                  >
-                    {user.name}{" "}
-                    {user.id !== party.owner.id ? (
-                      <button
-                        type="button"
-                        className="delete ml-2"
-                        onClick={() => handleRemoveUser(user.id)}
-                      ></button>
-                    ) : (
-                      <span
-                        className="ml-2 icon has-text-grey-light"
-                        title="Master of the party"
-                      >
-                        <FontAwesomeIcon icon="crown" />
-                      </span>
-                    )}
-                  </p>
-                ))}
-              </Block>
-            ) : null}
-          </div>
-        </Columns>
-        {party?.items?.length > 0 && <PartySettings />}
+      <>
         <MainFormView
           UserView={({ user }) => (
             <UserPartyForm party={party} user={user || currentUser} />
@@ -167,41 +127,48 @@ export const Party = () => {
           }
         />
         <AddItemForm />
-      </PartySettingsProvider>
+      </>
     );
   };
 
   return (
-    <PlainLayout
-      Header={
-        <Header>
-          <h2 className="title is-2 my-5 icon-text">
-            <a href="/" title="Home page" className="mr-4">
-              <FontAwesomeIcon
-                color="rgb(156,26,26)"
-                icon="champagne-glasses"
-              />
-            </a>
-            <span>
-              {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
-              Welcome to {party?.name}
-            </span>
-            <span>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a
-                title="Copy link to the party"
-                className="ml-3 is-size-4"
-                onClick={() =>
-                  navigator.clipboard.writeText(window.location.href)
-                }
-              >
-                <FontAwesomeIcon icon="link" />
+    <PartySettingsProvider>
+      <PlainLayout
+        Header={
+          <Header>
+            <h2 className="title is-2 my-5 icon-text">
+              <a href="/" title="Home page" className="mr-4">
+                <FontAwesomeIcon
+                  color="rgb(156,26,26)"
+                  icon="champagne-glasses"
+                />
               </a>
-            </span>
-          </h2>
-        </Header>
-      }
-      Main={<Main>{renderMain()}</Main>}
-    />
+              <span>
+                {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
+                Welcome to {party?.name}
+              </span>
+              <span>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a
+                  title="Copy link to the party"
+                  className="ml-3 is-size-4"
+                  onClick={() =>
+                    navigator.clipboard.writeText(window.location.href)
+                  }
+                >
+                  <FontAwesomeIcon icon="link" />
+                </a>
+              </span>
+            </h2>
+          </Header>
+        }
+        Main={<Main>{renderMain()}</Main>}
+        Aside={
+          <Aside>
+            <PartySettings party={party} />
+          </Aside>
+        }
+      />
+    </PartySettingsProvider>
   );
 };

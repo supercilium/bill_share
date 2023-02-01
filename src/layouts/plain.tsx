@@ -20,8 +20,8 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
       className="is-flex is-flex-direction-column is-justify-content-space-between"
     >
       <div>{Header}</div>
-      <div className="is-flex-grow-5">{Main}</div>
-      {Aside && <div>{Aside}</div>}
+      <main className="is-flex-grow-5">{Main}</main>
+      {Aside}
       <div>
         {Footer || (
           <FooterComponent>

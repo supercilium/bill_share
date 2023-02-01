@@ -17,6 +17,7 @@ import {
 import { sendEvent } from "../utils/eventHandlers";
 import { itemsSchema } from "../utils/validation";
 import { User } from "../types/user";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -83,6 +84,18 @@ export const UserPartyForm: FC<{
     <Columns>
       <div className="tabs">
         <ul>
+          <li key="very-first">
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a
+              title="Back to party view"
+              onClick={() => {
+                setValue("view", "party");
+                setValue("user", undefined);
+              }}
+            >
+              <FontAwesomeIcon icon="people-group" />
+            </a>
+          </li>
           {party.users.map((one) => (
             <li className={one.id === user.id ? "is-active" : ""} key={one.id}>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -284,9 +297,9 @@ export const UserPartyForm: FC<{
               <EmptyPartyLayout />
             )}
           </div>
-          <div className="box mt-4">
+          <div>
             {restItems.length > 0 && (
-              <>
+              <div className="box mt-4">
                 <p className="is-size-4">Rest items</p>
                 <UserFormLayout
                   isDiscountVisible={false}
@@ -318,7 +331,7 @@ export const UserPartyForm: FC<{
                     </UserFormLayout>
                   </div>
                 ))}
-              </>
+              </div>
             )}
           </div>
         </Columns>
