@@ -140,12 +140,6 @@ export const Party = () => {
         Header={
           <Header>
             <h2 className="title is-2 my-5 icon-text">
-              <a href="/" title="Home page" className="mr-4">
-                <FontAwesomeIcon
-                  color="rgb(156,26,26)"
-                  icon="champagne-glasses"
-                />
-              </a>
               <span>
                 {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
                 Welcome to {party?.name}

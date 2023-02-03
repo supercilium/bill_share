@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { Footer as FooterComponent } from "../components";
+import { Footer as FooterComponent, Navbar } from "../components";
 
 interface PlainLayoutInterface {
   Header: ReactNode;
@@ -19,6 +19,7 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
       style={{ minHeight: "100vh" }}
       className="is-flex is-flex-direction-column is-justify-content-space-between"
     >
+      <Navbar />
       <div>{Header}</div>
       <main className="is-flex-grow-5">{Main}</main>
       {Aside}

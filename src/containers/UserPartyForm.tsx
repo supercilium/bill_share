@@ -273,7 +273,7 @@ export const UserPartyForm: FC<{
           <div>
             {restItems.length > 0 && (
               <div className="box mt-4">
-                <p className="is-size-4">Rest items</p>
+                <p className="is-size-4">More items from party</p>
                 <UserFormLayout
                   isDiscountVisible={false}
                   isEquallyVisible={false}
