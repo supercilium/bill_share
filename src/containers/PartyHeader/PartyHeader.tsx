@@ -23,7 +23,7 @@ export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
           <span className="icon mr-1">
             <FontAwesomeIcon icon="sliders" />
           </span>
-          <span>Settings</span>
+          <span className="is-hidden-mobile">Settings</span>
         </span>
       </button>
       <StyledTabs>
