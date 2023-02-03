@@ -19,9 +19,7 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
             </a>
           </p>
           <p className="is-size-6 mb-1">
-            <a href="https://github.com/Ifkeybirf/ansigkastr">
-              🥷 Hosting and processes
-            </a>
+            <a href="https://github.com/Ifkeybirf">🥷 Hosting and processes</a>
           </p>
         </div>
       </Columns>
