@@ -108,11 +108,12 @@ export const Party = () => {
     );
   }
 
+  const isNoUser =
+    !currentUser.id ||
+    ![...party.users, party.owner].find((user) => user.id === currentUser.id);
+
   const renderMain = () => {
-    if (
-      !currentUser.id ||
-      ![...party.users, party.owner].find((user) => user.id === currentUser.id)
-    ) {
+    if (isNoUser) {
       return <JoinPartyForm setCurrentUser={setCurrentUser} />;
     }
     return (
@@ -155,9 +156,11 @@ export const Party = () => {
         }
         Main={<Main>{renderMain()}</Main>}
         Aside={
-          <Aside>
-            <PartySettings party={party} />
-          </Aside>
+          !isNoUser && (
+            <Aside>
+              <PartySettings party={party} />
+            </Aside>
+          )
         }
       />
     </PartySettingsProvider>

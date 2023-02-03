@@ -10,7 +10,7 @@ export const StyledPartyForm = styled.div`
   scroll-snap-type: x mandatory;
   list-style-type: none;
 
-  &::after {
+  /* &::after {
     content: "";
     position: fixed;
     right: 0;
@@ -29,5 +29,5 @@ export const StyledPartyForm = styled.div`
     &::after {
       display: none;
     }
-  }
+  } */
 `;

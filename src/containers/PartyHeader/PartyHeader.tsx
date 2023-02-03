@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { useUISettings } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
-import { StyledTab } from "./PartyHeader.styles";
+import { StyledTab, StyledTabs } from "./PartyHeader.styles";
 
 export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
   users,
@@ -15,7 +15,10 @@ export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
 
   return (
     <div className="is-flex">
-      <button className="button mr-3" onClick={() => setAsideVisibility(true)}>
+      <button
+        className="button mr-3 is-flex-shrink-0"
+        onClick={() => setAsideVisibility(true)}
+      >
         <span className="icon-text">
           <span className="icon mr-1">
             <FontAwesomeIcon icon="sliders" />
@@ -23,7 +26,7 @@ export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
           <span>Settings</span>
         </span>
       </button>
-      <div>
+      <StyledTabs>
         <div className="tabs">
           <ul>
             <StyledTab
@@ -66,7 +69,7 @@ export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
             ))}
           </ul>
         </div>
-      </div>
+      </StyledTabs>
     </div>
   );
 };
