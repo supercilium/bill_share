@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { useParams } from "react-router";
-import { User } from "../types/user";
-import { createUser } from "../__api__/party";
+import { User } from "../../types/user";
+import { createUser } from "../../__api__/party";
 
 export const JoinPartyForm: FC<{
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;

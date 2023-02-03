@@ -35,7 +35,7 @@ export const Navbar: FC<NavbarProps> = (props) => {
         </a> */}
       </div>
 
-      <div id="navbarBasicExample" className="navbar-menu">
+      <div className="navbar-menu">
         <div className="navbar-start"></div>
 
         <div className="navbar-end is-flex-grow-1">

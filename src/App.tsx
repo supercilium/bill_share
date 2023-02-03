@@ -11,8 +11,8 @@ import {
   faChampagneGlasses,
   faLink,
   faXmark,
-  faBars,
   faPeopleGroup,
+  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 
@@ -24,8 +24,8 @@ library.add(
   faChampagneGlasses,
   faLink,
   faXmark,
-  faBars,
-  faPeopleGroup
+  faPeopleGroup,
+  faSliders
 );
 
 const router = createBrowserRouter([

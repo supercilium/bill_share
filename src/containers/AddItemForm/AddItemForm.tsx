@@ -1,10 +1,11 @@
-import { Block, Field } from "../components";
+import { Block, Field } from "../../components";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendEvent } from "../utils/eventHandlers";
-import { addItemSchema } from "../utils/validation";
+import { sendEvent } from "../../utils/eventHandlers";
+import { addItemSchema } from "../../utils/validation";
 import { useState } from "react";
+import { AddItemLayout } from "../../components/styled/addItemLayout";
 
 interface ItemCreationInterface {
   name: string;
@@ -44,15 +45,7 @@ export const AddItemForm = () => {
 
   return (
     <Block title="Add new item to share">
-      <form
-        style={{
-          display: "grid",
-          gridTemplateColumns: "200px 60px 70px 100px",
-          gap: "16px",
-          alignItems: "flex-end",
-        }}
-        onSubmit={formHandlers.handleSubmit(handleAddItem)}
-      >
+      <AddItemLayout onSubmit={formHandlers.handleSubmit(handleAddItem)}>
         <Field
           label="Item name"
           error={errors.name}
@@ -88,7 +81,7 @@ export const AddItemForm = () => {
         >
           Add item
         </button>
-      </form>
+      </AddItemLayout>
       <div>
         <div className="field">
           <div className="control">

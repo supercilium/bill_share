@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
-import { Block } from "../components";
-import { FormSettings } from "../contexts/PartySettingsContext";
-import { PartyFormLayout } from "../layouts/partyFormLayout";
-import { PartyInterface } from "../types/party";
+import { Block, PartyFormLayout } from "../../components";
+import { RotatedText } from "../../components/styled/rotatedText";
+import { FormSettings } from "../../contexts/PartySettingsContext";
+import { PartyInterface } from "../../types/party";
 import {
   getBaseTotal,
   getPartyTotal,
@@ -11,7 +11,7 @@ import {
   getPartyUserDiscount,
   getPartyUserTotal,
   getTotalDiscount,
-} from "../utils/calculation";
+} from "../../utils/calculation";
 
 export const PartyTotals: FC<{
   party: PartyInterface;
@@ -44,13 +44,9 @@ export const PartyTotals: FC<{
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
-            <span
+            <RotatedText
               key={user.id}
-              style={
-                hasPartial
-                  ? undefined
-                  : { transform: "translateX(-4px) rotate(-42deg)" }
-              }
+              isRotated={hasPartial}
               className={`is-size-6 is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
@@ -61,7 +57,7 @@ export const PartyTotals: FC<{
               }}
             >
               {getPartyUserBaseTotal(party.items, user.id).toFixed(2)}
-            </span>
+            </RotatedText>
           ))
         ) : (
           <div />
@@ -84,13 +80,9 @@ export const PartyTotals: FC<{
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
-            <span
+            <RotatedText
               key={user.id}
-              style={
-                hasPartial
-                  ? undefined
-                  : { transform: "translateX(-4px) rotate(-42deg)" }
-              }
+              isRotated={hasPartial}
               className={`is-size-6 is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
@@ -106,7 +98,7 @@ export const PartyTotals: FC<{
                   (partySettings.discountPercent || 0) *
                   0.01
               ).toFixed(2)}
-            </span>
+            </RotatedText>
           ))
         ) : (
           <div />
@@ -134,13 +126,9 @@ export const PartyTotals: FC<{
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
-            <span
+            <RotatedText
               key={user.id}
-              style={
-                hasPartial
-                  ? undefined
-                  : { transform: "translateX(-4px) rotate(-42deg)" }
-              }
+              isRotated={hasPartial}
               className={`is-size-6 is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
@@ -154,7 +142,7 @@ export const PartyTotals: FC<{
                 getPartyUserTotal(party.items, user.id) *
                 (1 - 0.01 * (partySettings.discountPercent || 0))
               ).toFixed(2)}
-            </span>
+            </RotatedText>
           ))
         ) : (
           <div />

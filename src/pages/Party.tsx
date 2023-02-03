@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
-import { Aside, Block, Header, Main } from "../components";
-import { PartyForm } from "../containers/PartyForm";
-import { PartyTotals } from "../containers/PartyTotals";
-import { ErrorLayout } from "../layouts/error";
+import { Aside, Header, Main } from "../components";
+import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
 import { PartyInterface } from "../types/party";
 import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
-import { AddItemForm } from "../containers/AddItemForm";
+import { AddItemForm } from "../containers/AddItemForm/AddItemForm";
 import { Loader } from "../components/Loader";
 import { PartySettings } from "../containers/PartySettings";
 import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
-import { PartyHeader } from "../containers/PartyHeader";
+import { PartyView } from "../containers/PartyView";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -68,28 +66,27 @@ export const Party = () => {
 
   if (isLoading) {
     return (
-      <div
-        style={{ minHeight: "100vh" }}
-        className="is-flex is-align-items-center is-flex-direction-column is-justify-content-center"
-      >
-        <Loader />
-      </div>
+      <HeroLayout>
+        <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
+          <Loader />
+        </div>
+      </HeroLayout>
     );
   }
 
   if (!party || !partyId) {
     return (
-      <ErrorLayout
-        title="Looks like there is no such party"
-        error={
-          <>
+      <HeroLayout>
+        <div>
+          <p className="title">Looks like there is no such party</p>
+          <p className="subtitle is-flex is-align-items-baseline">
             Try to update page or go to{" "}
             <a className="button ml-2" href="/">
               home page
             </a>
-          </>
-        }
-      />
+          </p>
+        </div>
+      </HeroLayout>
     );
   }
 
@@ -100,10 +97,14 @@ export const Party = () => {
     socketClient.error
   ) {
     return (
-      <ErrorLayout
-        title="Ooops! Something went wrong"
-        error="No socket connection"
-      />
+      <HeroLayout>
+        <div>
+          <p className="title">Ooops! Something went wrong</p>
+          <p className="subtitle is-flex is-align-items-baseline">
+            No socket connection
+          </p>
+        </div>
+      </HeroLayout>
     );
   }
 
@@ -120,14 +121,7 @@ export const Party = () => {
           UserView={({ user }) => (
             <UserPartyForm party={party} user={user || currentUser} />
           )}
-          PartyView={
-            <Block title={<PartyHeader users={party.users} />}>
-              <div className="box">
-                <PartyForm party={party} currentUser={currentUser} />
-                <PartyTotals party={party} currentUser={currentUser} />
-              </div>
-            </Block>
-          }
+          PartyView={<PartyView party={party} user={currentUser} />}
         />
         <AddItemForm />
       </>
@@ -139,7 +133,7 @@ export const Party = () => {
       <PlainLayout
         Header={
           <Header>
-            <h2 className="title is-2 my-5 icon-text">
+            <h2 className="title is-3">
               <span>
                 {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
                 Welcome to {party?.name}

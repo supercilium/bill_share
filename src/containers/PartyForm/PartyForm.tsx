@@ -2,15 +2,16 @@ import { FC, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Block, Field } from "../components";
-import { Item } from "../types/item";
-import { PartyInterface } from "../types/party";
-import { FormSettings } from "../contexts/PartySettingsContext";
-import { PartyFormLayout } from "../layouts/partyFormLayout";
-import { EmptyPartyLayout } from "../layouts/emptyParty";
-import { sendEvent } from "../utils/eventHandlers";
-import { itemsSchema } from "../utils/validation";
-import { getBaseTotal } from "../utils/calculation";
+import { Block, Field } from "../../components";
+import { Item } from "../../types/item";
+import { PartyInterface } from "../../types/party";
+import { FormSettings } from "../../contexts/PartySettingsContext";
+import { PartyFormLayout } from "../../components";
+import { EmptyPartyLayout } from "../../layouts/emptyParty";
+import { sendEvent } from "../../utils/eventHandlers";
+import { itemsSchema } from "../../utils/validation";
+import { getBaseTotal } from "../../utils/calculation";
+import { RotatedText } from "../../components/styled/rotatedText";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -81,10 +82,7 @@ export const PartyForm: FC<{
     });
   };
 
-  const partyLayoutProps: Omit<
-    React.ComponentProps<typeof PartyFormLayout>,
-    "children"
-  > = {
+  const partyLayoutProps: React.ComponentProps<typeof PartyFormLayout> = {
     amountOfUsers: users.length,
     isDiscountVisible: partySettings.isDiscountVisible,
     isEquallyVisible: partySettings.isEquallyVisible,
@@ -105,12 +103,11 @@ export const PartyForm: FC<{
         )}
         {users?.length > 0 ? (
           users.map((user) => (
-            <span
+            <RotatedText
               key={user.id}
               className={`is-clickable is-size-6${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
-              style={{ transform: "rotate(-42deg)" }}
               title="Open detailed view"
               onClick={() => {
                 setValue("user", user);
@@ -118,7 +115,7 @@ export const PartyForm: FC<{
               }}
             >
               {user.name}
-            </span>
+            </RotatedText>
           ))
         ) : (
           <div />

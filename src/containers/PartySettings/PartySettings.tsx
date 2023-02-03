@@ -1,13 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { Block, Columns, Field } from "../components";
-import { IS_PARTY_HINTS_HIDDEN, useUISettings } from "../contexts/UIsettings";
-import { useDebounce } from "../hooks/useDebounce";
-import { PartyInterface } from "../types/party";
-import { sendEvent } from "../utils/eventHandlers";
-import { socketClient } from "../__api__/socket";
-import { AddUserForm } from "./AddUserForm";
+import { Block, Columns, Field } from "../../components";
+import {
+  IS_PARTY_HINTS_HIDDEN,
+  useUISettings,
+} from "../../contexts/UIsettings";
+import { useDebounce } from "../../hooks/useDebounce";
+import { PartyInterface } from "../../types/party";
+import { sendEvent } from "../../utils/eventHandlers";
+import { socketClient } from "../../__api__/socket";
+import { AddUserForm } from "../AddUserForm";
 
 export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const handlers = useFormContext();

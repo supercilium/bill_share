@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { Block, Field } from "../components";
+import { Block, Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendEvent } from "../utils/eventHandlers";
-import { addUserSchema } from "../utils/validation";
+import { sendEvent } from "../../utils/eventHandlers";
+import { addUserSchema } from "../../utils/validation";
+import { AddUserLayout } from "../../components/styled/addUserLayout";
 
 export const AddUserForm = () => {
   const { partyId } = useParams();
@@ -27,15 +28,7 @@ export const AddUserForm = () => {
     <Block>
       <p className="has-text-grey-dark is-size-5 mb-3">Add participant</p>
 
-      <form
-        style={{
-          display: "grid",
-          gridTemplateColumns: "200px 100px",
-          gap: "16px",
-          alignItems: "flex-end",
-        }}
-        onSubmit={formHandlers.handleSubmit(handleAddUser)}
-      >
+      <AddUserLayout onSubmit={formHandlers.handleSubmit(handleAddUser)}>
         <Field
           error={errors.userName}
           label="User name"
@@ -54,7 +47,7 @@ export const AddUserForm = () => {
         >
           Add user
         </button>
-      </form>
+      </AddUserLayout>
     </Block>
   );
 };

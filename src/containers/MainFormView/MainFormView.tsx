@@ -1,7 +1,7 @@
 import { FC, ReactNode, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { FormSettings } from "../contexts/PartySettingsContext";
-import { User } from "../types/user";
+import { FormSettings } from "../../contexts/PartySettingsContext";
+import { User } from "../../types/user";
 
 interface Props {
   UserView: FC<{ user?: User }>;
