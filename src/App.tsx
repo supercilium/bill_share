@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import "./bulma-rtl.min.css";
 import { Party } from "./pages/Party";
 import { Home } from "./pages/Home";
 import { library } from "@fortawesome/fontawesome-svg-core";

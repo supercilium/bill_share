@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class="has-navbar-fixed-top">
   <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' localhost:* http://192.168.1.101:* ws://192.168.1.101:*;"
+    />
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,11 +25,6 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma-rtl.min.css"
-    />
-
     <title>Bill share</title>
   </head>
   <body>

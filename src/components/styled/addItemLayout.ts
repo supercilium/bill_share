@@ -20,5 +20,16 @@ export const AddItemLayout = styled.form`
 
   @media ${device.tablet} {
     grid-template-columns: 200px 60px 70px 100px;
+    grid-template-rows: none;
+
+    & > :first-child {
+      grid-column-start: auto;
+      grid-column-end: auto;
+    }
+
+    & > :last-child {
+      grid-column-start: auto;
+      grid-column-end: auto;
+    }
   }
 `;
