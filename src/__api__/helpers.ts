@@ -32,3 +32,15 @@ export const fetchAPI: FetchType = async (input, init) => {
     return err as ErrorRequest;
   }
 }
+
+export const fetchWithToken: FetchType = async (input, init) => {
+  const token = JSON.parse(localStorage.getItem("token") || "") || "";
+  const { headers, ...rest } = init || {};
+  return fetchAPI(input, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      ...(headers || {})
+    },
+    ...(rest || {})
+  })
+}

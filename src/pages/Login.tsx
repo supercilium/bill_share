@@ -31,10 +31,9 @@ export const Login = () => {
     }
     const response = await fetchRegister(data);
     console.log(response);
-    // if ("id" in response) {
-    //   localStorage.setItem("user", JSON.stringify(response.owner));
-    //   navigate(`/party/${response?.id}`);
-    // }
+    if ("token" in response) {
+      localStorage.setItem("token", JSON.stringify(response.token));
+    }
   };
 
   return (
