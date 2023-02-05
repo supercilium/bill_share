@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
 import { Block, PartyFormLayout } from "../../components";
-import { RotatedText } from "../../components/styled/rotatedText";
+import { RotatedText } from "../../components/styled/typography";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyInterface } from "../../types/party";
 import {
@@ -26,6 +26,10 @@ export const PartyTotals: FC<{
 
   const totalDiscount = getTotalDiscount(party.items);
   const hasPartial = party.items.some(({ equally }) => !equally);
+  const baseTotal = getBaseTotal(party.items).toFixed(2);
+  const sumClassName =
+    baseTotal.toString().length >= 11 ? "is-size-7" : "is-size-6";
+  const shouldRotate = baseTotal.toString().length >= 8 && !hasPartial;
 
   return (
     <Block>
@@ -37,17 +41,15 @@ export const PartyTotals: FC<{
       >
         <span className="is-size-6 has-text-right">Base total</span>
         <span className="is-size-6" />
-        <span className="is-size-6">
-          {getBaseTotal(party.items).toFixed(2)}
-        </span>
+        <span className={sumClassName}>{baseTotal}</span>
         {partySettings.isDiscountVisible && <span className="is-size-6" />}
         {partySettings.isEquallyVisible && <span className="is-size-6" />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
             <RotatedText
               key={user.id}
-              isRotated={hasPartial}
-              className={`is-size-6 is-clickable${
+              isRotated={shouldRotate}
+              className={`${sumClassName} is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
               title={`Open detailed view for ${user.name}`}
@@ -70,20 +72,20 @@ export const PartyTotals: FC<{
         isEqually={!hasPartial}
       >
         <span className="is-size-6 has-text-right">Discount</span>
-        <span className="is-size-6" />
-        <span className="is-size-6">
+        <span className={sumClassName} />
+        <span className={sumClassName}>
           {Number(partySettings.discount || 0).toFixed(2)}
         </span>
         {partySettings.isDiscountVisible && (
-          <span className="is-size-6">{totalDiscount.toFixed(2)}</span>
+          <span className={sumClassName}>{totalDiscount.toFixed(2)}</span>
         )}
-        {partySettings.isEquallyVisible && <span className="is-size-6" />}
+        {partySettings.isEquallyVisible && <span className={sumClassName} />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
             <RotatedText
               key={user.id}
-              isRotated={hasPartial}
-              className={`is-size-6 is-clickable${
+              isRotated={shouldRotate}
+              className={`${sumClassName} is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
               title={`Open detailed view for ${user.name}`}
@@ -112,24 +114,24 @@ export const PartyTotals: FC<{
         isEqually={!hasPartial}
       >
         <span className="is-size-6 has-text-right">Total</span>
-        <span className="is-size-6" />
-        <span className="is-size-6">
+        <span className={sumClassName} />
+        <span className={sumClassName}>
           {(getPartyTotal(party.items) - (partySettings.discount || 0)).toFixed(
             2
           )}
         </span>
         {partySettings.isDiscountVisible && (
-          <span className="is-size-6">
+          <span className={sumClassName}>
             {(totalDiscount + (partySettings.discount || 0)).toFixed(2)}
           </span>
         )}
-        {partySettings.isEquallyVisible && <span className="is-size-6" />}
+        {partySettings.isEquallyVisible && <span className={sumClassName} />}
         {party.users?.length > 0 ? (
           party.users.map((user) => (
             <RotatedText
               key={user.id}
-              isRotated={hasPartial}
-              className={`is-size-6 is-clickable${
+              isRotated={shouldRotate}
+              className={`${sumClassName} is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
               title={`Open detailed view for ${user.name}`}

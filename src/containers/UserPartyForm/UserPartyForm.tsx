@@ -20,6 +20,7 @@ import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
 import { StyledUserForm } from "./UserPartyForm.styles";
 import { FormWrapper } from "../../components/styled/formWrapper";
+import { OverflowHidden } from "../../components/styled/typography";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -100,7 +101,9 @@ export const UserPartyForm: FC<{
               <StyledUserForm className="box mt-4">
                 {userItems.length ? (
                   <>
-                    <p className="is-size-4">In your bill</p>
+                    <p className="is-size-5-touch is-size-4-desktop">
+                      In your bill
+                    </p>
                     <UserFormLayout
                       isDiscountVisible={partySettings.isDiscountVisible}
                       isEquallyVisible={partySettings.isEquallyVisible}
@@ -121,7 +124,7 @@ export const UserPartyForm: FC<{
                             isDiscountVisible={partySettings.isDiscountVisible}
                             isEquallyVisible={partySettings.isEquallyVisible}
                           >
-                            <span className="is-size-4 is-flex is-align-items-center">
+                            <span className="is-size-5-touch is-size-4-desktop is-flex is-align-items-center">
                               <button
                                 type="button"
                                 className="delete mr-2"
@@ -152,7 +155,7 @@ export const UserPartyForm: FC<{
                                 }}
                               />
                             </span>
-                            <span className="is-size-4">
+                            <span className="is-size-5-touch is-size-4-desktop">
                               {!item.equally ? (
                                 <Field
                                   error={errors.items?.[i]?.amount}
@@ -189,7 +192,7 @@ export const UserPartyForm: FC<{
                                 </span>
                               )}
                             </span>
-                            <span className="is-size-4">
+                            <span className="is-size-5-touch is-size-4-desktop">
                               <Field
                                 error={errors.items?.[i]?.price}
                                 inputProps={{
@@ -215,7 +218,7 @@ export const UserPartyForm: FC<{
                               />
                             </span>
                             {partySettings.isDiscountVisible && (
-                              <span className="is-size-4">
+                              <span className="is-size-5-touch is-size-4-desktop">
                                 <Field
                                   error={errors.items?.[i]?.discount}
                                   inputProps={{
@@ -243,7 +246,7 @@ export const UserPartyForm: FC<{
                                 />
                               </span>
                             )}
-                            <span className="is-size-5 has-text-primary-dark">
+                            <span className="is-size-6 has-text-primary-dark">
                               {item.total.toFixed(2)}
                             </span>
                           </UserFormLayout>
@@ -268,19 +271,19 @@ export const UserPartyForm: FC<{
                     })}
                     {discount ? (
                       <>
-                        <p className="is-size-5 mt-2 has-text-grey has-text-right">
+                        <p className="is-size-6 mt-2 has-text-grey has-text-right">
                           Base cost: {total.toFixed(2)}
                         </p>
-                        <p className="is-size-5 mt-2 has-text-grey has-text-right">
+                        <p className="is-size-6 mt-2 has-text-grey has-text-right">
                           Discount: {discount.toFixed(2)}
                         </p>
                         <hr className="my-3" />
-                        <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
+                        <p className="is-size-5 mt-2 has-text-primary-dark has-text-right">
                           Total: {(total - discount).toFixed(2)}
                         </p>
                       </>
                     ) : (
-                      <p className="is-size-4 mt-2 has-text-primary-dark has-text-right">
+                      <p className="is-size-5 mt-2 has-text-primary-dark has-text-right">
                         Total: {total.toFixed(2)}
                       </p>
                     )}
@@ -312,7 +315,9 @@ export const UserPartyForm: FC<{
                         !item.isMuted && handleChangeUserInItem(item.id, true)
                       }
                       title={
-                        item.isMuted ? "Already in my bill" : "Add to my bill"
+                        item.isMuted
+                          ? "Already in my bill"
+                          : `Add ${item.name} to my bill`
                       }
                     >
                       <UserFormLayout
@@ -321,7 +326,9 @@ export const UserPartyForm: FC<{
                         isEquallyVisible={false}
                         key={item.id}
                       >
-                        <span className="is-size-5">{item.name}</span>
+                        <OverflowHidden className="is-size-5">
+                          {item.name}
+                        </OverflowHidden>
                         <span className="is-size-5">{item.amount}</span>
                         <span className="is-size-5">{item.price}</span>
                       </UserFormLayout>

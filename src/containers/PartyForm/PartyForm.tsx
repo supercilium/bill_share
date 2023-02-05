@@ -11,7 +11,8 @@ import { EmptyPartyLayout } from "../../layouts/emptyParty";
 import { sendEvent } from "../../utils/eventHandlers";
 import { itemsSchema } from "../../utils/validation";
 import { getBaseTotal } from "../../utils/calculation";
-import { RotatedText } from "../../components/styled/rotatedText";
+import { OverflowHidden } from "../../components/styled/typography";
+import { CheckboxWrapper, DeleteButton } from "./PartyForm.styles";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -103,19 +104,19 @@ export const PartyForm: FC<{
         )}
         {users?.length > 0 ? (
           users.map((user) => (
-            <RotatedText
+            <OverflowHidden
               key={user.id}
               className={`is-clickable is-size-6${
                 user.id === currentUser.id ? " has-text-info" : ""
               }`}
-              title="Open detailed view"
+              title={`Open detailed view for ${user.name}`}
               onClick={() => {
                 setValue("user", user);
                 setValue("view", "user");
               }}
             >
               {user.name}
-            </RotatedText>
+            </OverflowHidden>
           ))
         ) : (
           <div />
@@ -131,13 +132,15 @@ export const PartyForm: FC<{
               className="my-3"
               key={item.id}
             >
-              <span className="is-size-4 is-flex is-align-items-center ">
-                <button
-                  type="button"
-                  className="delete mr-2"
-                  title="Remove item"
-                  onClick={() => handleRemoveItem(item.id)}
-                />
+              <div className="is-size-4 is-flex ">
+                <DeleteButton>
+                  <button
+                    type="button"
+                    className="delete mr-2"
+                    title="Remove item"
+                    onClick={() => handleRemoveItem(item.id)}
+                  />
+                </DeleteButton>
 
                 <Field
                   error={errors.items?.[i]?.name}
@@ -155,7 +158,7 @@ export const PartyForm: FC<{
                     },
                   }}
                 />
-              </span>
+              </div>
               <span className="is-size-4">
                 <Field
                   error={errors.items?.[i]?.amount}
@@ -221,59 +224,63 @@ export const PartyForm: FC<{
                 </span>
               )}
               {partySettings.isEquallyVisible && (
-                <input
-                  type="checkbox"
-                  className="is-size-4 checkbox mr-4"
-                  {...register(`items.${i}.equally`)}
-                  onChange={({ target }) =>
-                    handleChangeItem({
-                      id: item.id,
-                      equally: target.checked,
-                    })
-                  }
-                />
+                <CheckboxWrapper>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    {...register(`items.${i}.equally`)}
+                    onChange={({ target }) =>
+                      handleChangeItem({
+                        id: item.id,
+                        equally: target.checked,
+                      })
+                    }
+                  />
+                </CheckboxWrapper>
               )}
               {users.map(({ id }) => {
                 if (item.equally) {
                   return (
-                    <input
-                      key={id}
-                      type="checkbox"
-                      className="is-size-4 checkbox"
-                      checked={!!itemUsers?.find((user) => user.id === id)}
-                      onChange={({ target }) =>
-                        handleChangeUserInItem(target.checked, id, item.id)
-                      }
-                    />
+                    <CheckboxWrapper key={id}>
+                      <input
+                        type="checkbox"
+                        className="is-size-4 checkbox"
+                        checked={!!itemUsers?.find((user) => user.id === id)}
+                        onChange={({ target }) =>
+                          handleChangeUserInItem(target.checked, id, item.id)
+                        }
+                      />
+                    </CheckboxWrapper>
                   );
                 }
                 const userIndex = itemUsers.findIndex((user) => user.id === id);
 
                 return (
-                  <Field
-                    key={id}
-                    // error={errors.items?.[i]?.users?[userIndex].value}
-                    inputProps={{
-                      type: "number",
-                      placeholder: "0",
-                      min: 0,
-                      ...register(`items.${i}.users.${userIndex}.value`),
-                      onBlur: ({ target }) => {
-                        if (
-                          +target.value === itemUsers[userIndex]?.value ||
-                          !isValid
-                        ) {
-                          return new Promise(() => {});
-                        }
+                  <div key={id}>
+                    <Field
+                      // error={errors.items?.[i]?.users?[userIndex].value}
+                      inputProps={{
+                        type: "number",
+                        placeholder: "0",
+                        min: 0,
+                        ...register(`items.${i}.users.${userIndex}.value`),
+                        onBlur: ({ target }) => {
+                          if (
+                            +target.value === itemUsers[userIndex]?.value ||
+                            !isValid
+                          ) {
+                            return new Promise(() => {});
+                          }
 
-                        return handleUpdateUserItem({
-                          itemId: item.id,
-                          value: +target.value,
-                          userId: id,
-                        });
-                      },
-                    }}
-                  />
+                          return handleUpdateUserItem({
+                            itemId: item.id,
+                            value: +target.value,
+                            userId: id,
+                          });
+                        },
+                      }}
+                    />
+                  </div>
                 );
               })}
             </PartyFormLayout>

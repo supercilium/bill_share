@@ -3,7 +3,7 @@
   <head>
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:* ws://localhost:* http://192.168.1.101:* ws://192.168.1.101:*;"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' %REACT_APP_API_URL% %REACT_APP_API_SOCKET_URL%;"
     />
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />

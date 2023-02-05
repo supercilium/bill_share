@@ -6,7 +6,7 @@ export const socketClient = {
         if (socketClient.connected) {
             return;
         }
-        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'localhost:3001/socket'}/${id}`);
+        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'localhost:3001'}/ws/${id}`);
 
         socketClient.socket.onopen = () => {
             socketClient.connected = true;

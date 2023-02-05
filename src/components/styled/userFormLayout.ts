@@ -15,5 +15,4 @@ export const UserFormLayout = styled.div<{
   align-items: center;
   width: fit-content;
   padding-right: 60px;
-  /* margin: 0.75rem 0; */
 `;
