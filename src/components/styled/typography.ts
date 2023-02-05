@@ -8,4 +8,6 @@ export const OverflowHidden = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  display: inline-block;
+  max-width: 100%;
 `;

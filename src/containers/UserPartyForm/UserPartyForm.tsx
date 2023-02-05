@@ -91,7 +91,7 @@ export const UserPartyForm: FC<{
     total * (partySettings.discountPercent || 0) * 0.01;
 
   return (
-    <Block title={<PartyHeader users={party.users} />}>
+    <Block title={<PartyHeader users={party.users} master={party.owner} />}>
       {!party.items?.length ? (
         <EmptyPartyLayout />
       ) : (

@@ -16,3 +16,13 @@ export const CheckboxWrapper = styled.div`
         height: 1.5rem;
     }
 `
+
+export const UserColumnTitle = styled.div<{ hasIcon: boolean }>`
+    position: relative;
+
+    & > i {
+        position: absolute;
+        top: -45%;
+        left: 0;
+    }
+`

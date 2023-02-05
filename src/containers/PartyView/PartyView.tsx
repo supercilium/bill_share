@@ -15,7 +15,7 @@ interface PartyViewProps {
 
 export const PartyView: FC<PartyViewProps> = ({ party, user }) => {
   return (
-    <Block title={<PartyHeader users={party.users} />}>
+    <Block title={<PartyHeader users={party.users} master={party.owner} />}>
       <FormWrapper>
         <StyledPartyForm className="box">
           <PartyForm party={party} currentUser={user} />

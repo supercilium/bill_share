@@ -12,7 +12,12 @@ import { sendEvent } from "../../utils/eventHandlers";
 import { itemsSchema } from "../../utils/validation";
 import { getBaseTotal } from "../../utils/calculation";
 import { OverflowHidden } from "../../components/styled/typography";
-import { CheckboxWrapper, DeleteButton } from "./PartyForm.styles";
+import {
+  CheckboxWrapper,
+  DeleteButton,
+  UserColumnTitle,
+} from "./PartyForm.styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -103,21 +108,36 @@ export const PartyForm: FC<{
           <span className="is-size-6">Equally</span>
         )}
         {users?.length > 0 ? (
-          users.map((user) => (
-            <OverflowHidden
-              key={user.id}
-              className={`is-clickable is-size-6${
-                user.id === currentUser.id ? " has-text-info" : ""
-              }`}
-              title={`Open detailed view for ${user.name}`}
-              onClick={() => {
-                setValue("user", user);
-                setValue("view", "user");
-              }}
-            >
-              {user.name}
-            </OverflowHidden>
-          ))
+          users.map((user) => {
+            const isCurrentUser = user.id === currentUser.id;
+            return (
+              <UserColumnTitle hasIcon={user.id === party.owner.id}>
+                <OverflowHidden
+                  key={user.id}
+                  className={`is-clickable is-size-6${
+                    isCurrentUser ? " has-text-info" : ""
+                  }`}
+                  title={`Open detailed view for ${user.name}`}
+                  onClick={() => {
+                    setValue("user", user);
+                    setValue("view", "user");
+                  }}
+                >
+                  {user.name}
+                </OverflowHidden>
+                {user.id === party.owner.id && (
+                  <i>
+                    <FontAwesomeIcon
+                      className={isCurrentUser ? " has-text-info" : ""}
+                      icon="crown"
+                      size="2xs"
+                      title="Master of the party"
+                    />
+                  </i>
+                )}
+              </UserColumnTitle>
+            );
+          })
         ) : (
           <div />
         )}

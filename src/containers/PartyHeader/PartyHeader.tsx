@@ -6,9 +6,10 @@ import { useUISettings } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
 import { StyledTab, StyledTabs } from "./PartyHeader.styles";
 
-export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
-  users,
-}) => {
+export const PartyHeader: FC<{
+  users: PartyInterface["users"];
+  master: PartyInterface["owner"];
+}> = ({ users, master }) => {
   const { watch, setValue } = useFormContext<FormSettings>();
   const { setAsideVisibility } = useUISettings();
   const partySettings = watch();
@@ -63,7 +64,14 @@ export const PartyHeader: FC<{ users: PartyInterface["users"] }> = ({
                     setValue("user", one);
                   }}
                 >
-                  {one.name}
+                  <span className="icon-text">
+                    {one.id === master.id && (
+                      <span className="icon mr-1">
+                        <FontAwesomeIcon icon="crown" />
+                      </span>
+                    )}
+                    <span>{one.name}</span>
+                  </span>
                 </a>
               </StyledTab>
             ))}
