@@ -37,7 +37,6 @@ export const PartyTotals: FC<{
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={party.users.length}
-        isEqually={!hasPartial}
       >
         <span className="is-size-6 has-text-right">Base total</span>
         <span className="is-size-6" />
@@ -69,7 +68,6 @@ export const PartyTotals: FC<{
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={party.users.length}
-        isEqually={!hasPartial}
       >
         <span className="is-size-6 has-text-right">Discount</span>
         <span className={sumClassName} />
@@ -111,7 +109,6 @@ export const PartyTotals: FC<{
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={party.users.length}
-        isEqually={!hasPartial}
       >
         <span className="is-size-6 has-text-right">Total</span>
         <span className={sumClassName} />

@@ -29,7 +29,7 @@ export const PartyHeader: FC<{
           <span className="icon mr-1">
             <FontAwesomeIcon icon="sliders" />
           </span>
-          <span className="is-hidden-mobile">Settings</span>
+          <span className="is-hidden-mobile">Bill config</span>
         </span>
       </button>
       <StyledTabs>

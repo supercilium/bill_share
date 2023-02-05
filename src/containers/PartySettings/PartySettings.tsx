@@ -100,7 +100,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                   We hid unimportant columns, because the form already has a lot
                   of staff and we do not have a designer to make it fits the
                   screen (at least for now). So you can choose to show discount
-                  and equality columns here.
+                  and is shared columns here.
                 </div>
               </article>
             )}
@@ -113,7 +113,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
               }}
             />
             <Field
-              label=" Show equality column (E)"
+              label=" Show «Is shared» column (S)"
               inputProps={{
                 type: "checkbox",
                 ...handlers.register("isEquallyVisible"),
@@ -123,9 +123,9 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             {areHintsVisible && (
               <article className="message">
                 <div className="message-body">
-                  Equally means items will shared between all participants (guys
-                  with checked checkboxes), in the other way you will have an
-                  opportunity to write amounts of items to each member.
+                  Is shared - means items will shared between all participants
+                  (guys with checked checkboxes), in the other way you will have
+                  an opportunity to write amounts of items to each member.
                 </div>
               </article>
             )}

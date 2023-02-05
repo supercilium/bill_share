@@ -92,7 +92,6 @@ export const PartyForm: FC<{
     amountOfUsers: users.length,
     isDiscountVisible: partySettings.isDiscountVisible,
     isEquallyVisible: partySettings.isEquallyVisible,
-    isEqually: !party.items.some(({ equally }) => !equally),
   };
 
   return (
@@ -105,7 +104,7 @@ export const PartyForm: FC<{
           <span className="is-size-6">Discount</span>
         )}
         {partySettings.isEquallyVisible && (
-          <span className="is-size-6">Equally</span>
+          <span className="is-size-6">Is shared</span>
         )}
         {users?.length > 0 ? (
           users.map((user) => {

@@ -24,7 +24,7 @@ export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
       if (e.code === "KeyD") {
         setValue("isDiscountVisible", !getValues("isDiscountVisible"));
       }
-      if (e.code === "KeyE") {
+      if (e.code === "KeyS") {
         setValue("isEquallyVisible", !getValues("isEquallyVisible"));
       }
       if (e.code === "KeyP") {
