@@ -3,6 +3,7 @@ import "./App.css";
 import "./bulma-rtl.min.css";
 import { Party } from "./pages/Party";
 import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCrown,
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "/party/:partyId",
     element: <Party />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 

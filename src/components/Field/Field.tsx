@@ -6,6 +6,7 @@ const getBulmaInputClassName = (
 ) => {
   switch (type) {
     case "text":
+    case "password":
     case "number":
     case undefined:
       return "input";
