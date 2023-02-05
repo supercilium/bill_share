@@ -17,17 +17,17 @@ export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
       if ((e.target as Node).nodeName !== "BODY") {
         return;
       }
-      if (e.key === "u" || e.key === "U") {
+      if (e.code === "KeyU") {
         setValue("view", "user");
         setValue("user", currentUser);
       }
-      if (e.key === "d" || e.key === "D") {
+      if (e.code === "KeyD") {
         setValue("isDiscountVisible", !getValues("isDiscountVisible"));
       }
-      if (e.key === "e" || e.key === "E") {
+      if (e.code === "KeyE") {
         setValue("isEquallyVisible", !getValues("isEquallyVisible"));
       }
-      if (e.key === "p" || e.key === "P") {
+      if (e.code === "KeyP") {
         setValue("view", "party");
       }
     };
