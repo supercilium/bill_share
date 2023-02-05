@@ -13,6 +13,12 @@ export const PartyHeader: FC<{
   const { watch, setValue } = useFormContext<FormSettings>();
   const { setAsideVisibility } = useUISettings();
   const partySettings = watch();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+
+  const sortedUsers = [
+    currentUser,
+    ...users.filter((user) => user.id !== currentUser.id),
+  ];
 
   return (
     <div className="is-flex">
@@ -50,7 +56,7 @@ export const PartyHeader: FC<{
                 </span>
               </a>
             </StyledTab>
-            {users.map((one) => (
+            {sortedUsers.map((one) => (
               <StyledTab
                 className={`is-flex ${
                   one.id === partySettings?.user?.id ? "is-active" : ""
