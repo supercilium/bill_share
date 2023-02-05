@@ -111,9 +111,11 @@ export const PartyForm: FC<{
           users.map((user) => {
             const isCurrentUser = user.id === currentUser.id;
             return (
-              <UserColumnTitle hasIcon={user.id === party.owner.id}>
+              <UserColumnTitle
+                key={user.id}
+                hasIcon={user.id === party.owner.id}
+              >
                 <OverflowHidden
-                  key={user.id}
                   className={`is-clickable is-size-6${
                     isCurrentUser ? " has-text-info" : ""
                   }`}
