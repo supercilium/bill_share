@@ -15,12 +15,14 @@ export interface FormSettings {
 export const PartySettingsProvider: FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+
   const handlers = useForm<FormSettings>({
     defaultValues: {
-      isDiscountVisible: false,
-      isEquallyVisible: false,
+      isDiscountVisible: true,
+      isEquallyVisible: true,
       view: "user",
-      user: undefined,
+      user: currentUser,
       total: 0,
       discountPercent: 0,
       discount: 0,

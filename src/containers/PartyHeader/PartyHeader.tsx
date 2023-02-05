@@ -14,7 +14,6 @@ export const PartyHeader: FC<{
   const { setAsideVisibility } = useUISettings();
   const partySettings = watch();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
-
   const sortedUsers = [
     currentUser,
     ...users.filter((user) => user.id !== currentUser.id),
