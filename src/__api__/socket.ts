@@ -28,5 +28,13 @@ export const socketClient = {
         socketClient.socket.onmessage = (message: MessageEvent<string>) => {
             cb(message);
         }
+    },
+    reConnect: (cb: (event: MessageEvent<string>) => void) => {
+        if (socketClient.socket && socketClient.socket.readyState !== 3) {
+            socketClient.socket.close();
+            socketClient.connected = false;
+        }
+
+        socketClient.connect(socketClient.socket.url, cb);
     }
 }
