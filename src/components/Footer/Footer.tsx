@@ -19,7 +19,10 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
             </a>
           </p>
           <p className="is-size-6 mb-1">
-            <a href="https://github.com/Ifkeybirf">🥷 Hosting and processes</a>
+            <a href="https://github.com/Ifkeybirf">
+              🥷 benefactor (hosting), bad news deliver (QA), the lord of the
+              dendro-fecal elements (Devops)
+            </a>
           </p>
         </div>
       </Columns>
