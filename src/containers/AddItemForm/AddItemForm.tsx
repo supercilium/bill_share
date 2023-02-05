@@ -5,12 +5,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { sendEvent } from "../../utils/eventHandlers";
 import { addItemSchema } from "../../utils/validation";
 import { useState } from "react";
-import { AddItemLayout } from "../../components/styled/addItemLayout";
+import { AddItemButton, AddItemLayout, WideTrack } from "./AddItemForm.styles";
 
 interface ItemCreationInterface {
   name: string;
   price: number;
   amount: number;
+  equally: boolean;
 }
 
 type PriceType = "per item" | "full";
@@ -26,6 +27,7 @@ export const AddItemForm = () => {
       name: "",
       price: 0,
       amount: 1,
+      equally: false,
     },
     mode: "all",
   });
@@ -45,17 +47,22 @@ export const AddItemForm = () => {
 
   return (
     <Block title="Add new item to share">
-      <AddItemLayout onSubmit={formHandlers.handleSubmit(handleAddItem)}>
-        <Field
-          label="Item name"
-          error={errors.name}
-          inputProps={{
-            type: "text",
-            placeholder: "Enter item name",
-            autoComplete: "off",
-            ...formHandlers.register("name"),
-          }}
-        />
+      <AddItemLayout
+        className="mb-3"
+        onSubmit={formHandlers.handleSubmit(handleAddItem)}
+      >
+        <WideTrack className="mb-3">
+          <Field
+            label="Item name"
+            error={errors.name}
+            inputProps={{
+              type: "text",
+              placeholder: "Enter item name",
+              autoComplete: "off",
+              ...formHandlers.register("name"),
+            }}
+          />
+        </WideTrack>
         <Field
           label="Amount"
           error={errors.amount}
@@ -74,13 +81,22 @@ export const AddItemForm = () => {
             ...formHandlers.register("price"),
           }}
         />
-        <button
+        <AddItemButton
           type="submit"
           className="button mb-3"
           disabled={!isValid || !isDirty}
         >
           Add item
-        </button>
+        </AddItemButton>
+        <WideTrack>
+          <Field
+            label=" Share item for all"
+            inputProps={{
+              type: "checkbox",
+              ...formHandlers.register("equally"),
+            }}
+          />
+        </WideTrack>
       </AddItemLayout>
       <div>
         <div className="field">
