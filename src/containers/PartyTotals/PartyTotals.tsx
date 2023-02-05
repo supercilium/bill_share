@@ -116,13 +116,13 @@ export const PartyTotals: FC<{
         <span className="is-size-6 has-text-right">Total</span>
         <span className={sumClassName} />
         <span className={sumClassName}>
-          {(getPartyTotal(party.items) - (partySettings.discount || 0)).toFixed(
-            2
-          )}
+          {Number(
+            getPartyTotal(party.items) - (partySettings.discount || 0)
+          ).toFixed(2)}
         </span>
         {partySettings.isDiscountVisible && (
           <span className={sumClassName}>
-            {(totalDiscount + (partySettings.discount || 0)).toFixed(2)}
+            {Number(totalDiscount + (partySettings.discount || 0)).toFixed(2)}
           </span>
         )}
         {partySettings.isEquallyVisible && <span className={sumClassName} />}
