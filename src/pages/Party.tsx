@@ -16,6 +16,7 @@ import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
+import copy from "copy-to-clipboard";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -145,20 +146,18 @@ export const Party = () => {
                 {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
                 Welcome to {party?.name}
               </span>
-              {navigator?.clipboard && (
-                <span>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <a
-                    title="Copy link to the party"
-                    className="ml-3 is-size-4"
-                    onClick={() =>
-                      navigator.clipboard.writeText(window.location.href)
-                    }
-                  >
-                    <FontAwesomeIcon icon="link" />
-                  </a>
-                </span>
-              )}
+              <span>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a
+                  title="Copy link to the party"
+                  className="ml-3 is-size-4"
+                  onClick={() => {
+                    copy(window.location.href);
+                  }}
+                >
+                  <FontAwesomeIcon icon="link" />
+                </a>
+              </span>
             </h2>
           </Header>
         }
