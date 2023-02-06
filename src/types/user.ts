@@ -7,3 +7,9 @@ export interface LoginInterface {
     name: string;
     password: string;
 }
+
+export interface RegisterInterface {
+    name: string;
+    password: string;
+    email: string;
+}

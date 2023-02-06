@@ -1,15 +1,16 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { Field, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { LoginInterface } from "../types/user";
+import { RegisterInterface } from "../types/user";
 import { fetchRegister } from "../__api__/auth";
 
 const schema = yup
   .object({
     name: yup.string().required(),
+    email: yup.string().required(),
     password: yup.string().required(),
   })
   .required();
@@ -19,13 +20,13 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
-  } = useForm<LoginInterface>({
+  } = useForm<RegisterInterface>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterInterface> = async (data) => {
     if (!isValid) {
       return;
     }
@@ -58,6 +59,11 @@ export const Login = () => {
                   label="Enter your name"
                   error={errors.name}
                   inputProps={{ type: "text", ...register("name") }}
+                />
+                <Field
+                  label="Enter your email"
+                  error={errors.name}
+                  inputProps={{ type: "email", ...register("email") }}
                 />
                 <Field
                   label="Enter your password"
