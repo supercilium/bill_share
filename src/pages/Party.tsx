@@ -104,7 +104,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() => socketClient.reConnect(eventHandler)}
+              onClick={() => socketClient.reConnect(partyId, eventHandler)}
               className="button ml-2"
             >
               re-connect

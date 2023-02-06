@@ -29,12 +29,12 @@ export const socketClient = {
             cb(message);
         }
     },
-    reConnect: (cb: (event: MessageEvent<string>) => void) => {
+    reConnect: (id: string, cb: (event: MessageEvent<string>) => void) => {
         if (socketClient.socket && socketClient.socket.readyState !== 3) {
             socketClient.socket.close();
             socketClient.connected = false;
         }
 
-        socketClient.connect(socketClient.socket.url, cb);
+        socketClient.connect(id, cb);
     }
 }
