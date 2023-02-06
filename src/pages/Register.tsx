@@ -4,32 +4,33 @@ import { Field, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { LoginInterface } from "../types/user";
-import { fetchLogin } from "../__api__/auth";
+import { RegisterInterface } from "../types/user";
+import { fetchRegister } from "../__api__/auth";
 
 const schema = yup
   .object({
+    name: yup.string().required(),
     email: yup.string().required(),
     password: yup.string().required(),
   })
   .required();
 
-export const Login = () => {
+export const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
-  } = useForm<LoginInterface>({
+  } = useForm<RegisterInterface>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
   // const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterInterface> = async (data) => {
     if (!isValid) {
       return;
     }
-    const response = await fetchLogin(data);
+    const response = await fetchRegister(data);
     console.log(response);
     if ("token" in response) {
       localStorage.setItem("token", JSON.stringify(response.token));
@@ -40,7 +41,7 @@ export const Login = () => {
     <PlainLayout
       Header={
         <Header>
-          <h1 className="title is-1">Log in</h1>
+          <h1 className="title is-1">Register</h1>
         </Header>
       }
       Main={
@@ -53,6 +54,12 @@ export const Login = () => {
           >
             <div className="columns">
               <div className="block column">
+                <h2 className="title is-3 my-2">Create user</h2>
+                <Field
+                  label="Enter your name"
+                  error={errors.name}
+                  inputProps={{ type: "text", ...register("name") }}
+                />
                 <Field
                   label="Enter your email"
                   error={errors.email}
@@ -67,7 +74,7 @@ export const Login = () => {
                   className="button"
                   disabled={!isValid || !isDirty}
                 >
-                  Log in
+                  Register
                 </button>
               </div>
               <div className="column" />
@@ -79,4 +86,4 @@ export const Login = () => {
   );
 };
 
-Login.whyDidYouRender = true;
+Register.whyDidYouRender = true;

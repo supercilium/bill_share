@@ -17,6 +17,7 @@ import {
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
+import { Register } from "./pages/Register";
 
 library.add(
   faCrown,
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);
 
