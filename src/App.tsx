@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { Register } from "./pages/Register";
+import { UserProvider } from "./contexts/UserContext";
 
 library.add(
   faCrown,
@@ -52,9 +53,11 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <UISettingsProvider>
-      <RouterProvider router={router} />
-    </UISettingsProvider>
+    <UserProvider>
+      <UISettingsProvider>
+        <RouterProvider router={router} />
+      </UISettingsProvider>
+    </UserProvider>
   );
 };
 

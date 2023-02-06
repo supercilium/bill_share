@@ -1,3 +1,5 @@
+import { USER_KEY } from "../contexts/UserContext";
+
 export function getURL(path: RequestInfo) {
   return `${process.env.REACT_APP_API_URL || "http://localhost:3001"
     }${path}`;
@@ -33,7 +35,7 @@ export const fetchAPI: FetchType = async (input, init) => {
 }
 
 export const fetchWithToken: FetchType = async (input, init) => {
-  const token = JSON.parse(localStorage.getItem("token") || "") || "";
+  const { token } = JSON.parse(localStorage.getItem(USER_KEY) || "{}") || {};
   const { headers, ...rest } = init || {};
   return fetchAPI(input, {
     headers: {

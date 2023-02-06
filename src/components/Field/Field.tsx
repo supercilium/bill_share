@@ -22,6 +22,8 @@ const getBulmaLabelClassName = (
   switch (type) {
     case "text":
     case "number":
+    case "password":
+    case "email":
     case undefined:
       return "label";
     default:

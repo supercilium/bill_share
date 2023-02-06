@@ -1,40 +1,14 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { Field, Header, Main } from "../components";
+import { Columns, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
-import { createParty } from "../__api__/party";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { CreatePartyInterface } from "../types/party";
-
-const schema = yup
-  .object({
-    userName: yup.string().required(),
-    partyName: yup.string().required(),
-  })
-  .required();
+import { LoginForm } from "../containers/LoginForm";
+import { RegisterForm } from "../containers/RegisterForm";
+import { useState } from "react";
+import { useUser } from "../contexts/UserContext";
+import { CreatePartyForm } from "../containers/CreatePartyForm";
 
 export const Home = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isDirty },
-  } = useForm<CreatePartyInterface>({
-    resolver: yupResolver(schema),
-    mode: "onBlur",
-  });
-  const navigate = useNavigate();
-
-  const onSubmit: SubmitHandler<CreatePartyInterface> = async (data) => {
-    if (!isValid) {
-      return;
-    }
-    const response = await createParty(data);
-    if ("id" in response) {
-      localStorage.setItem("user", JSON.stringify(response.owner));
-      navigate(`/party/${response?.id}`);
-    }
-  };
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const { token } = useUser();
 
   return (
     <PlainLayout
@@ -45,36 +19,30 @@ export const Home = () => {
       }
       Main={
         <Main>
-          <form
-            id="start-new-party"
-            className="mt-5"
-            action=""
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="columns">
-              <div className="block column">
-                <h2 className="title is-3 my-2">Create your party</h2>
-                <Field
-                  label="Enter your name"
-                  error={errors.userName}
-                  inputProps={{ type: "text", ...register("userName") }}
-                />
-                <Field
-                  label="Enter your party name"
-                  error={errors.partyName}
-                  inputProps={{ type: "text", ...register("partyName") }}
-                />
-                <button
-                  type="submit"
-                  className="button"
-                  disabled={!isValid || !isDirty}
-                >
-                  Start party
-                </button>
+          <Columns>
+            {token ? (
+              <div className="box">
+                <CreatePartyForm />
               </div>
-              <div className="column" />
-            </div>
-          </form>
+            ) : (
+              <div className="box">
+                <div className="tabs is-large">
+                  <ul>
+                    <li className={activeTab === "login" ? "is-active" : ""}>
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                      <a onClick={() => setActiveTab("login")}>Log in</a>
+                    </li>
+                    <li className={activeTab === "register" ? "is-active" : ""}>
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                      <a onClick={() => setActiveTab("register")}>Register</a>
+                    </li>
+                  </ul>
+                </div>
+                {activeTab === "login" && <LoginForm />}
+                {activeTab === "register" && <RegisterForm />}
+              </div>
+            )}
+          </Columns>
         </Main>
       }
     />

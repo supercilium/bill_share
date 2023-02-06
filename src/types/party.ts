@@ -12,5 +12,6 @@ export interface PartyInterface {
 
 export interface CreatePartyInterface {
   partyName: string;
-  userName: string;
+  // userName: string;
+  id: string;
 }
