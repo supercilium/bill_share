@@ -16,7 +16,7 @@ export const JoinPartyForm: FC<{
       console.log(response.error);
       return;
     }
-    localStorage.setItem("user", JSON.stringify(response));
+    // localStorage.setItem("user", JSON.stringify(response));
     setCurrentUser(response);
   };
 

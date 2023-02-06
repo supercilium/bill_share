@@ -42,6 +42,7 @@ export const Home = () => {
                 {activeTab === "register" && <RegisterForm />}
               </div>
             )}
+            <div />
           </Columns>
         </Main>
       }

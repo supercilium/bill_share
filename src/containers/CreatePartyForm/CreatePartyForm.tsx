@@ -40,7 +40,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     }
     const response = await createParty(data);
     if ("id" in response) {
-      localStorage.setItem("user", JSON.stringify(response.owner));
+      // localStorage.setItem("user", JSON.stringify(response.owner));
       navigate(`/party/${response?.id}`);
     }
   };
