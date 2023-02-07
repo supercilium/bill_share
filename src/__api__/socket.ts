@@ -9,8 +9,7 @@ export const socketClient = {
         if (socketClient.connected) {
             return;
         }
-        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'ws://localhost:8087'}/ws/${id}`, ['access_token', `Bearer ${token}`]);
-        // socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'localhost:3001'}/ws/${id}`);
+        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'ws://localhost:8087'}/ws/${id}`, token);
 
         socketClient.socket.onopen = () => {
             socketClient.connected = true;
