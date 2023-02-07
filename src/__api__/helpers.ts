@@ -19,6 +19,7 @@ export const fetchAPI: FetchType = async (input, init) => {
   const requestInfo: RequestInfo = typeof input === 'string' ? getURL(input) : { ...input, url: getURL(input.url) };
   const { headers, ...rest } = init || {};
   const response = await fetch(requestInfo, {
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(headers || {})

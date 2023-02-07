@@ -1,15 +1,12 @@
-import { USER_KEY } from "../contexts/UserContext";
-
 export const socketClient = {
     connected: false,
     error: '',
     socket: {} as WebSocket,
     connect: (id: string, cb: (event: MessageEvent<string>) => void) => {
-        const { token } = JSON.parse(localStorage.getItem(USER_KEY) || "{}") || {};
         if (socketClient.connected) {
             return;
         }
-        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'ws://localhost:8087'}/ws/${id}?access_token=${token}`);
+        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'ws://localhost:8087'}/ws/${id}`);
 
         socketClient.socket.onopen = () => {
             socketClient.connected = true;
