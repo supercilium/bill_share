@@ -1,27 +1,43 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
-import { USER_KEY } from "../../contexts/UserContext";
+import { useNavigate } from "react-router";
+import { useUser } from "../../contexts/UserContext";
 
 interface NavbarProps {}
 
 export const Navbar: FC<NavbarProps> = (props) => {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
+
   return (
     <nav
       className="navbar is-fixed-top has-shadow"
       role="navigation"
       aria-label="main navigation"
     >
-      <div className="navbar-brand">
-        <p className="is-size-5 has-text-weight-semibold">
-          <a href="/" title="Home page" className="navbar-item">
+      <div className="navbar-brand is-justify-content-space-between">
+        <a href="/" title="Home page" className="navbar-item">
+          <span className="is-size-5 has-text-weight-semibold">
             <FontAwesomeIcon
               className="mr-3"
               color="rgb(156,26,26)"
               icon="champagne-glasses"
             />
             Party Bill Share
-          </a>
-        </p>
+          </span>
+        </a>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        <a
+          onClick={() => {
+            setUser(null);
+            navigate("/");
+          }}
+          className="navbar-item is-hidden-desktop"
+        >
+          <FontAwesomeIcon className="mr-3" icon="arrow-right-from-bracket" />
+          Log out
+        </a>
+
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         {/* <a
           role="button"
@@ -48,9 +64,16 @@ export const Navbar: FC<NavbarProps> = (props) => {
               <a className="button is-light">Log in</a> */}
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a
-                onClick={() => window.localStorage.removeItem(USER_KEY)}
+                onClick={() => {
+                  setUser(null);
+                  navigate("/");
+                }}
                 className="button is-light"
               >
+                <FontAwesomeIcon
+                  className="mr-3"
+                  icon="arrow-right-from-bracket"
+                />
                 Log out
               </a>
             </div>

@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { RegisterInterface } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
-import { USER_KEY, useUser } from "../../contexts/UserContext";
+import { useUser } from "../../contexts/UserContext";
 
 const schema = yup
   .object({
@@ -34,7 +34,6 @@ export const RegisterForm: FC<RegisterFormProps> = (props) => {
     const response = await fetchRegister(data);
     if ("token" in response) {
       setUser(response);
-      localStorage.setItem(USER_KEY, JSON.stringify(response.token));
     }
   };
 

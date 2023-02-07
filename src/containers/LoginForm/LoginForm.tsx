@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { LoginInterface } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
-import { USER_KEY, useUser } from "../../contexts/UserContext";
+import { useUser } from "../../contexts/UserContext";
 
 interface LoginFormProps {}
 
@@ -34,7 +34,6 @@ export const LoginForm: FC<LoginFormProps> = (props) => {
     const response = await fetchLogin(data);
     if ("token" in response) {
       setUser(response);
-      localStorage.setItem(USER_KEY, JSON.stringify(response));
     }
   };
 

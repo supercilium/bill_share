@@ -19,7 +19,8 @@ const schema = yup
   .required();
 
 export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
-  const { id } = useUser();
+  const { user } = useUser();
+  const { id } = user || {};
   const {
     register,
     handleSubmit,

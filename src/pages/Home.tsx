@@ -8,7 +8,8 @@ import { CreatePartyForm } from "../containers/CreatePartyForm";
 
 export const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const { token } = useUser();
+  const { user } = useUser();
+  const { token } = user || {};
 
   return (
     <PlainLayout

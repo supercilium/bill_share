@@ -15,6 +15,7 @@ import {
   faXmark,
   faPeopleGroup,
   faSliders,
+  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { Register } from "./pages/Register";
@@ -29,7 +30,8 @@ library.add(
   faLink,
   faXmark,
   faPeopleGroup,
-  faSliders
+  faSliders,
+  faArrowRightFromBracket
 );
 
 const router = createBrowserRouter([
