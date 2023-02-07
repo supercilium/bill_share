@@ -32,7 +32,6 @@ export const LoginForm: FC<LoginFormProps> = (props) => {
       return;
     }
     const response = await fetchLogin(data);
-    console.log(response);
     if ("token" in response) {
       setUser(response);
       localStorage.setItem(USER_KEY, JSON.stringify(response));

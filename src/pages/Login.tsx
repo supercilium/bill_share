@@ -30,7 +30,6 @@ export const Login = () => {
       return;
     }
     const response = await fetchLogin(data);
-    console.log(response);
     if ("token" in response) {
       localStorage.setItem("token", JSON.stringify(response.token));
     }

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
+import { USER_KEY } from "../../contexts/UserContext";
 
 interface NavbarProps {}
 
@@ -45,6 +46,13 @@ export const Navbar: FC<NavbarProps> = (props) => {
                 <strong>Sign up</strong>
               </a>
               <a className="button is-light">Log in</a> */}
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                onClick={() => window.localStorage.removeItem(USER_KEY)}
+                className="button is-light"
+              >
+                Log out
+              </a>
             </div>
           </div>
         </div>

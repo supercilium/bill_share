@@ -24,14 +24,12 @@ export const Register = () => {
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
-  // const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<RegisterInterface> = async (data) => {
     if (!isValid) {
       return;
     }
     const response = await fetchRegister(data);
-    console.log(response);
     if ("token" in response) {
       localStorage.setItem("token", JSON.stringify(response.token));
     }
