@@ -15,3 +15,8 @@ export const fetchLogin = async (input: LoginInterface) => {
 
     return data;
 };
+
+export const fetchLogout = async () => {
+    await fetchAPI("/auth/local/logout");
+    return true;
+};

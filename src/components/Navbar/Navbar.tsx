@@ -2,12 +2,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../../contexts/UserContext";
+import { fetchLogout } from "../../__api__/auth";
 
 interface NavbarProps {}
 
 export const Navbar: FC<NavbarProps> = (props) => {
   const { setUser } = useUser();
   const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await fetchLogout();
+    } catch (err) {
+      console.error(err);
+    }
+    setUser(null);
+    navigate("/");
+  };
 
   return (
     <nav
@@ -28,10 +38,7 @@ export const Navbar: FC<NavbarProps> = (props) => {
         </a>
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a
-          onClick={() => {
-            setUser(null);
-            navigate("/");
-          }}
+          onClick={() => handleLogout()}
           className="navbar-item is-hidden-desktop"
         >
           <FontAwesomeIcon className="mr-3" icon="arrow-right-from-bracket" />
@@ -63,13 +70,7 @@ export const Navbar: FC<NavbarProps> = (props) => {
               </a>
               <a className="button is-light">Log in</a> */}
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a
-                onClick={() => {
-                  setUser(null);
-                  navigate("/");
-                }}
-                className="button is-light"
-              >
+              <a onClick={() => handleLogout()} className="button is-light">
                 <FontAwesomeIcon
                   className="mr-3"
                   icon="arrow-right-from-bracket"

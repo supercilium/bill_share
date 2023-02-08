@@ -36,11 +36,9 @@ export const fetchAPI: FetchType = async (input, init) => {
 }
 
 export const fetchWithToken: FetchType = async (input, init) => {
-  const { token } = JSON.parse(localStorage.getItem(USER_KEY) || "{}") || {};
   const { headers, ...rest } = init || {};
   return fetchAPI(input, {
     headers: {
-      "Authorization": `Bearer ${token}`,
       ...(headers || {})
     },
     ...(rest || {})
