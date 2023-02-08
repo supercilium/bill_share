@@ -2,27 +2,22 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { LoginInterface } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
+import { loginSchema } from "../../utils/validation";
 
-interface LoginFormProps {}
+interface LoginFormProps {
+  onLogin?: () => void;
+}
 
-const schema = yup
-  .object({
-    email: yup.string().required(),
-    password: yup.string().required(),
-  })
-  .required();
-
-export const LoginForm: FC<LoginFormProps> = (props) => {
+export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
   } = useForm<LoginInterface>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(loginSchema),
     mode: "onBlur",
   });
   const { setUser } = useUser();
@@ -32,8 +27,9 @@ export const LoginForm: FC<LoginFormProps> = (props) => {
       return;
     }
     const response = await fetchLogin(data);
-    if ("token" in response) {
+    if ("id" in response) {
       setUser(response);
+      onLogin?.();
     }
   };
 

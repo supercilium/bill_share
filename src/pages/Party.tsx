@@ -17,6 +17,7 @@ import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
 import copy from "copy-to-clipboard";
+import { Navbar } from "../containers/Navbar";
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -139,6 +140,7 @@ export const Party = () => {
   return (
     <PartySettingsProvider>
       <PlainLayout
+        Navbar={<Navbar shouldShowAuthButtons={true} />}
         Header={
           <Header>
             <h2 className="title is-3">

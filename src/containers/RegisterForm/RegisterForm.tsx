@@ -2,27 +2,22 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { RegisterInterface } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
+import { signInSchema } from "../../utils/validation";
 
-const schema = yup
-  .object({
-    name: yup.string().required(),
-    email: yup.string().required(),
-    password: yup.string().required(),
-  })
-  .required();
-interface RegisterFormProps {}
+interface RegisterFormProps {
+  onRegister?: () => void;
+}
 
-export const RegisterForm: FC<RegisterFormProps> = (props) => {
+export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
   } = useForm<RegisterInterface>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(signInSchema),
     mode: "onBlur",
   });
   const { setUser } = useUser();
@@ -32,8 +27,9 @@ export const RegisterForm: FC<RegisterFormProps> = (props) => {
       return;
     }
     const response = await fetchRegister(data);
-    if ("token" in response) {
+    if ("id" in response) {
       setUser(response);
+      onRegister?.();
     }
   };
 

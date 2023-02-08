@@ -6,6 +6,7 @@ interface PlainLayoutInterface {
   Header?: ReactNode;
   Aside?: ReactNode;
   Footer?: ReactNode;
+  Navbar?: ReactNode;
   Main: ReactNode;
 }
 
@@ -14,13 +15,14 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
   Aside,
   Footer,
   Main,
+  Navbar: NavbarComponent = true,
 }) => {
   return (
     <div
       style={{ minHeight: "100vh" }}
       className="is-flex is-flex-direction-column is-justify-content-space-between"
     >
-      <Navbar />
+      {NavbarComponent || <Navbar />}
       {Header}
       <main className="is-flex-grow-5">{Main}</main>
       {Aside}

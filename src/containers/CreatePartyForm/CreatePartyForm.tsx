@@ -1,5 +1,4 @@
 import { FC } from "react";
-import * as yup from "yup";
 import { createParty } from "../../__api__/party";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CreatePartyInterface } from "../../types/party";
@@ -7,16 +6,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
+import { createPartySchema } from "../../utils/validation";
 
 interface CreatePartyFormProps {}
-
-const schema = yup
-  .object({
-    // userName: yup.string().required(),
-    partyName: yup.string().required(),
-    id: yup.string().required(),
-  })
-  .required();
 
 export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
   const { user } = useUser();
@@ -30,7 +22,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       // userName: name,
       id,
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(createPartySchema),
     mode: "onBlur",
   });
   const navigate = useNavigate();

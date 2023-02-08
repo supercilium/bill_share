@@ -1,5 +1,11 @@
 import { array, object, string, number } from "yup";
 
+export const createPartySchema = object({
+    // userName: yup.string().required(),
+    partyName: string().required(),
+    id: string().required(),
+}).required();
+
 export const itemsSchema = object({
     items: array().of(
         object().shape({
@@ -19,4 +25,15 @@ export const addItemSchema = object({
     name: string().required(),
     price: number().min(0).default(0).required(),
     amount: number().min(1).integer().required(),
+}).required();
+
+export const signInSchema = object({
+    name: string().required(),
+    email: string().required(),
+    password: string().required(),
+}).required();
+
+export const loginSchema = object({
+    email: string().required(),
+    password: string().required(),
 }).required();

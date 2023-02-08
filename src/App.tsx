@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import "./bulma-rtl.min.css";
+import "./bulma.min.css";
 import { Party } from "./pages/Party";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
@@ -18,7 +18,6 @@ import {
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
-import { Register } from "./pages/Register";
 import { UserProvider } from "./contexts/UserContext";
 
 library.add(
@@ -48,8 +47,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "*",
+    element: <div>Error</div>,
   },
 ]);
 
