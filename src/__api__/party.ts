@@ -1,7 +1,7 @@
 import { UserEventData } from "../types/events";
 import { CreatePartyInterface, PartyInterface } from "../types/party";
 import { User } from "../types/user";
-import { fetchWithToken } from "./helpers";
+import { fetchAPI } from "./helpers";
 
 // export const getParties = async () => {
 //   const data = await fetchAPI<PartyInterface[]>('/party')
@@ -9,7 +9,7 @@ import { fetchWithToken } from "./helpers";
 // }
 
 export const getPartyById = async (id: string) => {
-  const data = await fetchWithToken<PartyInterface>(`/party/${id}`)
+  const data = await fetchAPI<PartyInterface>(`/party/${id}`)
   return data;
 }
 
@@ -19,11 +19,11 @@ export const getPartyById = async (id: string) => {
 // }
 
 export const createParty = async (input: CreatePartyInterface) => {
-  const data = await fetchWithToken<PartyInterface>(`/party`, { method: 'POST', body: JSON.stringify(input) })
+  const data = await fetchAPI<PartyInterface>(`/party`, { method: 'POST', body: JSON.stringify(input) })
   return data;
 }
 
 export const createUser = async (input: UserEventData) => {
-  const data = await fetchWithToken<User>(`/user`, { method: 'POST', body: JSON.stringify(input) })
+  const data = await fetchAPI<User>(`/user`, { method: 'POST', body: JSON.stringify(input) })
   return data;
 }
