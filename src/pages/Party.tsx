@@ -82,7 +82,7 @@ export const Party = () => {
         <div>
           <p className="title">Looks like there is no such party</p>
           <p className="subtitle is-flex is-align-items-baseline">
-            Try to update page or go to{" "}
+            Try to refresh the page or go to{" "}
             <a className="button ml-2" href="/">
               home page
             </a>

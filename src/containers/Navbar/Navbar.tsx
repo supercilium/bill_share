@@ -6,6 +6,7 @@ import { fetchLogout } from "../../__api__/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
+import { Block } from "../../components";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -81,9 +82,13 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
           <div className="modal-content">
             <div className="box">
               {openedPopup === "login" ? (
-                <LoginForm onLogin={() => setOpenedPopup(null)} />
+                <Block title="Log in">
+                  <LoginForm onLogin={() => setOpenedPopup(null)} />
+                </Block>
               ) : (
-                <RegisterForm onRegister={() => setOpenedPopup(null)} />
+                <Block title="Registration">
+                  <RegisterForm onRegister={() => setOpenedPopup(null)} />
+                </Block>
               )}
             </div>
           </div>

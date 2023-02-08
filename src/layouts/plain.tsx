@@ -15,7 +15,7 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
   Aside,
   Footer,
   Main,
-  Navbar: NavbarComponent = true,
+  Navbar: NavbarComponent,
 }) => {
   return (
     <div
