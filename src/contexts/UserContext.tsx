@@ -17,7 +17,9 @@ export const UserProvider: FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(
-    JSON.parse(localStorage.getItem(USER_KEY) || "{}") as User
+    localStorage.getItem(USER_KEY)
+      ? (JSON.parse(localStorage.getItem(USER_KEY) || "{}") as User)
+      : null
   );
 
   useEffect(() => {

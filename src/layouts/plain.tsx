@@ -1,5 +1,6 @@
 import { FC, ReactNode } from "react";
-import { Footer as FooterComponent, Navbar } from "../components";
+import { Footer as FooterComponent } from "../components";
+import { Navbar } from "../containers/Navbar";
 
 interface PlainLayoutInterface {
   Header?: ReactNode;

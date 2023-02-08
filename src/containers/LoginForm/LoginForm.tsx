@@ -47,7 +47,11 @@ export const LoginForm: FC<LoginFormProps> = (props) => {
         />
         <Field
           label="Enter your password"
-          inputProps={{ type: "password", ...register("password") }}
+          inputProps={{
+            type: "password",
+            autoComplete: "current-password",
+            ...register("password"),
+          }}
         />
         <button
           type="submit"

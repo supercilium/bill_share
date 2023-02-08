@@ -53,7 +53,11 @@ export const RegisterForm: FC<RegisterFormProps> = (props) => {
         <Field
           label="Enter your password"
           error={errors.password}
-          inputProps={{ type: "password", ...register("password") }}
+          inputProps={{
+            type: "password",
+            autoComplete: "current-password",
+            ...register("password"),
+          }}
         />
         <button
           type="submit"
