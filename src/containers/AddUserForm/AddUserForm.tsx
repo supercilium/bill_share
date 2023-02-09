@@ -50,7 +50,7 @@ export const AddUserForm = () => {
             ...formHandlers.register("email"),
           }}
         />
-        <Field
+        {/* <Field
           error={errors.userName}
           label="User name"
           inputProps={{
@@ -58,7 +58,7 @@ export const AddUserForm = () => {
             placeholder: "Enter user name",
             ...formHandlers.register("userName"),
           }}
-        />
+        /> */}
         <button
           className="button mb-3"
           type="submit"
