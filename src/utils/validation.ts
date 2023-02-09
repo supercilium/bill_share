@@ -18,7 +18,8 @@ export const itemsSchema = object({
 }).required();
 
 export const addUserSchema = object({
-    userName: string().required(),
+    userName: string(),
+    email: string().required(),
 }).required();
 
 export const addItemSchema = object({

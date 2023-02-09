@@ -17,6 +17,7 @@ export interface DiscountEventData {
 }
 
 export interface UserEventData {
+    id?: string;
     userId?: string;
     userName?: string;
     partyId: string;

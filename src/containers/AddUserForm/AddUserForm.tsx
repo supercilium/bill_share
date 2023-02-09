@@ -9,18 +9,30 @@ import { AddUserLayout } from "../../components/styled/addUserLayout";
 export const AddUserForm = () => {
   const { partyId } = useParams();
 
-  const formHandlers = useForm<{ userName: string }>({
+  const formHandlers = useForm<{ userName?: string; email: string }>({
     resolver: yupResolver(addUserSchema),
     defaultValues: {
-      userName: "",
+      userName: undefined,
+      email: "",
     },
     mode: "all",
   });
 
   const { isValid, isDirty, errors } = formHandlers.formState;
 
-  const handleAddUser = ({ userName }: { userName: string }) => {
-    sendEvent({ type: "add user", userName, partyId: partyId as string });
+  const handleAddUser = ({
+    userName,
+    email,
+  }: {
+    userName?: string;
+    email: string;
+  }) => {
+    sendEvent({
+      type: "add user",
+      userName,
+      email,
+      partyId: partyId as string,
+    });
     formHandlers.reset();
   };
 
@@ -30,14 +42,21 @@ export const AddUserForm = () => {
 
       <AddUserLayout onSubmit={formHandlers.handleSubmit(handleAddUser)}>
         <Field
+          error={errors.email}
+          label="Email"
+          inputProps={{
+            type: "email",
+            placeholder: "Enter email",
+            ...formHandlers.register("email"),
+          }}
+        />
+        <Field
           error={errors.userName}
           label="User name"
           inputProps={{
             type: "text",
             placeholder: "Enter user name",
-            ...formHandlers.register("userName", {
-              required: true,
-            }),
+            ...formHandlers.register("userName"),
           }}
         />
         <button
