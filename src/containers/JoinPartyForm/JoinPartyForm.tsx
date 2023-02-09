@@ -9,8 +9,13 @@ export const JoinPartyForm: FC<{
   const { partyId } = useParams();
 
   const [userName, setUserName] = useState<string | undefined>();
+  const [email, setEmail] = useState<string | undefined>();
   const handleCreateUser = async () => {
-    const response = await createUser({ userName, partyId: partyId as string });
+    const response = await createUser({
+      email,
+      userName,
+      partyId: partyId as string,
+    });
 
     if ("error" in response) {
       console.log(response.error);
@@ -33,6 +38,18 @@ export const JoinPartyForm: FC<{
           name="username"
           value={userName}
           onChange={({ target }) => setUserName(target.value)}
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="username" className="label">
+          Enter your email
+        </label>
+        <input
+          className="input"
+          type="email"
+          name="email"
+          value={email}
+          onChange={({ target }) => setEmail(target.value)}
         />
       </div>
       <button

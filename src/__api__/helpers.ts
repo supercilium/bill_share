@@ -1,5 +1,3 @@
-import { USER_KEY } from "../contexts/UserContext";
-
 export function getURL(path: RequestInfo) {
   return `${process.env.REACT_APP_API_URL || "http://localhost:3001"
     }${path}`;
