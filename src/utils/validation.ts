@@ -38,3 +38,8 @@ export const loginSchema = object({
     email: string().required(),
     password: string().required(),
 }).required();
+
+export const partySettingsSchema = object({
+    discountPercent: number().min(0).max(100).default(0),
+    discount: number().min(0).when('total', (total, schema) => schema.max(total)).default(0),
+}).required();

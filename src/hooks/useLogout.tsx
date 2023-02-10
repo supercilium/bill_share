@@ -9,7 +9,6 @@ export const useLogout = ({ queryKey }: { queryKey: QueryKey }) => {
 
   const { status, error } = state || {};
   useEffect(() => {
-    console.log(error);
     if (status === "error" && error) {
       if (error.status === 401) {
         setUser(null);
