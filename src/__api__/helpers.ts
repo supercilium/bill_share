@@ -28,17 +28,6 @@ export const fetchAPI: FetchType = async (input, init) => {
     const data = await response.json();
     return data;
   } else {
-    const err = await response.text()
-    throw new Error(err || 'Network error');
+    return Promise.reject(response);
   }
-}
-
-export const fetchWithToken: FetchType = async (input, init) => {
-  const { headers, ...rest } = init || {};
-  return fetchAPI(input, {
-    headers: {
-      ...(headers || {})
-    },
-    ...(rest || {})
-  })
 }

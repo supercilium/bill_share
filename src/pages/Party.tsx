@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
@@ -18,9 +18,15 @@ import { PartyView } from "../containers/PartyView";
 import copy from "copy-to-clipboard";
 import { Navbar } from "../containers/Navbar";
 import { useQuery, useQueryClient } from "react-query";
+import { useUser } from "../contexts/UserContext";
+import { PartyInterface } from "../types/party";
+import { useLogout } from "../hooks/useLogout";
 
 export const Party = () => {
   const { partyId } = useParams();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   const socket = socketClient.socket;
   const [currentUser, setCurrentUser] = useState<User>(
@@ -28,13 +34,18 @@ export const Party = () => {
   );
 
   const queryClient = useQueryClient();
-  const { data: party, status } = useQuery(
+  const { data: party, status } = useQuery<
+    PartyInterface,
+    Response,
+    PartyInterface
+  >(
     ["party", partyId],
     () =>
-      getPartyById(partyId as string).finally(() => {
+      getPartyById(partyId as string).then((result) => {
         if (!socketClient.connected) {
           socketClient.connect(partyId as string, eventHandler);
         }
+        return Promise.resolve(result);
       }),
     {
       retry: false,
@@ -57,6 +68,14 @@ export const Party = () => {
     },
     [partyId, queryClient]
   );
+
+  useEffect(() => {
+    if (!user && pathname) {
+      navigate(`/login?returnPath=${pathname}`);
+    }
+  }, [navigate, pathname, user]);
+
+  useLogout({ queryKey: ["party", partyId] });
 
   if (status === "loading") {
     return (

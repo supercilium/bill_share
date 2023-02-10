@@ -1,11 +1,28 @@
 import { Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { LoginForm } from "../containers/LoginForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RegisterForm } from "../containers/RegisterForm";
+import { useUser } from "../contexts/UserContext";
+import { useLocation, useNavigate } from "react-router";
 
 export const Login = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const { user } = useUser();
+  const { search } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (search) {
+        const returnPath = new URLSearchParams(search).get("returnPath");
+        returnPath && navigate(returnPath);
+      } else {
+        navigate("/");
+      }
+    }
+  }, [user, search, navigate]);
+
   return (
     <PlainLayout
       Header={
@@ -29,6 +46,11 @@ export const Login = () => {
           <div className="columns is-desktop is-flex is-justify-content-center">
             <div className="column is-half">
               <div className="box">
+                {search && (
+                  <p className="has-text-grey-dark is-size-5 mb-3">
+                    Log in to proceed
+                  </p>
+                )}
                 {activeTab === "login" && <LoginForm />}
                 {activeTab === "register" && <RegisterForm />}
               </div>

@@ -4,19 +4,18 @@ import { useParams } from "react-router";
 import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
-import { ErrorRequest } from "../../__api__/helpers";
 import { createUser } from "../../__api__/party";
 
 export const JoinPartyForm: FC<{
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
 }> = ({ setCurrentUser }) => {
   const { partyId } = useParams();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
 
   const [userName, setUserName] = useState<string | undefined>();
   const { mutate, isLoading } = useMutation<
     User,
-    ErrorRequest,
+    Response,
     UserEventData,
     unknown
   >(createUser, {
@@ -24,7 +23,9 @@ export const JoinPartyForm: FC<{
       setCurrentUser(data);
     },
     onError: (error) => {
-      console.log(error);
+      if (error.status === 401) {
+        setUser(null);
+      }
       // const message = getErrorMessage(error);
       // setFormError(message);
     },

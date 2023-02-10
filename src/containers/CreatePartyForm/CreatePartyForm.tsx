@@ -8,12 +8,11 @@ import { Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
 import { createPartySchema } from "../../utils/validation";
 import { useMutation } from "react-query";
-import { ErrorRequest } from "../../__api__/helpers";
 
 interface CreatePartyFormProps {}
 
 export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { id } = user || {};
   const {
     register,
@@ -30,7 +29,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation<
     PartyInterface,
-    ErrorRequest,
+    Response,
     CreatePartyInterface,
     unknown
   >(createParty, {
@@ -38,7 +37,9 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       navigate(`/party/${data?.id}`);
     },
     onError: (error) => {
-      console.log(error);
+      if (error.status === 401) {
+        setUser(null);
+      }
       // const message = getErrorMessage(error);
       // setFormError(message);
     },
