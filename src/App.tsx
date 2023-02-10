@@ -5,6 +5,8 @@ import { Party } from "./pages/Party";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import {
   faCrown,
   faWineGlassEmpty,
@@ -52,13 +54,25 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
+
 const App = () => {
   return (
-    <UserProvider>
-      <UISettingsProvider>
-        <RouterProvider router={router} />
-      </UISettingsProvider>
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <UISettingsProvider>
+          <RouterProvider router={router} />
+        </UISettingsProvider>
+      </UserProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 

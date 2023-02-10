@@ -11,7 +11,7 @@ export interface ErrorRequest {
   timestamp: string;
 }
 
-export type FetchType = <JSON = unknown>(input: RequestInfo, init?: RequestInit) => Promise<JSON | ErrorRequest>
+export type FetchType = <JSON = unknown>(input: RequestInfo, init?: RequestInit) => Promise<JSON>
 
 export const fetchAPI: FetchType = async (input, init) => {
   const requestInfo: RequestInfo = typeof input === 'string' ? getURL(input) : { ...input, url: getURL(input.url) };
@@ -28,8 +28,8 @@ export const fetchAPI: FetchType = async (input, init) => {
     const data = await response.json();
     return data;
   } else {
-    const err = await response.json()
-    return err as ErrorRequest;
+    const err = await response.text()
+    throw new Error(err || 'Network error');
   }
 }
 

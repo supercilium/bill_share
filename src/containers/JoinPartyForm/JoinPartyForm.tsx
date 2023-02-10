@@ -1,7 +1,10 @@
 import React, { FC, useState } from "react";
+import { useMutation } from "react-query";
 import { useParams } from "react-router";
 import { useUser } from "../../contexts/UserContext";
+import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
+import { ErrorRequest } from "../../__api__/helpers";
 import { createUser } from "../../__api__/party";
 
 export const JoinPartyForm: FC<{
@@ -11,19 +14,28 @@ export const JoinPartyForm: FC<{
   const { user } = useUser();
 
   const [userName, setUserName] = useState<string | undefined>();
+  const { mutate, isLoading } = useMutation<
+    User,
+    ErrorRequest,
+    UserEventData,
+    unknown
+  >(createUser, {
+    onSuccess: (data) => {
+      setCurrentUser(data);
+    },
+    onError: (error) => {
+      console.log(error);
+      // const message = getErrorMessage(error);
+      // setFormError(message);
+    },
+  });
+
   const handleCreateUser = async () => {
-    const response = await createUser({
+    mutate({
       userId: user?.id,
       userName: userName || undefined,
       partyId: partyId as string,
     });
-
-    if ("error" in response) {
-      console.log(response.error);
-      return;
-    }
-    // localStorage.setItem("user", JSON.stringify(response));
-    setCurrentUser(response);
   };
 
   return (
@@ -45,8 +57,9 @@ export const JoinPartyForm: FC<{
       )}
       <button
         type="submit"
-        className="button"
+        className={isLoading ? "button is-loading" : "button"}
         onClick={() => handleCreateUser()}
+        disabled={isLoading}
       >
         Join party
       </button>

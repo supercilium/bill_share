@@ -2,10 +2,12 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { RegisterInterface } from "../../types/user";
+import { LoginInterface, RegisterInterface, User } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
 import { signInSchema } from "../../utils/validation";
+import { useMutation } from "react-query";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface RegisterFormProps {
   onRegister?: () => void;
@@ -21,16 +23,28 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     mode: "onBlur",
   });
   const { setUser } = useUser();
+  const { mutate, isLoading } = useMutation<
+    User,
+    ErrorRequest,
+    LoginInterface,
+    unknown
+  >(fetchRegister, {
+    onSuccess: (data) => {
+      onRegister?.();
+      setUser && setUser(data);
+    },
+    onError: (error) => {
+      console.log(error);
+      // const message = getErrorMessage(error);
+      // setFormError(message);
+    },
+  });
 
   const onSubmit: SubmitHandler<RegisterInterface> = async (data) => {
     if (!isValid) {
       return;
     }
-    const response = await fetchRegister(data);
-    if ("id" in response) {
-      setUser(response);
-      onRegister?.();
-    }
+    mutate(data);
   };
 
   return (
@@ -44,7 +58,11 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
         <Field
           label="Enter your email"
           error={errors.email}
-          inputProps={{ type: "email", ...register("email") }}
+          inputProps={{
+            type: "email",
+            autoComplete: "email",
+            ...register("email"),
+          }}
         />
         <Field
           label="Enter your password"
@@ -57,8 +75,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
         />
         <button
           type="submit"
-          className="button"
-          disabled={!isValid || !isDirty}
+          className={isLoading ? "button is-loading" : "button"}
+          disabled={!isValid || !isDirty || isLoading}
         >
           Register
         </button>

@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
-import { PartyInterface } from "../types/party";
 import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
@@ -18,55 +17,48 @@ import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
 import copy from "copy-to-clipboard";
 import { Navbar } from "../containers/Navbar";
+import { useQuery, useQueryClient } from "react-query";
 
 export const Party = () => {
   const { partyId } = useParams();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const socket = socketClient.socket;
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
-  const [party, setParty] = useState<PartyInterface | null>(null);
 
-  const fetchParty = async (id: string) => {
-    try {
-      setIsLoading(true);
-      const parties = await getPartyById(id);
-      if ("error" in parties) {
-        setParty(null);
-      } else {
-        setParty(parties as PartyInterface);
+  const queryClient = useQueryClient();
+  const { data: party, status } = useQuery(
+    ["party", partyId],
+    () =>
+      getPartyById(partyId as string).finally(() => {
         if (!socketClient.connected) {
-          socketClient.connect(id, eventHandler);
+          socketClient.connect(partyId as string, eventHandler);
         }
+      }),
+    {
+      retry: false,
+      enabled: !!partyId,
+    }
+  );
+
+  const eventHandler = useCallback(
+    (event: MessageEvent<string>) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "error") {
+          console.error(data.message);
+          return;
+        }
+        queryClient.setQueryData(["party", partyId], data);
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-    setIsLoading(false);
-  };
+    },
+    [partyId, queryClient]
+  );
 
-  const eventHandler = useCallback((event: MessageEvent<string>) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.type === "error") {
-        console.error(data.message);
-        return;
-      }
-      setParty(data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (partyId) {
-      fetchParty(partyId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (isLoading) {
+  if (status === "loading") {
     return (
       <HeroLayout>
         <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
@@ -76,7 +68,7 @@ export const Party = () => {
     );
   }
 
-  if (!party || !partyId) {
+  if (!party || !partyId || status === "error") {
     return (
       <HeroLayout>
         <div>

@@ -2,10 +2,12 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginInterface } from "../../types/user";
+import { LoginInterface, User } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
 import { loginSchema } from "../../utils/validation";
+import { useMutation } from "react-query";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface LoginFormProps {
   onLogin?: () => void;
@@ -21,16 +23,27 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
     mode: "onBlur",
   });
   const { setUser } = useUser();
-
+  const { mutate, isLoading } = useMutation<
+    User,
+    ErrorRequest,
+    LoginInterface,
+    unknown
+  >(fetchLogin, {
+    onSuccess: (data) => {
+      onLogin?.();
+      setUser && setUser(data);
+    },
+    onError: (error) => {
+      console.log(error);
+      // const message = getErrorMessage(error);
+      // setFormError(message);
+    },
+  });
   const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
     if (!isValid) {
       return;
     }
-    const response = await fetchLogin(data);
-    if ("id" in response) {
-      setUser(response);
-      onLogin?.();
-    }
+    mutate(data);
   };
 
   return (
@@ -39,7 +52,11 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         <Field
           label="Enter your email"
           error={errors.email}
-          inputProps={{ type: "email", ...register("email") }}
+          inputProps={{
+            type: "email",
+            autoComplete: "email",
+            ...register("email"),
+          }}
         />
         <Field
           label="Enter your password"
@@ -51,8 +68,8 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         />
         <button
           type="submit"
-          className="button"
-          disabled={!isValid || !isDirty}
+          className={isLoading ? "button is-loading" : "button"}
+          disabled={!isValid || !isDirty || isLoading}
         >
           Log in
         </button>
