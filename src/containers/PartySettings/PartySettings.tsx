@@ -2,33 +2,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Block, Columns, Field } from "../../components";
+import { FormSettings } from "../../contexts/PartySettingsContext";
 import {
   IS_PARTY_HINTS_HIDDEN,
   useUISettings,
 } from "../../contexts/UIsettings";
-import { useDebounce } from "../../hooks/useDebounce";
 import { PartyInterface } from "../../types/party";
 import { sendEvent } from "../../utils/eventHandlers";
-import { socketClient } from "../../__api__/socket";
 import { AddUserForm } from "../AddUserForm";
 
 export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
-  const handlers = useFormContext();
+  const handlers = useFormContext<FormSettings>();
   const { areHintsVisible, setHintsVisibility, setAsideVisibility } =
     useUISettings();
 
   const discountPercentHandlers = handlers.register("discountPercent");
-  const discountHandlers = handlers.register("discount");
   const total = handlers.watch("total");
-  const discountPercent = handlers.watch("discountPercent", 0);
-  const debouncedDiscount = useDebounce<number>(+discountPercent, 500);
-
-  useEffect(() => {
-    if ((debouncedDiscount + "").length > 0 && socketClient.connected) {
-      handleUpdateDiscount(debouncedDiscount);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedDiscount]);
+  const discountHandlers = handlers.register("discount", { max: total });
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -204,47 +194,92 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                   </div>
                 </article>
               )}
-
-              <Field
-                label="Full party discount (absolute value)"
-                inputProps={{
-                  type: "number",
-                  min: 0,
-                  max: total,
-                  style: { maxWidth: "10rem" },
-                  ...discountHandlers,
-                  onChange: (e) => {
-                    if (total) {
-                      handlers.setValue(
-                        "discountPercent",
-                        Number(((+e.target.value * 100) / +total).toFixed(13))
-                      );
+              <label htmlFor="discount" className="label">
+                Discount (absolute amount)
+              </label>
+              <div className="field has-addons">
+                <div className="control is-flex-grow-1">
+                  <input
+                    id="discount"
+                    className={
+                      handlers.formState.errors.discount
+                        ? "input is-danger"
+                        : "input"
                     }
+                    type="number"
+                    placeholder="0"
+                    min={0}
+                    max={total}
+                    {...discountHandlers}
+                  />
+                </div>
+                <div className="control">
+                  <button
+                    disabled={!!handlers.formState.errors.discount}
+                    onClick={() => {
+                      const values = handlers.getValues();
+                      let { discountPercent, discount } = values;
+                      if (total && !handlers.formState.errors.discount) {
+                        discountPercent = Number(
+                          (((discount || 0) * 100) / +total).toFixed(13)
+                        );
+                        handlers.setValue("discountPercent", discountPercent);
+                      }
 
-                    return discountHandlers.onChange(e);
-                  },
-                }}
-              />
-              <Field
-                label="Full party discount (percent)"
-                inputProps={{
-                  type: "number",
-                  min: 0,
-                  max: 100,
-                  step: 5,
-                  style: { maxWidth: "10rem" },
-                  ...discountPercentHandlers,
-                  onChange: (e) => {
-                    if (total) {
-                      handlers.setValue(
-                        "discount",
-                        Number((+e.target.value * +total * 0.01).toFixed(2))
-                      );
+                      return handleUpdateDiscount(discountPercent || 0);
+                    }}
+                    className="button is-info"
+                  >
+                    <FontAwesomeIcon icon="check" />
+                  </button>
+                </div>
+              </div>
+              <label htmlFor="discountPercent" className="label">
+                Discount in percentage (%)
+              </label>
+              <div className="field has-addons">
+                <div className="control is-flex-grow-1">
+                  <input
+                    id="discountPercent"
+                    className={
+                      handlers.formState.errors.discountPercent
+                        ? "input is-danger"
+                        : "input"
                     }
-                    return discountPercentHandlers.onChange(e);
-                  },
-                }}
-              />
+                    type="number"
+                    placeholder="0"
+                    min={0}
+                    max={100}
+                    step={5}
+                    {...discountPercentHandlers}
+                  />
+                </div>
+                <div className="control">
+                  <button
+                    disabled={!!handlers.formState.errors.discountPercent}
+                    onClick={() => {
+                      const values = handlers.getValues();
+                      if (total && !handlers.formState.errors.discountPercent) {
+                        handlers.setValue(
+                          "discount",
+                          Number(
+                            (
+                              (values.discountPercent || 0) *
+                              +total *
+                              0.01
+                            ).toFixed(2)
+                          )
+                        );
+                      }
+
+                      return handleUpdateDiscount(values.discountPercent || 0);
+                    }}
+                    className="button is-info"
+                  >
+                    <FontAwesomeIcon icon="check" />
+                  </button>
+                </div>
+              </div>
             </Block>
           </div>
         </div>

@@ -1,6 +1,8 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import React, { FC, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { User } from "../types/user";
+import { partySettingsSchema } from "../utils/validation";
 
 export interface FormSettings {
   isEquallyVisible: boolean;
@@ -27,6 +29,8 @@ export const PartySettingsProvider: FC<{
       discountPercent: 0,
       discount: 0,
     },
+    resolver: yupResolver(partySettingsSchema),
+    mode: "all",
   });
 
   const view = handlers.watch("view");

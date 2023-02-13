@@ -6,7 +6,7 @@ export const socketClient = {
         if (socketClient.connected) {
             return;
         }
-        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'localhost:3001'}/ws/${id}`);
+        socketClient.socket = new WebSocket(`${process.env.REACT_APP_API_SOCKET_URL || 'ws://localhost:8087'}/ws/${id}`);
 
         socketClient.socket.onopen = () => {
             socketClient.connected = true;
@@ -29,12 +29,12 @@ export const socketClient = {
             cb(message);
         }
     },
-    reConnect: (cb: (event: MessageEvent<string>) => void) => {
+    reConnect: (id: string, cb: (event: MessageEvent<string>) => void) => {
         if (socketClient.socket && socketClient.socket.readyState !== 3) {
             socketClient.socket.close();
             socketClient.connected = false;
         }
 
-        socketClient.connect(socketClient.socket.url, cb);
+        socketClient.connect(id, cb);
     }
 }

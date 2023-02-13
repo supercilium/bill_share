@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
-import { PartyInterface } from "../types/party";
 import { getPartyById } from "../__api__/party";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
@@ -17,55 +16,68 @@ import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
 import copy from "copy-to-clipboard";
+import { Navbar } from "../containers/Navbar";
+import { useQuery, useQueryClient } from "react-query";
+import { useUser } from "../contexts/UserContext";
+import { PartyInterface } from "../types/party";
+import { useLogout } from "../hooks/useLogout";
 
 export const Party = () => {
   const { partyId } = useParams();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user } = useUser();
+
   const socket = socketClient.socket;
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
-  const [party, setParty] = useState<PartyInterface | null>(null);
 
-  const fetchParty = async (id: string) => {
-    try {
-      setIsLoading(true);
-      const parties = await getPartyById(id);
-      if ("error" in parties) {
-        setParty(null);
-      } else {
-        setParty(parties as PartyInterface);
+  const queryClient = useQueryClient();
+  const { data: party, status } = useQuery<
+    PartyInterface,
+    Response,
+    PartyInterface
+  >(
+    ["party", partyId],
+    () =>
+      getPartyById(partyId as string).then((result) => {
         if (!socketClient.connected) {
-          socketClient.connect(id, eventHandler);
+          socketClient.connect(partyId as string, eventHandler);
         }
-      }
-    } catch (err) {
-      console.log(err);
+        return Promise.resolve(result);
+      }),
+    {
+      retry: false,
+      enabled: !!partyId,
     }
-    setIsLoading(false);
-  };
+  );
 
-  const eventHandler = useCallback((event: MessageEvent<string>) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.type === "error") {
-        console.error(data.message);
-        return;
+  const eventHandler = useCallback(
+    (event: MessageEvent<string>) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "error") {
+          console.error(data.message);
+          return;
+        }
+        queryClient.setQueryData(["party", partyId], data);
+      } catch (err) {
+        console.error(err);
       }
-      setParty(data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+    },
+    [partyId, queryClient]
+  );
 
   useEffect(() => {
-    if (partyId) {
-      fetchParty(partyId);
+    if (!user && pathname) {
+      navigate(`/login?returnPath=${pathname}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate, pathname, user]);
 
-  if (isLoading) {
+  useLogout({ queryKey: ["party", partyId] });
+
+  if (status === "loading") {
     return (
       <HeroLayout>
         <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
@@ -75,13 +87,13 @@ export const Party = () => {
     );
   }
 
-  if (!party || !partyId) {
+  if (!party || !partyId || status === "error") {
     return (
       <HeroLayout>
         <div>
           <p className="title">Looks like there is no such party</p>
           <p className="subtitle is-flex is-align-items-baseline">
-            Try to update page or go to{" "}
+            Try to refresh the page or go to{" "}
             <a className="button ml-2" href="/">
               home page
             </a>
@@ -104,7 +116,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() => socketClient.reConnect(eventHandler)}
+              onClick={() => socketClient.reConnect(partyId, eventHandler)}
               className="button ml-2"
             >
               re-connect
@@ -139,6 +151,7 @@ export const Party = () => {
   return (
     <PartySettingsProvider>
       <PlainLayout
+        Navbar={<Navbar />}
         Header={
           <Header>
             <h2 className="title is-3">
@@ -147,16 +160,15 @@ export const Party = () => {
                 Welcome to {party?.name}
               </span>
               <span>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a
+                <button
                   title="Copy link to the party"
-                  className="ml-3 is-size-4"
+                  className="button is-ghost"
                   onClick={() => {
                     copy(window.location.href);
                   }}
                 >
                   <FontAwesomeIcon icon="link" />
-                </a>
+                </button>
               </span>
             </h2>
           </Header>

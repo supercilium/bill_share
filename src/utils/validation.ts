@@ -1,5 +1,11 @@
 import { array, object, string, number } from "yup";
 
+export const createPartySchema = object({
+    // userName: yup.string().required(),
+    partyName: string().required(),
+    id: string().required(),
+}).required();
+
 export const itemsSchema = object({
     items: array().of(
         object().shape({
@@ -12,11 +18,28 @@ export const itemsSchema = object({
 }).required();
 
 export const addUserSchema = object({
-    userName: string().required(),
+    userName: string(),
+    email: string().required(),
 }).required();
 
 export const addItemSchema = object({
     name: string().required(),
     price: number().min(0).default(0).required(),
     amount: number().min(1).integer().required(),
+}).required();
+
+export const signInSchema = object({
+    name: string().required(),
+    email: string().required(),
+    password: string().required(),
+}).required();
+
+export const loginSchema = object({
+    email: string().required(),
+    password: string().required(),
+}).required();
+
+export const partySettingsSchema = object({
+    discountPercent: number().min(0).max(100).default(0),
+    discount: number().min(0).when('total', (total, schema) => schema.max(total)).default(0),
 }).required();

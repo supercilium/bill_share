@@ -17,9 +17,11 @@ export interface DiscountEventData {
 }
 
 export interface UserEventData {
+    id?: string;
     userId?: string;
     userName?: string;
     partyId: string;
+    email?: string;
 }
 
 export interface ItemEventData extends Partial<Omit<Item, 'id' | 'users'>> {
