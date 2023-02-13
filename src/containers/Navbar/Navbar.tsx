@@ -69,7 +69,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
                   onClick={() => setOpenedPopup("login")}
                   className="button is-light"
                 >
-                  Log in
+                  Sign in
                 </button>
               </>
             )

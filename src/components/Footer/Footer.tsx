@@ -1,9 +1,10 @@
 import { FC, ReactNode } from "react";
 import { Columns } from "../Columns";
+import { VersionTag } from "./Footer.styles";
 
 export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <footer className="footer">
+    <footer className="footer is-relative">
       {children}
       <hr />
       <Columns>
@@ -26,6 +27,9 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
           </p>
         </div>
       </Columns>
+      <VersionTag className="has-text-right is-size-7 has-text-grey">
+        <p className="container px-2">V. {process.env.REACT_APP_VERSION}</p>
+      </VersionTag>
     </footer>
   );
 };
