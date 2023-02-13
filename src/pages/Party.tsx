@@ -151,7 +151,7 @@ export const Party = () => {
   return (
     <PartySettingsProvider>
       <PlainLayout
-        Navbar={<Navbar shouldShowAuthButtons={true} />}
+        Navbar={<Navbar />}
         Header={
           <Header>
             <h2 className="title is-3">
@@ -160,16 +160,15 @@ export const Party = () => {
                 Welcome to {party?.name}
               </span>
               <span>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a
+                <button
                   title="Copy link to the party"
-                  className="ml-3 is-size-4"
+                  className="button is-ghost"
                   onClick={() => {
                     copy(window.location.href);
                   }}
                 >
                   <FontAwesomeIcon icon="link" />
-                </a>
+                </button>
               </span>
             </h2>
           </Header>

@@ -81,6 +81,27 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
           <div className="modal-background"></div>
           <div className="modal-content">
             <div className="box">
+              <div className="tabs is-large">
+                <ul>
+                  <li className={openedPopup === "login" ? "is-active" : ""}>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a role="button" onClick={() => setOpenedPopup("login")}>
+                      Log in
+                    </a>
+                  </li>
+                  <li
+                    className={
+                      openedPopup === "registration" ? "is-active" : ""
+                    }
+                  >
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a onClick={() => setOpenedPopup("registration")}>
+                      Register
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
               {openedPopup === "login" ? (
                 <Block title="Log in">
                   <LoginForm onLogin={() => setOpenedPopup(null)} />

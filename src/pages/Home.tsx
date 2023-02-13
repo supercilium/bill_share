@@ -5,6 +5,7 @@ import { RegisterForm } from "../containers/RegisterForm";
 import { useState } from "react";
 import { useUser } from "../contexts/UserContext";
 import { CreatePartyForm } from "../containers/CreatePartyForm";
+import { Navbar } from "../containers/Navbar";
 
 export const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -13,6 +14,7 @@ export const Home = () => {
 
   return (
     <PlainLayout
+      Navbar={<Navbar shouldShowAuthButtons={false} />}
       Header={
         <Header>
           <h1 className="title is-1">Party for everybody</h1>
