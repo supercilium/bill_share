@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
+import { socketClient } from "../../__api__/socket";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -24,6 +25,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
     } catch (err) {
       console.error(err);
     }
+    socketClient?.disconnect();
     setUser(null);
     navigate("/");
   };

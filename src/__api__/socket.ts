@@ -30,11 +30,15 @@ export const socketClient = {
         }
     },
     reConnect: (id: string, cb: (event: MessageEvent<string>) => void) => {
+        socketClient.disconnect();
+
+        socketClient.connect(id, cb);
+    },
+    disconnect: () => {
         if (socketClient.socket && socketClient.socket.readyState !== 3) {
             socketClient.socket.close();
             socketClient.connected = false;
+            socketClient.error = '';
         }
-
-        socketClient.connect(id, cb);
     }
 }
