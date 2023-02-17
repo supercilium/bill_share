@@ -36,7 +36,7 @@ export const socketClient = {
     },
     disconnect: () => {
         if (socketClient.socket && socketClient.socket.readyState !== 3) {
-            socketClient.socket.close();
+            socketClient.socket?.close?.();
             socketClient.connected = false;
             socketClient.error = '';
         }
