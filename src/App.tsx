@@ -22,6 +22,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { NotificationList } from "./containers/NotificationList";
 
 library.add(
   faCrown,
@@ -68,11 +70,14 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <UISettingsProvider>
-          <RouterProvider router={router} />
-        </UISettingsProvider>
-      </UserProvider>
+      <NotificationProvider>
+        <UserProvider>
+          <UISettingsProvider>
+            <RouterProvider router={router} />
+            <NotificationList />
+          </UISettingsProvider>
+        </UserProvider>
+      </NotificationProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
