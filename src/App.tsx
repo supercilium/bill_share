@@ -13,12 +13,12 @@ import {
   faBeerMugEmpty,
   faSpinner,
   faChampagneGlasses,
-  faLink,
   faXmark,
   faPeopleGroup,
   faSliders,
   faArrowRightFromBracket,
   faCheck,
+  faClone,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
@@ -31,12 +31,12 @@ library.add(
   faBeerMugEmpty,
   faSpinner,
   faChampagneGlasses,
-  faLink,
   faXmark,
   faPeopleGroup,
   faSliders,
   faArrowRightFromBracket,
-  faCheck
+  faCheck,
+  faClone
 );
 
 const router = createBrowserRouter([

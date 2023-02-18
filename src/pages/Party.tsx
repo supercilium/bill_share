@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
@@ -15,7 +14,6 @@ import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
-import copy from "copy-to-clipboard";
 import { Navbar } from "../containers/Navbar";
 import { useQuery, useQueryClient } from "react-query";
 import { useUser } from "../contexts/UserContext";
@@ -23,6 +21,7 @@ import { PartyInterface } from "../types/party";
 import { useLogout } from "../hooks/useLogout";
 import { EventResponseDTO, PartyEvents } from "../types/events";
 import { useNotifications } from "../contexts/NotificationContext";
+import { CopyButton } from "../containers/CopyButton";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -199,22 +198,12 @@ export const Party = () => {
         Navbar={<Navbar />}
         Header={
           <Header>
-            <h2 className="title is-3">
-              <span>
-                {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
-                Welcome to {party?.name}
-              </span>
-              <span>
-                <button
-                  title="Copy link to the party"
-                  className="button is-ghost"
-                  onClick={() => {
-                    copy(window.location.href);
-                  }}
-                >
-                  <FontAwesomeIcon icon="link" />
-                </button>
-              </span>
+            <h2 className="title">
+              <CopyButton
+                title={`${
+                  currentUser.name ? `Hello, ${currentUser.name}` : "Hello"
+                }! Welcome to ${party?.name}`}
+              />
             </h2>
           </Header>
         }
