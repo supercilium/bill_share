@@ -1,4 +1,5 @@
 import { Item } from "./item";
+import { PartyInterface } from "./party";
 
 export type DiscountEvents = "update discount";
 
@@ -47,3 +48,13 @@ export type ItemUserDTO = EventDTO<ItemUserEvents, ItemUserEventData>
 export type DiscountDTO = EventDTO<DiscountEvents, DiscountEventData>
 
 export type EventData = UserDTO | ItemDTO | ItemUserDTO | DiscountDTO;
+
+export interface EventResponseDTO {
+    party: PartyInterface;
+    type: PartyEvents | 'error';
+    message?: string;
+    eventData?: {
+        id: string;
+        name: string;
+    }
+}

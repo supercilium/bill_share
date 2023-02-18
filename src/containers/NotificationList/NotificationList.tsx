@@ -7,7 +7,7 @@ interface NotificationListProps {}
 
 export const NotificationList: FC<NotificationListProps> = (props) => {
   const { alerts, removeAlert } = useNotifications();
-  console.log(alerts);
+
   return (
     <Container>
       {alerts ? (

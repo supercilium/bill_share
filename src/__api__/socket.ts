@@ -2,7 +2,7 @@ export const socketClient = {
     connected: false,
     error: '',
     socket: {} as WebSocket,
-    connect: (id: string, cb: (event: MessageEvent<string>) => void) => {
+    connect: (id: string, onSuccess: (event: MessageEvent<string>) => void, setStateCb?: (state: number) => void) => {
         if (socketClient.connected) {
             return;
         }
@@ -10,29 +10,29 @@ export const socketClient = {
 
         socketClient.socket.onopen = () => {
             socketClient.connected = true;
+            setStateCb?.(socketClient.socket.readyState);
             socketClient.error = '';
-            console.log("is connected");
         }
         socketClient.socket.onerror = () => {
             socketClient.connected = false;
+            setStateCb?.(socketClient.socket.readyState);
             socketClient.error = 'Error during socket connection';
-            console.log("error");
         }
         socketClient.socket.onclose = () => {
             socketClient.connected = false;
-            console.log("is disconnected");
+            setStateCb?.(socketClient.socket.readyState);
             // setTimeout(function () {
             //     socketClient.connect(socketClient.id, cb);
             // }, 1000);
         }
         socketClient.socket.onmessage = (message: MessageEvent<string>) => {
-            cb(message);
+            onSuccess(message);
         }
     },
-    reConnect: (id: string, cb: (event: MessageEvent<string>) => void) => {
+    reConnect: (id: string, onSuccess: (event: MessageEvent<string>) => void, setStateCb?: (state: number) => void) => {
         socketClient.disconnect();
 
-        socketClient.connect(id, cb);
+        socketClient.connect(id, onSuccess, setStateCb);
     },
     disconnect: () => {
         if (socketClient.socket && socketClient.socket.readyState !== 3) {
