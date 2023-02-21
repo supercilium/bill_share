@@ -35,8 +35,8 @@ const mapEventToText: Partial<
 > = {
   "add user": "User added",
   "remove user": "User left",
-  "add item": "Item added",
-  "remove item": "Item removed",
+  "add item": "added",
+  "remove item": "removed",
 };
 const socket = socketClient.socket;
 
@@ -82,12 +82,19 @@ export const Party = () => {
           return;
         }
         if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
-          addAlert({
-            mode: "info",
-            text: `${mapEventToText[data.type]}: ${
-              data.eventData?.name || "(Here should be a name...)"
-            }`,
-          });
+          if (!data.eventData?.itemName) {
+            addAlert({
+              mode: "info",
+              text: `${mapEventToText[data.type]}: ${data.eventData?.userName}`,
+            });
+          } else {
+            addAlert({
+              mode: "info",
+              text: `${data.eventData?.userName} ${mapEventToText[data.type]} ${
+                data.eventData?.itemName
+              }`,
+            });
+          }
         }
         queryClient.setQueryData(["party", partyId], data.party);
       } catch (err) {

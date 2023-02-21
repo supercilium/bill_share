@@ -54,7 +54,7 @@ export interface EventResponseDTO {
     type: PartyEvents | 'error';
     message?: string;
     eventData?: {
-        id: string;
-        name: string;
+        itemName: string;
+        userName: string;
     }
 }
