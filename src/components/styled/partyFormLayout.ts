@@ -6,12 +6,12 @@ export const PartyFormLayout = styled.div<{
   isEquallyVisible: boolean;
 }>`
   display: grid;
-  grid-template-columns: 200px 60px 70px ${({
+  grid-template-columns: 200px 60px 90px ${({
   isDiscountVisible,
   amountOfUsers,
   isEquallyVisible,
 }) =>
-    `${isDiscountVisible ? "60px " : ""} ${isEquallyVisible ? "70px " : ""
+    `${isDiscountVisible ? "85px " : ""} ${isEquallyVisible ? "70px " : ""
     }repeat(${amountOfUsers}, 60px)`};
   gap: 16px;
   width: fit-content;

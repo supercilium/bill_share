@@ -112,7 +112,12 @@ export const UserPartyForm: FC<{
                       <span className="is-size-6">Amount</span>
                       <span className="is-size-6">Price</span>
                       {partySettings.isDiscountVisible && (
-                        <span className="is-size-6">Discount</span>
+                        <span className="is-size-6">
+                          Discount
+                          <span className="is-size-7 has-text-grey ml-1">
+                            (%)
+                          </span>
+                        </span>
                       )}
                     </UserFormLayout>
 

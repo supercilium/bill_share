@@ -9,7 +9,7 @@ export const AddItemLayout = styled.form`
   align-items: flex-end;
 
   @media ${device.tablet} {
-    grid-template-columns: 200px 60px 70px 100px;
+    grid-template-columns: 200px 60px 100px 100px;
     grid-template-rows: none;
   }
 `;

@@ -5,11 +5,11 @@ export const UserFormLayout = styled.div<{
   isEquallyVisible: boolean;
 }>`
   display: grid;
-  grid-template-columns: 200px 60px 70px ${({
+  grid-template-columns: 200px 60px 90px ${({
   isDiscountVisible,
   isEquallyVisible,
 }) =>
-    `${isDiscountVisible ? "60px " : ""}
+    `${isDiscountVisible ? "85px " : ""}
     ${isEquallyVisible ? "3rem " : ""}70px`};
   gap: 16px;
   align-items: center;
