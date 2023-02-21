@@ -15,6 +15,7 @@ export interface DiscountEventData {
     userId?: string;
     partyId: string;
     discount: number;
+    isPercentage: boolean;
 }
 
 export interface UserEventData {

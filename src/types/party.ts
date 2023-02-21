@@ -6,7 +6,7 @@ export interface PartyInterface {
   owner: User;
   id: string;
   discount?: number;
-  discountUnit?: 'percent' | 'amount';
+  isPercentage: boolean;
   users: Array<User>;
   items: Array<Item>;
 }
