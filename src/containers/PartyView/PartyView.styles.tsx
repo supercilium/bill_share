@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { device } from "../../components/styled/constants";
 
 export const StyledPartyForm = styled.div`
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   scrollbar-width: none;

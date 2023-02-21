@@ -5,7 +5,7 @@ export const StyledAside = styled.aside<{ $isVisible: boolean }>`
     left: 0;
     top: 3rem;
     bottom: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     right: 20%;
     transform: translateX(${({ $isVisible }) => $isVisible ? 0 : "-100%"});

@@ -6,5 +6,5 @@ export const StyledTab = styled.li`
 
 export const StyledTabs = styled.div`
     flex-grow: 0;
-    overflow-x: scroll;
+    overflow-x: auto;
 `
