@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
@@ -15,20 +14,41 @@ import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
-import copy from "copy-to-clipboard";
 import { Navbar } from "../containers/Navbar";
 import { useQuery, useQueryClient } from "react-query";
 import { useUser } from "../contexts/UserContext";
 import { PartyInterface } from "../types/party";
 import { useLogout } from "../hooks/useLogout";
+import { EventResponseDTO, PartyEvents } from "../types/events";
+import { useNotifications } from "../contexts/NotificationContext";
+import { CopyButton } from "../containers/CopyButton";
+
+const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
+  "add user",
+  "remove user",
+  "add item",
+  "remove item",
+];
+
+const mapEventToText: Partial<
+  Record<typeof EVENTS_SHOULD_NOTIFY[number], string>
+> = {
+  "add user": "User added",
+  "remove user": "User left",
+  "add item": "added",
+  "remove item": "removed",
+};
+const socket = socketClient.socket;
 
 export const Party = () => {
   const { partyId } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user } = useUser();
+  const { addAlert } = useNotifications();
+  const shouldNotify = useRef<boolean>(false);
 
-  const socket = socketClient.socket;
+  const [socketState, setSocketState] = useState<number>(socket.readyState);
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
@@ -43,7 +63,7 @@ export const Party = () => {
     () =>
       getPartyById(partyId as string).then((result) => {
         if (!socketClient.connected) {
-          socketClient.connect(partyId as string, eventHandler);
+          socketClient.connect(partyId as string, eventHandler, setSocketState);
         }
         return Promise.resolve(result);
       }),
@@ -56,17 +76,32 @@ export const Party = () => {
   const eventHandler = useCallback(
     (event: MessageEvent<string>) => {
       try {
-        const data = JSON.parse(event.data);
+        const data = JSON.parse(event.data) as EventResponseDTO;
         if (data.type === "error") {
-          console.error(data.message);
+          addAlert({ mode: "danger", text: data.message });
           return;
         }
-        queryClient.setQueryData(["party", partyId], data);
+        if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
+          if (!data.eventData?.itemName) {
+            addAlert({
+              mode: "info",
+              text: `${mapEventToText[data.type]}: ${data.eventData?.userName}`,
+            });
+          } else {
+            addAlert({
+              mode: "info",
+              text: `${data.eventData?.userName} ${mapEventToText[data.type]} ${
+                data.eventData?.itemName
+              }`,
+            });
+          }
+        }
+        queryClient.setQueryData(["party", partyId], data.party);
       } catch (err) {
         console.error(err);
       }
     },
-    [partyId, queryClient]
+    [addAlert, partyId, queryClient]
   );
 
   useEffect(() => {
@@ -74,6 +109,25 @@ export const Party = () => {
       navigate(`/login?returnPath=${pathname}`);
     }
   }, [navigate, pathname, user]);
+
+  useEffect(() => {
+    if (socketState === 3) {
+      addAlert({
+        mode: "danger",
+        text: "Connection is lost",
+      });
+      shouldNotify.current = true;
+
+      socketClient.reConnect(partyId as string, eventHandler, setSocketState);
+    }
+    if (socketState === 1 && shouldNotify.current) {
+      addAlert({
+        mode: "success",
+        text: `Connected to ${party?.name}`,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addAlert, socketState]);
 
   useLogout({ queryKey: ["party", partyId] });
 
@@ -103,12 +157,7 @@ export const Party = () => {
     );
   }
 
-  if (
-    !socket ||
-    socket.readyState === 3 ||
-    socket.readyState === 2 ||
-    socketClient.error
-  ) {
+  if (!socket || socketState === 2 || socketClient.error) {
     return (
       <HeroLayout>
         <div>
@@ -116,7 +165,9 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() => socketClient.reConnect(partyId, eventHandler)}
+              onClick={() =>
+                socketClient.reConnect(partyId, eventHandler, setSocketState)
+              }
               className="button ml-2"
             >
               re-connect
@@ -154,22 +205,12 @@ export const Party = () => {
         Navbar={<Navbar />}
         Header={
           <Header>
-            <h2 className="title is-3">
-              <span>
-                {currentUser.name ? `Hello, ${currentUser.name}` : "Hello"}!
-                Welcome to {party?.name}
-              </span>
-              <span>
-                <button
-                  title="Copy link to the party"
-                  className="button is-ghost"
-                  onClick={() => {
-                    copy(window.location.href);
-                  }}
-                >
-                  <FontAwesomeIcon icon="link" />
-                </button>
-              </span>
+            <h2 className="title">
+              <CopyButton
+                title={`${
+                  currentUser.name ? `Hello, ${currentUser.name}` : "Hello"
+                }! Welcome to ${party?.name}`}
+              />
             </h2>
           </Header>
         }
