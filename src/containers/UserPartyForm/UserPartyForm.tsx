@@ -40,13 +40,14 @@ export const UserPartyForm: FC<{
     reset(party);
     const total = getBaseTotal(party.items);
     setValue("total", total);
-    setValue("discountPercent", party.discount);
-    if (!partySettings.discount && party.discount) {
-      setValue(
-        "discount",
-        Number((+(party.discount || 0) * +total * 0.01).toFixed(2))
-      );
-    }
+    setValue(
+      "discountPercent",
+      party.isPercentage
+        ? party.discount
+        : Number((((party.discount || 0) * 100) / +total).toFixed(2))
+    );
+    setValue("discount", party.discount);
+    setValue("isPercentage", party.isPercentage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [party]);
 

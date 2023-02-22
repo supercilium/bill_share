@@ -1,15 +1,15 @@
 import { Item } from "../types/item";
 
-export const getItemParticipants = (item: Item) => item.equally ? item.users.filter((user) => user.value >= 0) : item.users.filter((user) => user.value > 0);
+export const getItemParticipants = (item: Item) => item.equally ? item.users.filter((user) => user.value >= 0) : item.users.filter((user) => user.value > 0)
 
 export const getItemBaseTotal = (item: Item, amount: number) => item.price * (amount || 0);
 
-export const getItemDiscount = (item: Item, amount: number) => .01 * (item.discount || 0) * (amount || 0);
+export const getItemDiscount = (item: Item, amount: number) => .01 * (item.discount || 0) * (amount || 0) * item.price
 
 export const getItemTotal = (item: Item, amount: number) => getItemBaseTotal(item, amount) - getItemDiscount(item, amount);
 
 export const getTotalDiscount = (items: Item[]) => items.reduce(
-    (acc, item) => acc + item.price * .01 * (item.discount || 0),
+    (acc, item) => acc + item.price * .01 * (item.discount || 0) * (item.amount || 0),
     0
 )
 
@@ -32,8 +32,7 @@ export const getPartyUserDiscount = (items: Item[], id: string) => items
         const participants = getItemParticipants(item);
         const userIndex = participants.findIndex((user) => user.id === id);
         if (userIndex >= 0) {
-            const itemTotal = item.equally ? getItemBaseTotal(item, item.amount) : getItemBaseTotal(item, item.users[userIndex].value);
-            return acc + itemTotal * (item.equally ? getItemDiscount(item, item.amount) / participants.length : getItemDiscount(item, item.users[userIndex].value));
+            return acc + (item.equally ? getItemDiscount(item, item.amount) / participants.length : getItemDiscount(item, item.users[userIndex].value));
         }
         return acc;
     }, 0)

@@ -10,6 +10,7 @@ export interface FormSettings {
   view: "party" | "user";
   user?: User;
   discount?: number;
+  isPercentage: boolean;
   discountPercent?: number;
   total: number;
 }
@@ -28,6 +29,7 @@ export const PartySettingsProvider: FC<{
       total: 0,
       discountPercent: 0,
       discount: 0,
+      isPercentage: true,
     },
     resolver: yupResolver(partySettingsSchema),
     mode: "all",
@@ -35,7 +37,7 @@ export const PartySettingsProvider: FC<{
 
   const view = handlers.watch("view");
   const discount = handlers.watch("discount");
-  const discountPercent = handlers.watch("discountPercent");
+  const isPercentage = handlers.watch("isPercentage");
   const total = handlers.watch("total");
 
   useEffect(() => {
@@ -46,7 +48,11 @@ export const PartySettingsProvider: FC<{
   }, [view]);
 
   useEffect(() => {
-    if (!discountPercent || !total || !discount) {
+    if (!total || !discount) {
+      handlers.setValue("discountPercent", 0);
+      return;
+    }
+    if (isPercentage) {
       return;
     }
     handlers.setValue("discountPercent", (discount * 100) / total);

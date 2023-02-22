@@ -16,8 +16,8 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const { areHintsVisible, setHintsVisibility, setAsideVisibility } =
     useUISettings();
 
-  const discountPercentHandlers = handlers.register("discountPercent");
   const total = handlers.watch("total");
+  const isPercentage = handlers.watch("isPercentage");
   const discountHandlers = handlers.register("discount", { max: total });
 
   useEffect(() => {
@@ -34,11 +34,12 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleUpdateDiscount = async (discount: number) => {
+  const handleUpdateDiscount = async () => {
     sendEvent({
       type: "update discount",
       partyId: party.id,
-      discount,
+      discount: handlers.getValues("discount") || 0,
+      isPercentage: handlers.getValues("isPercentage"),
     });
   };
   const handleRemoveUser = (userId: string) => {
@@ -177,110 +178,75 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             ) : null}
           </div>
         </Columns>
-        <div className="columns">
+        <div className="columns mb-0">
           <div className="column is-two-thirds">
-            <Block>
-              <p className="has-text-grey-dark is-size-5 mb-3">
-                Discounts and tips
-              </p>
-              {areHintsVisible && (
-                <article className="message">
-                  <div className="message-body">
-                    You can add discount for any item by switching on discount
-                    column or by putting discount for full bill here. In
-                    percentage or absolute amount - these fields are calculated
-                    depending on total sum of your bill. All discounts (item's
-                    and for full bill) will be summarized.
-                  </div>
-                </article>
-              )}
-              <label htmlFor="discount" className="label">
-                Discount (absolute amount)
-              </label>
-              <div className="field has-addons">
-                <div className="control is-flex-grow-1">
-                  <input
-                    id="discount"
-                    className={
-                      handlers.formState.errors.discount
-                        ? "input is-danger"
-                        : "input"
-                    }
-                    type="number"
-                    placeholder="0"
-                    min={0}
-                    max={total}
-                    {...discountHandlers}
-                  />
+            <p className="has-text-grey-dark is-size-5 mb-0">
+              Discounts and tips
+            </p>
+            {areHintsVisible && (
+              <article className="message">
+                <div className="message-body">
+                  You can add discount for any item by switching on discount
+                  column or by putting discount for full bill here. In
+                  percentage or absolute amount - these fields are calculated
+                  depending on total sum of your bill. All discounts (item's and
+                  for full bill) will be summarized.
                 </div>
-                <div className="control">
-                  <button
-                    disabled={!!handlers.formState.errors.discount}
-                    onClick={() => {
-                      const values = handlers.getValues();
-                      let { discountPercent, discount } = values;
-                      if (total && !handlers.formState.errors.discount) {
-                        discountPercent = Number(
-                          (((discount || 0) * 100) / +total).toFixed(13)
-                        );
-                        handlers.setValue("discountPercent", discountPercent);
-                      }
-
-                      return handleUpdateDiscount(discountPercent || 0);
-                    }}
-                    className="button is-info"
-                  >
-                    <FontAwesomeIcon icon="check" />
-                  </button>
-                </div>
+              </article>
+            )}
+          </div>
+        </div>
+        <div className="columns">
+          <div className="column is-narrow">
+            <label htmlFor="discount" className="label">
+              Discount {isPercentage ? "(%)" : "(absolute amount)"}
+            </label>
+            <div className="field has-addons">
+              <div className="control is-flex-grow-1">
+                <input
+                  id="discount"
+                  className={
+                    handlers.formState.errors.discount
+                      ? "input is-danger"
+                      : "input"
+                  }
+                  type="number"
+                  placeholder="0"
+                  min={0}
+                  max={total}
+                  {...discountHandlers}
+                />
               </div>
-              <label htmlFor="discountPercent" className="label">
-                Discount in percentage (%)
-              </label>
-              <div className="field has-addons">
-                <div className="control is-flex-grow-1">
-                  <input
-                    id="discountPercent"
-                    className={
-                      handlers.formState.errors.discountPercent
-                        ? "input is-danger"
-                        : "input"
+              <div className="control">
+                <button
+                  disabled={!!handlers.formState.errors.discount}
+                  onClick={() => {
+                    const values = handlers.getValues();
+                    let { discountPercent, discount, isPercentage } = values;
+                    if (total && !handlers.formState.errors.discount) {
+                      discountPercent = isPercentage
+                        ? discount
+                        : Number(
+                            (((discount || 0) * 100) / +total).toFixed(13)
+                          );
+                      handlers.setValue("discountPercent", discountPercent);
                     }
-                    type="number"
-                    placeholder="0"
-                    min={0}
-                    max={100}
-                    step={5}
-                    {...discountPercentHandlers}
-                  />
-                </div>
-                <div className="control">
-                  <button
-                    disabled={!!handlers.formState.errors.discountPercent}
-                    onClick={() => {
-                      const values = handlers.getValues();
-                      if (total && !handlers.formState.errors.discountPercent) {
-                        handlers.setValue(
-                          "discount",
-                          Number(
-                            (
-                              (values.discountPercent || 0) *
-                              +total *
-                              0.01
-                            ).toFixed(2)
-                          )
-                        );
-                      }
 
-                      return handleUpdateDiscount(values.discountPercent || 0);
-                    }}
-                    className="button is-info"
-                  >
-                    <FontAwesomeIcon icon="check" />
-                  </button>
-                </div>
+                    return handleUpdateDiscount();
+                  }}
+                  className="button is-info"
+                >
+                  <FontAwesomeIcon icon="check" />
+                </button>
               </div>
-            </Block>
+            </div>
+            <Field
+              label=" Discount is in percentage"
+              inputProps={{
+                type: "checkbox",
+                ...handlers.register("isPercentage"),
+              }}
+            />
           </div>
         </div>
       </Block>

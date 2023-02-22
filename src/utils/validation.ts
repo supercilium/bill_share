@@ -39,6 +39,20 @@ export const loginSchema = object({
 }).required();
 
 export const partySettingsSchema = object({
-    discountPercent: number().min(0).max(100).default(0),
-    discount: number().min(0).when('total', (total, schema) => schema.max(total)).default(0),
+    discount: number()
+        .positive()
+        .test({
+            name: 'max',
+            exclusive: false,
+            params: {},
+            // eslint-disable-next-line no-template-curly-in-string
+            message: '${path} must be less than total price',
+            test: function (value) {
+                if (this.parent.isPercentage) {
+                    return (value || 0) <= 100
+                }
+                return (value || 0) <= parseFloat(this.parent.total)
+            },
+        })
+        .default(0),
 }).required();
