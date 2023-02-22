@@ -36,13 +36,13 @@ export const AddUserForm = () => {
   return (
     <Block>
       <p className="has-text-grey-dark is-size-5 mb-3">Add participant</p>
-      <Field
+      {/* <Field
         label=" User is registered"
         inputProps={{
           type: "checkbox",
           ...formHandlers.register("isUserRegistered"),
         }}
-      />
+      /> */}
       <AddUserLayout onSubmit={formHandlers.handleSubmit(handleAddUser)}>
         <Field
           error={errors.identifier}
