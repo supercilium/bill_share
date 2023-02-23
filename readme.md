@@ -6,7 +6,7 @@ To run the app:
 
 - clone the repo, install dependencies
 
-- get Postgres 15
+- get Postgres 14
 
 - create a db and corresponding user:
 
