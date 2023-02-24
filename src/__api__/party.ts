@@ -9,7 +9,7 @@ interface RequestParams {
 
 export const getParties = async (params: RequestParams) => {
     const query = new URLSearchParams(params)
-    const data = await fetchAPI<PartiesListDTO>(`/party?${query}}`)
+    const data = await fetchAPI<PartiesListDTO>(`/parties?${query}`)
     return data;
 }
 
