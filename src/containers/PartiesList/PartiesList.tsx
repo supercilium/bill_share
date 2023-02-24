@@ -7,6 +7,8 @@ import { getParties } from "../../__api__/party";
 
 interface PartiesListProps {}
 
+const PAGE_SIZE = 10;
+
 export const PartiesList: FC<PartiesListProps> = (props) => {
   const [page, setPage] = useState(0);
   const { user } = useUser();
@@ -15,7 +17,11 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
   const { data, status } = useQuery<PartiesListDTO, Response, PartiesListDTO>(
     ["parties", userId, page],
     () =>
-      getParties({ userId: userId as string, start: "" + page, size: "10" }),
+      getParties({
+        userId: userId as string,
+        start: "" + page * PAGE_SIZE,
+        size: "" + PAGE_SIZE,
+      }),
     {
       retry: false,
       enabled: !!userId,
@@ -28,7 +34,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
 
   const { amount, data: parties } = data;
 
-  const pages = Math.ceil(amount / 10);
+  const pages = Math.ceil(amount / PAGE_SIZE);
 
   return (
     <div>
