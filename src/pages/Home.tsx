@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useUser } from "../contexts/UserContext";
 import { CreatePartyForm } from "../containers/CreatePartyForm";
 import { Navbar } from "../containers/Navbar";
+import { PartiesList } from "../containers/PartiesList";
 
 export const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -45,7 +46,7 @@ export const Home = () => {
                 {activeTab === "register" && <RegisterForm />}
               </div>
             )}
-            <div />
+            <div>{user && <PartiesList />}</div>
           </Columns>
         </Main>
       }
