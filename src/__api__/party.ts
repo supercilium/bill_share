@@ -13,9 +13,9 @@ export const getParties = async (params: RequestParams) => {
     return data;
 }
 
-export const getPartyById = async (id: string) => fetchAPI<PartyInterface>(`/party/${id}`)
+export const getPartyById = async (id: string) => fetchAPI<PartyInterface>(`/parties/${id}`)
 
-export const createParty = async (input: CreatePartyInterface) => fetchAPI<PartyInterface>(`/party`, { method: 'POST', body: JSON.stringify(input) })
+export const createParty = async (input: CreatePartyInterface) => fetchAPI<PartyInterface>(`/parties`, { method: 'POST', body: JSON.stringify(input) })
 
 
 export const createUser = async (input: UserEventData) => fetchAPI<User>(`/user`, { method: 'POST', body: JSON.stringify(input) })
