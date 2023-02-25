@@ -35,6 +35,9 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
     },
     onError: (error) => {
       console.log(error);
+      if (error.status === "401") {
+        setUser(null);
+      }
       // const message = getErrorMessage(error);
       // setFormError(message);
     },

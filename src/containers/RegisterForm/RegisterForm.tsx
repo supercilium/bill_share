@@ -35,6 +35,9 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     },
     onError: (error) => {
       console.log(error);
+      if (error.status === "401") {
+        setUser(null);
+      }
       // const message = getErrorMessage(error);
       // setFormError(message);
     },

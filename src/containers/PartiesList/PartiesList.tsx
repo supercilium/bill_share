@@ -1,6 +1,9 @@
 import { FC, useState } from "react";
 import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
+import { Block } from "../../components";
 import { Loader } from "../../components/Loader";
+import { Pagination } from "../../components/Pagination";
 import { useUser } from "../../contexts/UserContext";
 import { PartiesListDTO } from "../../types/party";
 import { getParties } from "../../__api__/party";
@@ -11,7 +14,7 @@ const PAGE_SIZE = 10;
 
 export const PartiesList: FC<PartiesListProps> = (props) => {
   const [page, setPage] = useState(0);
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const userId = user?.id;
 
   const { data, status } = useQuery<PartiesListDTO, Response, PartiesListDTO>(
@@ -25,38 +28,46 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
     {
       retry: false,
       enabled: !!userId,
+      onError: (err) => {
+        if (err.status === 401) {
+          setUser(null);
+        }
+      },
     }
   );
 
-  if (!data || status !== "success") {
+  if (status === "loading") {
     return <Loader />;
   }
+
+  if (!data) return null;
 
   const { amount, data: parties } = data;
 
   const pages = Math.ceil(amount / PAGE_SIZE);
 
   return (
-    <div>
+    <div className="box">
+      <Block title="Your parties">
+        <div>
+          {parties?.length > 0 &&
+            parties.map((party) => (
+              <div>
+                <Link to={`/party/${party.id}`}>{party.name}</Link>
+              </div>
+            ))}
+        </div>
+      </Block>
       <div>
-        {parties?.length > 0 &&
-          parties.map((party) => (
-            <a href={`/party/${party.id}`}>{party.name}</a>
-          ))}
-      </div>
-      <div>pagination mock</div>
-      <div>
-        {pages > 1 &&
-          new Array(pages).fill(1).map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`button${page === i ? " primary" : ""}`}
-              onClick={() => setPage(i)}
-            >
-              {i + 1}
-            </button>
-          ))}
+        {pages > 1 && (
+          <Pagination
+            size={pages}
+            activePage={page + 1}
+            onChangePage={(value) => {
+              setPage(value - 1);
+            }}
+          />
+        )}
       </div>
     </div>
   );

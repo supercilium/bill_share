@@ -44,7 +44,7 @@ export const Party = () => {
   const { partyId } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { addAlert } = useNotifications();
   const shouldNotify = useRef<boolean>(false);
 
@@ -70,6 +70,11 @@ export const Party = () => {
     {
       retry: false,
       enabled: !!partyId,
+      onError: (err) => {
+        if (err.status === 401) {
+          setUser(null);
+        }
+      },
     }
   );
 
