@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
@@ -53,7 +54,19 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
           {parties?.length > 0 &&
             parties.map((party) => (
               <div>
-                <Link to={`/party/${party.id}`}>{party.name}</Link>
+                <Link to={`/party/${party.id}`}>
+                  {party.isOwner && (
+                    <i>
+                      <FontAwesomeIcon
+                        className="mr-2"
+                        icon="crown"
+                        size="2xs"
+                        title="You are the master of the party"
+                      />
+                    </i>
+                  )}
+                  {party.name}
+                </Link>
               </div>
             ))}
         </div>

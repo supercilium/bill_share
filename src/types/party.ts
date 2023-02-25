@@ -20,6 +20,7 @@ export interface CreatePartyInterface {
 export interface PartyListInterface {
   id: string;
   name: string;
+  isOwner: boolean;
 }
 export interface PartiesListDTO {
   data: PartyListInterface[];
