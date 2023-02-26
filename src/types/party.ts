@@ -16,3 +16,13 @@ export interface CreatePartyInterface {
   // userName: string;
   id: string;
 }
+
+export interface PartyListInterface {
+  id: string;
+  name: string;
+  isOwner: boolean;
+}
+export interface PartiesListDTO {
+  data: PartyListInterface[];
+  amount: number;
+}
