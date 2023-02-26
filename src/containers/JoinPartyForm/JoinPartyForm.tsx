@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
-import { createUser } from "../../__api__/party";
+import { createUser } from "../../__api__/users";
 
 export const JoinPartyForm: FC<{
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
