@@ -7,7 +7,7 @@ import { Loader } from "../../components/Loader";
 import { Pagination } from "../../components/Pagination";
 import { useUser } from "../../contexts/UserContext";
 import { PartiesListDTO } from "../../types/party";
-import { getParties } from "../../__api__/party";
+import { getParties } from "../../__api__/parties";
 
 interface PartiesListProps {}
 
@@ -41,7 +41,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
     return <Loader />;
   }
 
-  if (!data) return null;
+  if (!data || !data.data || !data.amount) return null;
 
   const { amount, data: parties } = data;
 

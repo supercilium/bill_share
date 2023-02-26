@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { createParty } from "../../__api__/party";
+import { createParty } from "../../__api__/parties";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CreatePartyInterface, PartyInterface } from "../../types/party";
 import { SubmitHandler, useForm } from "react-hook-form";

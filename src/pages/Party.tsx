@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
-import { getPartyById } from "../__api__/party";
+import { getPartyById } from "../__api__/parties";
 import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";

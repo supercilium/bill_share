@@ -1,6 +1,4 @@
-import { UserEventData } from "../types/events";
 import { CreatePartyInterface, PartiesListDTO, PartyInterface } from "../types/party";
-import { User } from "../types/user";
 import { fetchAPI } from "./helpers";
 
 interface RequestParams {
@@ -16,6 +14,3 @@ export const getParties = async (params: RequestParams) => {
 export const getPartyById = async (id: string) => fetchAPI<PartyInterface>(`/parties/${id}`)
 
 export const createParty = async (input: CreatePartyInterface) => fetchAPI<PartyInterface>(`/parties`, { method: 'POST', body: JSON.stringify(input) })
-
-
-export const createUser = async (input: UserEventData) => fetchAPI<User>(`/user`, { method: 'POST', body: JSON.stringify(input) })
