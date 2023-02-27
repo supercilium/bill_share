@@ -151,7 +151,7 @@ export const UserPartyForm: FC<{
                                       target.value === item.name ||
                                       !isValid
                                     ) {
-                                      return new Promise(() => {});
+                                      return new Promise(() => { });
                                     }
                                     return handleChangeItem({
                                       itemId: item.id,
@@ -174,11 +174,11 @@ export const UserPartyForm: FC<{
                                     onBlur: ({ target }) => {
                                       if (
                                         +target.value ===
-                                          item.users[item.originalUserIndex]
-                                            .value ||
+                                        item.users[item.originalUserIndex]
+                                          .value ||
                                         !isValid
                                       ) {
-                                        return new Promise(() => {});
+                                        return new Promise(() => { });
                                       }
 
                                       return handleUpdateUserItem({
@@ -190,11 +190,10 @@ export const UserPartyForm: FC<{
                                 />
                               ) : (
                                 <span className="has-text-grey-light is-size-6">
-                                  {`${item.amount}${
-                                    item.participants > 1
+                                  {`${item.amount}${item.participants > 1
                                       ? ` / ${item.participants}`
                                       : ""
-                                  }`}
+                                    }`}
                                 </span>
                               )}
                             </span>
@@ -212,7 +211,7 @@ export const UserPartyForm: FC<{
                                       +target.value === item.price ||
                                       !isValid
                                     ) {
-                                      return new Promise(() => {});
+                                      return new Promise(() => { });
                                     }
 
                                     return handleChangeItem({
@@ -240,7 +239,7 @@ export const UserPartyForm: FC<{
                                         +target.value === item.discount ||
                                         !isValid
                                       ) {
-                                        return new Promise(() => {});
+                                        return new Promise(() => { });
                                       }
 
                                       return handleChangeItem({
@@ -258,7 +257,7 @@ export const UserPartyForm: FC<{
                           </UserFormLayout>
                           {partySettings.isEquallyVisible && (
                             <Field
-                              label=" Calculate item equally"
+                              label=" Share item for all"
                               inputProps={{
                                 type: "checkbox",
                                 ...register(
