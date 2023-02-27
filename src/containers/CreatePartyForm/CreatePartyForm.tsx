@@ -6,9 +6,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
-import { createPartySchema } from "../../utils/validation";
+import {
+  createPartySchema,
+  getValidationErrorsFromREsponse,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
-import { ErrorRequest } from "../../__api__/helpers";
 
 interface CreatePartyFormProps {}
 
@@ -43,15 +45,10 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
         setUser(null);
       }
       if (error) {
-        const body: ErrorRequest = await error.json();
-        if (body.validation) {
-          Object.keys(body.validation).forEach((key: string) => {
-            setError(key as keyof CreatePartyInterface, {
-              type: "value",
-              message: body?.validation?.[key],
-            });
-          });
-        }
+        getValidationErrorsFromREsponse<CreatePartyInterface>({
+          error,
+          setError,
+        });
       }
 
       // const message = getErrorMessage(error);

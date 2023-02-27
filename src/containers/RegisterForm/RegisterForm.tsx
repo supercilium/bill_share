@@ -5,9 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterInterface, User } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
-import { signInSchema } from "../../utils/validation";
+import {
+  getValidationErrorsFromREsponse,
+  signInSchema,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
-import { ErrorRequest } from "../../__api__/helpers";
 
 interface RegisterFormProps {
   onRegister?: () => void;
@@ -39,15 +41,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
         setUser(null);
       }
       if (error) {
-        const body: ErrorRequest = await error.json();
-        if (body.validation) {
-          Object.keys(body.validation).forEach((key: string) => {
-            setError(key as keyof RegisterInterface, {
-              type: "value",
-              message: body?.validation?.[key],
-            });
-          });
-        }
+        getValidationErrorsFromREsponse<RegisterInterface>({ error, setError });
       }
       // const message = getErrorMessage(error);
       // setFormError(message);

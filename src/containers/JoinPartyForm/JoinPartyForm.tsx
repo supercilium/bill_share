@@ -6,7 +6,7 @@ import { Columns, Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
-import { ErrorRequest } from "../../__api__/helpers";
+import { getValidationErrorsFromREsponse } from "../../utils/validation";
 import { createUser } from "../../__api__/users";
 
 interface JoinPartyFormInterface {
@@ -44,15 +44,10 @@ export const JoinPartyForm: FC<{
         setUser(null);
       }
       if (error) {
-        const body: ErrorRequest = await error.json();
-        if (body.validation) {
-          Object.keys(body.validation).forEach((key: string) => {
-            setError(key as keyof JoinPartyFormInterface, {
-              type: "value",
-              message: body?.validation?.[key],
-            });
-          });
-        }
+        getValidationErrorsFromREsponse<JoinPartyFormInterface>({
+          error,
+          setError,
+        });
       }
 
       // const message = getErrorMessage(error);

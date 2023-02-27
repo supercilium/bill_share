@@ -5,7 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginInterface, User } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
-import { loginSchema } from "../../utils/validation";
+import {
+  getValidationErrorsFromREsponse,
+  loginSchema,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 
@@ -41,12 +44,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
       if (error) {
         const body: ErrorRequest = await error.json();
         if (body.validation) {
-          Object.keys(body.validation).forEach((key: string) => {
-            setError(key as keyof LoginInterface, {
-              type: "value",
-              message: body?.validation?.[key],
-            });
-          });
+          getValidationErrorsFromREsponse<LoginInterface>({ error, setError });
         }
       }
       // const message = getErrorMessage(error);

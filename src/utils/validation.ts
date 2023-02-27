@@ -1,4 +1,6 @@
+import { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { array, object, string, number } from "yup";
+import { ErrorRequest } from "../__api__/helpers";
 
 export const createPartySchema = object({
   // userName: yup.string().required(),
@@ -56,3 +58,30 @@ export const partySettingsSchema = object({
     })
     .default(0),
 }).required();
+
+export const getValidationErrorsFromREsponse = async <
+  T extends FieldValues = FieldValues
+>({
+  error,
+  setError,
+}: {
+  error: Response;
+  setError: UseFormSetError<T>;
+}) => {
+  try {
+    const body: ErrorRequest = await error.json();
+    if (body.validation) {
+      Object.keys(body.validation).forEach((key: string) => {
+        if (!body?.validation?.[key]) {
+          return;
+        }
+        setError(key as Path<T>, {
+          type: "value",
+          message: body?.validation?.[key],
+        });
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
