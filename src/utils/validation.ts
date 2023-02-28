@@ -59,29 +59,21 @@ export const partySettingsSchema = object({
     .default(0),
 }).required();
 
-export const getValidationErrorsFromREsponse = async <
+export const getValidationErrorsFromREsponse = <
   T extends FieldValues = FieldValues
 >({
   error,
   setError,
 }: {
-  error: Response;
+  error: ErrorRequest;
   setError: UseFormSetError<T>;
 }) => {
-  try {
-    const body: ErrorRequest = await error.json();
-    if (body.validation) {
-      Object.keys(body.validation).forEach((key: string) => {
-        if (!body?.validation?.[key]) {
-          return;
-        }
-        setError(key as Path<T>, {
-          type: "value",
-          message: body?.validation?.[key],
-        });
+  if (error.validation) {
+    Object.keys(error.validation).forEach((key: string) => {
+      setError(key as Path<T>, {
+        type: "value",
+        message: error?.validation?.[key],
       });
-    }
-  } catch (err) {
-    console.error(err);
+    });
   }
 };

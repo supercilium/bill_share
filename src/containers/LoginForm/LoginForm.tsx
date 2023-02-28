@@ -27,9 +27,9 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
     mode: "onBlur",
   });
   const { setUser } = useUser();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
-    Response,
+    ErrorRequest,
     LoginInterface,
     unknown
   >(fetchLogin, {
@@ -42,13 +42,8 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         setUser(null);
       }
       if (error) {
-        const body: ErrorRequest = await error.json();
-        if (body.validation) {
-          getValidationErrorsFromREsponse<LoginInterface>({ error, setError });
-        }
+        getValidationErrorsFromREsponse<LoginInterface>({ error, setError });
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
     },
   });
   const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
@@ -60,6 +55,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
 
   return (
     <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
           label="Enter your email"
@@ -72,6 +68,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         />
         <Field
           label="Enter your password"
+          error={errors.password}
           inputProps={{
             type: "password",
             autoComplete: "current-password",

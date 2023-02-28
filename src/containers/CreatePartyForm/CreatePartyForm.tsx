@@ -11,6 +11,7 @@ import {
   getValidationErrorsFromREsponse,
 } from "../../utils/validation";
 import { useMutation } from "react-query";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface CreatePartyFormProps {}
 
@@ -31,9 +32,9 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     mode: "onBlur",
   });
   const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     PartyInterface,
-    Response,
+    ErrorRequest,
     CreatePartyInterface,
     unknown
   >(createParty, {
@@ -50,9 +51,6 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
           setError,
         });
       }
-
-      // const message = getErrorMessage(error);
-      // setFormError(message);
     },
   });
 
@@ -70,6 +68,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       action=""
       onSubmit={handleSubmit(onSubmit)}
     >
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <h2 className="title is-3 my-2">Create your party</h2>
         {/* Field for /party/temporary creation */}

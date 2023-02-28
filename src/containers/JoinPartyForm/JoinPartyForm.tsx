@@ -7,6 +7,7 @@ import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
 import { getValidationErrorsFromREsponse } from "../../utils/validation";
+import { ErrorRequest } from "../../__api__/helpers";
 import { createUser } from "../../__api__/users";
 
 interface JoinPartyFormInterface {
@@ -30,9 +31,9 @@ export const JoinPartyForm: FC<{
     mode: "onBlur",
   });
 
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
-    Response,
+    ErrorRequest,
     UserEventData,
     unknown
   >(createUser, {
@@ -49,9 +50,6 @@ export const JoinPartyForm: FC<{
           setError,
         });
       }
-
-      // const message = getErrorMessage(error);
-      // setFormError(message);
     },
   });
 
@@ -69,6 +67,7 @@ export const JoinPartyForm: FC<{
   return (
     <form className="container" onSubmit={handleSubmit(handleCreateUser)}>
       <h2 className="title is-2 my-5">Joining the party</h2>
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <Columns>
         <div>
           {!user && (

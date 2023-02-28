@@ -10,6 +10,7 @@ import {
   signInSchema,
 } from "../../utils/validation";
 import { useMutation } from "react-query";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface RegisterFormProps {
   onRegister?: () => void;
@@ -26,9 +27,9 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     mode: "onBlur",
   });
   const { setUser } = useUser();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
-    Response,
+    ErrorRequest,
     RegisterInterface,
     unknown
   >(fetchRegister, {
@@ -43,8 +44,6 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       if (error) {
         getValidationErrorsFromREsponse<RegisterInterface>({ error, setError });
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
     },
   });
 
@@ -57,6 +56,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
 
   return (
     <form id="register-form" className="mt-5" onSubmit={handleSubmit(onSubmit)}>
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
           label="Enter your name"
