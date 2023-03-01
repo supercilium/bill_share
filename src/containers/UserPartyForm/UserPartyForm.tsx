@@ -57,14 +57,34 @@ export const UserPartyForm: FC<{
   const userId = user.id;
   const [userItems, restItems] = splitItems(party.items, userId);
 
-  const handleChangeUserInItem = (id: string, shouldAddUser: boolean) => {
+  const handleRemoveItemFromUser = (id: string) => {
     sendEvent({
-      type: shouldAddUser ? "add user item" : "remove user item",
+      type: "remove user item",
       userId,
       partyId,
       itemId: id,
     });
   };
+
+  const handleChangeUserInItem = (item: Item) => {
+    if (item.equally) {
+      sendEvent({
+        type: "add user item",
+        userId,
+        partyId,
+        itemId: item.id,
+      });
+    } else {
+      sendEvent({
+        type: "update user item",
+        userId,
+        partyId,
+        value: 1,
+        itemId: item.id,
+      });
+    }
+  };
+
   const handleChangeItem = async (
     data: Partial<Omit<Item, "id" | "users">> & { itemId: string }
   ) => {
@@ -136,7 +156,7 @@ export const UserPartyForm: FC<{
                                 className="delete mr-2"
                                 title="Remove item from my bill"
                                 onClick={() =>
-                                  handleChangeUserInItem(item.id, false)
+                                  handleRemoveItemFromUser(item.id)
                                 }
                               />
                               <Field
@@ -318,7 +338,7 @@ export const UserPartyForm: FC<{
                         item.isMuted ? "has-text-grey" : "is-clickable"
                       }
                       onClick={() =>
-                        !item.isMuted && handleChangeUserInItem(item.id, true)
+                        !item.isMuted && handleChangeUserInItem(item)
                       }
                       title={
                         item.isMuted
