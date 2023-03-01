@@ -16,6 +16,10 @@ const userNameValidation = string()
 const passwordValidation = string()
   .required("Field should not be empty")
   .min(8, "Password should be at least 8 characters")
+  .matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+    "A password should contain letters (in both registers) and numbers"
+  )
   .max(30, "Length should not exceeds 30 characters");
 
 const emailValidation = string()
