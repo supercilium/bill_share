@@ -8,6 +8,7 @@ import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
 import { socketClient } from "../../__api__/socket";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -29,6 +30,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
     setUser(null);
     navigate("/");
   };
+  const ref = useClickOutside<HTMLDivElement>(() => setOpenedPopup(null));
 
   return (
     <>
@@ -81,7 +83,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
       {openedPopup && (
         <div className={`modal${openedPopup ? " is-active" : ""}`}>
           <div className="modal-background"></div>
-          <div className="modal-content">
+          <div ref={ref} className="modal-content">
             <div className="box">
               <div className="tabs is-large">
                 <ul>
