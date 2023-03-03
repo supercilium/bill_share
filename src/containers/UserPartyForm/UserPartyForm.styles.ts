@@ -25,4 +25,9 @@ export const StyledUserForm = styled.div`
       display: none;
     }
   } */
-`
+`;
+
+export const PricePerRow = styled.span`
+  display: inline-block;
+  line-height: 40px;
+`;

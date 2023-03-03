@@ -289,7 +289,7 @@ export const PartyForm: FC<{
                 return (
                   <div key={id}>
                     <Field
-                      // error={errors.items?.[i]?.users?[userIndex].value}
+                      error={errors.items?.[i]?.users?.[userIndex]?.value}
                       inputProps={{
                         type: "number",
                         placeholder: "0",

@@ -18,7 +18,7 @@ import { sendEvent } from "../../utils/eventHandlers";
 import { itemsSchema } from "../../utils/validation";
 import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
-import { StyledUserForm } from "./UserPartyForm.styles";
+import { PricePerRow, StyledUserForm } from "./UserPartyForm.styles";
 import { FormWrapper } from "../../components/styled/formWrapper";
 import { OverflowHidden } from "../../components/styled/typography";
 
@@ -164,7 +164,11 @@ export const UserPartyForm: FC<{
                             <span className="is-size-5-touch is-size-4-desktop">
                               {!item.equally ? (
                                 <Field
-                                  error={errors.items?.[i]?.amount}
+                                  error={
+                                    errors.items?.[item.originalIndex]?.users?.[
+                                      item.originalUserIndex
+                                    ]?.value
+                                  }
                                   inputProps={{
                                     type: "number",
                                     min: 0,
@@ -252,9 +256,9 @@ export const UserPartyForm: FC<{
                                 />
                               </span>
                             )}
-                            <span className="is-size-6 has-text-primary-dark">
+                            <PricePerRow className="is-size-6 has-text-primary-dark">
                               {item.total.toFixed(2)}
-                            </span>
+                            </PricePerRow>
                           </UserFormLayout>
                           {partySettings.isEquallyVisible && (
                             <Field
