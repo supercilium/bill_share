@@ -2,12 +2,6 @@ import { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { array, object, string, number } from "yup";
 import { ErrorRequest } from "../__api__/helpers";
 
-export const createPartySchema = object({
-  // userName: yup.string().required(),
-  partyName: string().required(),
-  id: string().required(),
-}).required();
-
 const name = string()
   .required("Field should not be empty")
   .min(2, "Name must be at least two characters")
@@ -37,6 +31,12 @@ const amount = number()
   .min(0, "Amount should be positive!")
   .integer()
   .required();
+
+export const createPartySchema = object({
+  // userName: yup.string().required(),
+  partyName: name,
+  id: string().required(),
+}).required();
 
 export const itemsSchema = object({
   items: array().of(
