@@ -5,7 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginInterface, User } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
-import { loginSchema } from "../../utils/validation";
+import {
+  getValidationErrorsFromREsponse,
+  loginSchema,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 
@@ -15,6 +18,7 @@ interface LoginFormProps {
 
 export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   const {
+    setError,
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
@@ -23,7 +27,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
     mode: "onBlur",
   });
   const { setUser } = useUser();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
     ErrorRequest,
     LoginInterface,
@@ -33,13 +37,13 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
       onLogin?.();
       setUser && setUser(data);
     },
-    onError: (error) => {
-      console.log(error);
-      if (error.status === "401") {
+    onError: async (error) => {
+      if (error.status === 401) {
         setUser(null);
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
+      if (error) {
+        getValidationErrorsFromREsponse<LoginInterface>({ error, setError });
+      }
     },
   });
   const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
@@ -51,6 +55,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
 
   return (
     <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
           label="Enter your email"
@@ -63,6 +68,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         />
         <Field
           label="Enter your password"
+          error={errors.password}
           inputProps={{
             type: "password",
             autoComplete: "current-password",

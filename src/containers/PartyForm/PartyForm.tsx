@@ -1,7 +1,6 @@
-import { FC, useEffect } from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Block, Field } from "../../components";
 import { Item } from "../../types/item";
 import { PartyInterface } from "../../types/party";
@@ -9,8 +8,6 @@ import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../../components";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
 import { sendEvent } from "../../utils/eventHandlers";
-import { itemsSchema } from "../../utils/validation";
-import { getBaseTotal } from "../../utils/calculation";
 import { OverflowHidden } from "../../components/styled/typography";
 import {
   CheckboxWrapper,
@@ -18,6 +15,7 @@ import {
   UserColumnTitle,
 } from "./PartyForm.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParty } from "../../hooks/useParty";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -25,29 +23,11 @@ export const PartyForm: FC<{
 }> = ({ party, currentUser }) => {
   const { users } = party;
   const { partyId } = useParams();
-  const { register, reset, formState } = useForm<PartyInterface>({
-    resolver: yupResolver(itemsSchema),
-    defaultValues: party,
-    mode: "all",
-  });
+  const handlers = useParty({ party });
+  const { register, formState } = handlers;
   const { isValid, errors } = formState;
   const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
-
-  useEffect(() => {
-    reset(party);
-    const total = getBaseTotal(party.items);
-    setValue("total", total);
-    setValue(
-      "discountPercent",
-      party.isPercentage
-        ? party.discount
-        : Number((((party.discount || 0) * 100) / +total).toFixed(2))
-    );
-    setValue("discount", party.discount);
-    setValue("isPercentage", party.isPercentage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [party]);
 
   if (!party.items.length || !partyId) {
     return <EmptyPartyLayout />;
@@ -289,7 +269,7 @@ export const PartyForm: FC<{
                 return (
                   <div key={id}>
                     <Field
-                      // error={errors.items?.[i]?.users?[userIndex].value}
+                      error={errors.items?.[i]?.users?.[userIndex]?.value}
                       inputProps={{
                         type: "number",
                         placeholder: "0",

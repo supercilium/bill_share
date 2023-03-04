@@ -6,8 +6,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
-import { createPartySchema } from "../../utils/validation";
+import {
+  createPartySchema,
+  getValidationErrorsFromREsponse,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface CreatePartyFormProps {}
 
@@ -15,6 +19,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
   const { user, setUser } = useUser();
   const { id } = user || {};
   const {
+    setError,
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
@@ -27,21 +32,25 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     mode: "onBlur",
   });
   const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     PartyInterface,
-    Response,
+    ErrorRequest,
     CreatePartyInterface,
     unknown
   >(createParty, {
     onSuccess: (data) => {
       navigate(`/party/${data?.id}`);
     },
-    onError: (error) => {
+    onError: async (error) => {
       if (error.status === 401) {
         setUser(null);
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
+      if (error) {
+        getValidationErrorsFromREsponse<CreatePartyInterface>({
+          error,
+          setError,
+        });
+      }
     },
   });
 
@@ -59,6 +68,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       action=""
       onSubmit={handleSubmit(onSubmit)}
     >
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <h2 className="title is-3 my-2">Create your party</h2>
         {/* Field for /party/temporary creation */}

@@ -1,69 +1,95 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { useParams } from "react-router";
+import { Columns, Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
+import { getValidationErrorsFromREsponse } from "../../utils/validation";
+import { ErrorRequest } from "../../__api__/helpers";
 import { createUser } from "../../__api__/users";
+
+interface JoinPartyFormInterface {
+  userName: string;
+}
 
 export const JoinPartyForm: FC<{
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
 }> = ({ setCurrentUser }) => {
   const { partyId } = useParams();
   const { user, setUser } = useUser();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid },
+  } = useForm<JoinPartyFormInterface>({
+    defaultValues: {
+      userName: user?.name,
+    },
+    mode: "onBlur",
+  });
 
-  const [userName, setUserName] = useState<string | undefined>();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
-    Response,
+    ErrorRequest,
     UserEventData,
     unknown
   >(createUser, {
     onSuccess: (data) => {
       setCurrentUser(data);
     },
-    onError: (error) => {
+    onError: async (error) => {
       if (error.status === 401) {
         setUser(null);
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
+      if (error) {
+        getValidationErrorsFromREsponse<JoinPartyFormInterface>({
+          error,
+          setError,
+        });
+      }
     },
   });
 
-  const handleCreateUser = async () => {
+  const handleCreateUser: SubmitHandler<JoinPartyFormInterface> = async (
+    values
+  ) => {
+    console.log(values);
     mutate({
       userId: user?.id,
-      userName: userName || undefined,
+      userName: values.userName || undefined,
       partyId: partyId as string,
     });
   };
 
   return (
-    <div className="container">
+    <form className="container" onSubmit={handleSubmit(handleCreateUser)}>
       <h2 className="title is-2 my-5">Joining the party</h2>
-      {!user && (
-        <div className="field">
-          <label htmlFor="username" className="label">
-            Enter your name
-          </label>
-          <input
-            className="input"
-            type="text"
-            name="username"
-            value={userName}
-            onChange={({ target }) => setUserName(target.value)}
-          />
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
+      <Columns>
+        <div>
+          {!user && (
+            <Field
+              label="Enter your name"
+              error={errors.userName}
+              inputProps={{
+                type: "text",
+                ...register("userName"),
+              }}
+            />
+          )}
+          <button
+            type="submit"
+            className={isLoading ? "button is-loading" : "button"}
+            disabled={isLoading || !isValid}
+          >
+            Join party
+          </button>
         </div>
-      )}
-      <button
-        type="submit"
-        className={isLoading ? "button is-loading" : "button"}
-        onClick={() => handleCreateUser()}
-        disabled={isLoading}
-      >
-        Join party
-      </button>
-    </div>
+        <div />
+      </Columns>
+    </form>
   );
 };

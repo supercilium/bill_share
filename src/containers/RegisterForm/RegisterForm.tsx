@@ -2,10 +2,13 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginInterface, RegisterInterface, User } from "../../types/user";
+import { RegisterInterface, User } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
-import { signInSchema } from "../../utils/validation";
+import {
+  getValidationErrorsFromREsponse,
+  signInSchema,
+} from "../../utils/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 
@@ -17,29 +20,30 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid, isDirty },
   } = useForm<RegisterInterface>({
     resolver: yupResolver(signInSchema),
     mode: "onBlur",
   });
   const { setUser } = useUser();
-  const { mutate, isLoading } = useMutation<
+  const { mutate, isLoading, error } = useMutation<
     User,
     ErrorRequest,
-    LoginInterface,
+    RegisterInterface,
     unknown
   >(fetchRegister, {
     onSuccess: (data) => {
       onRegister?.();
       setUser && setUser(data);
     },
-    onError: (error) => {
-      console.log(error);
-      if (error.status === "401") {
+    onError: async (error) => {
+      if (error.status === 401) {
         setUser(null);
       }
-      // const message = getErrorMessage(error);
-      // setFormError(message);
+      if (error) {
+        getValidationErrorsFromREsponse<RegisterInterface>({ error, setError });
+      }
     },
   });
 
@@ -52,6 +56,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
 
   return (
     <form id="register-form" className="mt-5" onSubmit={handleSubmit(onSubmit)}>
+      {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
           label="Enter your name"

@@ -31,7 +31,7 @@ export const PartySettingsProvider: FC<{
       discount: 0,
       isPercentage: true,
     },
-    resolver: yupResolver(partySettingsSchema),
+    // resolver: yupResolver(partySettingsSchema),
     mode: "all",
   });
 
