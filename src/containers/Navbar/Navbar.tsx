@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { Navbar as NavbarUI } from "../../components/Navbar";
 import { fetchLogout } from "../../__api__/auth";
@@ -37,7 +38,8 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
       <NavbarUI
         MobileVisibleItems={
           user && (
-            <span className="navbar-item is-hidden-desktop">
+            <div className="navbar-item is-hidden-desktop">
+              <p className="button is-link is-rounded">{user.name}</p>
               <button
                 onClick={() => handleLogout()}
                 className="button is-link is-inverted"
@@ -48,18 +50,43 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
                 />
                 Log out
               </button>
-            </span>
+            </div>
           )
         }
         NavbarEndItems={
           user ? (
-            <button onClick={() => handleLogout()} className="button is-light">
-              <FontAwesomeIcon
-                className="mr-3"
-                icon="arrow-right-from-bracket"
-              />
-              Log out
-            </button>
+            <>
+              {/* <p className="button is-link is-rounded">{user.name}</p> */}
+              <div className="navbar-item has-dropdown is-hoverable mb-2">
+                <a className="navbar-link">{user.name}</a>
+
+                <div className="navbar-dropdown">
+                  <Link to="/profile" className="navbar-item">
+                    Profile
+                  </Link>
+                  {/* <a className="navbar-item">Stats</a> */}
+                  <hr className="navbar-divider" />
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    className="navbar-item"
+                    href="https://github.com/supercilium/bill_share/issues"
+                  >
+                    Report an issue
+                  </a>
+                </div>
+              </div>
+              <button
+                onClick={() => handleLogout()}
+                className="button is-light"
+              >
+                <FontAwesomeIcon
+                  className="mr-3"
+                  icon="arrow-right-from-bracket"
+                />
+                Log out
+              </button>
+            </>
           ) : (
             shouldShowAuthButtons && (
               <>
