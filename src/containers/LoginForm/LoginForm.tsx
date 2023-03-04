@@ -24,7 +24,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
     formState: { errors, isValid, isDirty },
   } = useForm<LoginInterface>({
     resolver: yupResolver(loginSchema),
-    mode: "onBlur",
+    mode: "all",
   });
   const { setUser } = useUser();
   const { mutate, isLoading, error } = useMutation<

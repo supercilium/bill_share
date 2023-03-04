@@ -29,7 +29,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       id,
     },
     resolver: yupResolver(createPartySchema),
-    mode: "onBlur",
+    mode: "all",
   });
   const navigate = useNavigate();
   const { mutate, isLoading, error } = useMutation<

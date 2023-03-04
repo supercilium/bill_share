@@ -24,7 +24,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     formState: { errors, isValid, isDirty },
   } = useForm<RegisterInterface>({
     resolver: yupResolver(signInSchema),
-    mode: "onBlur",
+    mode: "all",
   });
   const { setUser } = useUser();
   const { mutate, isLoading, error } = useMutation<
