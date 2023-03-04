@@ -77,6 +77,7 @@ export const AddItemForm = () => {
           error={errors.price}
           inputProps={{
             type: "number",
+            step: 0.1,
             min: 0,
             ...formHandlers.register("price"),
           }}
