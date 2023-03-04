@@ -24,6 +24,7 @@ import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { NotificationList } from "./containers/NotificationList";
+import { ErrorPage } from "./pages/Error";
 
 library.add(
   faCrown,
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <div>Error</div>,
+    element: <ErrorPage title="404: Ooops, we didn't prepare such page" />,
   },
 ]);
 
