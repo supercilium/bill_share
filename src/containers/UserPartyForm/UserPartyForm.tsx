@@ -1,6 +1,5 @@
-import React, { FC, useEffect } from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { FC } from "react";
+import { useFormContext } from "react-hook-form";
 import { Block, Columns, Field } from "../../components";
 import { PartyInterface } from "../../types/party";
 import { useParams } from "react-router";
@@ -9,47 +8,28 @@ import { UserFormLayout } from "../../components/styled/userFormLayout";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
 import {
-  getBaseTotal,
   getPartyUserBaseTotal,
   getPartyUserDiscount,
   splitItems,
 } from "../../utils/calculation";
 import { sendEvent } from "../../utils/eventHandlers";
-import { itemsSchema } from "../../utils/validation";
 import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
 import { PricePerRow, StyledUserForm } from "./UserPartyForm.styles";
 import { FormWrapper } from "../../components/styled/formWrapper";
 import { OverflowHidden } from "../../components/styled/typography";
+import { useParty } from "../../hooks/useParty";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
   user: User;
 }> = ({ party, user }) => {
   const { partyId } = useParams();
-  const { register, reset, formState } = useForm<PartyInterface>({
-    resolver: yupResolver(itemsSchema),
-    defaultValues: party,
-    mode: "all",
-  });
+  const handlers = useParty({ party });
+  const { register, formState } = handlers;
   const { isValid, errors } = formState;
-  const { watch, setValue } = useFormContext<FormSettings>();
+  const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
-
-  useEffect(() => {
-    reset(party);
-    const total = getBaseTotal(party.items);
-    setValue("total", total);
-    setValue(
-      "discountPercent",
-      party.isPercentage
-        ? party.discount
-        : Number((((party.discount || 0) * 100) / +total).toFixed(2))
-    );
-    setValue("discount", party.discount);
-    setValue("isPercentage", party.isPercentage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [party]);
 
   if (!partyId) {
     return <EmptyPartyLayout />;

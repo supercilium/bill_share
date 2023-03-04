@@ -31,7 +31,7 @@ const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
 ];
 
 const mapEventToText: Partial<
-  Record<typeof EVENTS_SHOULD_NOTIFY[number], string>
+  Record<(typeof EVENTS_SHOULD_NOTIFY)[number], string>
 > = {
   "add user": "User added",
   "remove user": "User left",
@@ -54,11 +54,11 @@ export const Party = () => {
   );
 
   const queryClient = useQueryClient();
-  const { data: party, status } = useQuery<
-    PartyInterface,
-    Response,
-    PartyInterface
-  >(
+  const {
+    data: party,
+    status,
+    refetch,
+  } = useQuery<PartyInterface, Response, PartyInterface>(
     ["party", partyId],
     () =>
       getPartyById(partyId as string).then((result) => {
@@ -122,8 +122,8 @@ export const Party = () => {
         text: "Connection is lost",
       });
       shouldNotify.current = true;
-
       socketClient.reConnect(partyId as string, eventHandler, setSocketState);
+      refetch();
     }
     if (socketState === 1 && shouldNotify.current) {
       addAlert({
@@ -197,7 +197,7 @@ export const Party = () => {
           UserView={({ user }) => (
             <UserPartyForm party={party} user={user || currentUser} />
           )}
-          PartyView={<PartyView party={party} user={currentUser} />}
+          PartyView={() => <PartyView party={party} user={currentUser} />}
         />
         <AddItemForm />
       </>

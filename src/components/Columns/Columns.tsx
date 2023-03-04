@@ -4,7 +4,7 @@ export const Columns: FC<{ children?: ReactNode[] | ReactNode }> = ({
   children,
 }) => {
   return children ? (
-    <div className="columns">
+    <div className="columns is-tablet">
       {Array.isArray(children) ? (
         children.map((elem, i) => (
           <div key={i} className="column">

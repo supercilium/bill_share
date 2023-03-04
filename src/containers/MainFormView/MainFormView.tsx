@@ -1,11 +1,11 @@
-import { FC, ReactNode, useEffect } from "react";
+import { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { User } from "../../types/user";
 
 interface Props {
   UserView: FC<{ user?: User }>;
-  PartyView: ReactNode;
+  PartyView: FC;
 }
 
 export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
@@ -41,5 +41,5 @@ export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
 
   const view = watch("view", "user");
   const user = watch("user", undefined);
-  return <>{view === "user" ? <UserView user={user} /> : PartyView}</>;
+  return <>{view === "user" ? <UserView user={user} /> : <PartyView />}</>;
 };
