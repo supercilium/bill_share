@@ -54,7 +54,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+    <form noValidate={true} id="login-form" onSubmit={handleSubmit(onSubmit)}>
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field

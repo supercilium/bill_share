@@ -66,6 +66,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       id="start-new-party"
       className="mt-5"
       action=""
+      noValidate={true}
       onSubmit={handleSubmit(onSubmit)}
     >
       {error?.message && <p className="has-text-danger">{error.message}</p>}

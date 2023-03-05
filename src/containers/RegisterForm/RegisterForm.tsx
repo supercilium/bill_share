@@ -55,7 +55,12 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   };
 
   return (
-    <form id="register-form" className="mt-5" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      noValidate={true}
+      id="register-form"
+      className="mt-5"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field

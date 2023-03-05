@@ -43,7 +43,10 @@ export const AddUserForm = () => {
           ...formHandlers.register("isUserRegistered"),
         }}
       /> */}
-      <AddUserLayout onSubmit={formHandlers.handleSubmit(handleAddUser)}>
+      <AddUserLayout
+        noValidate={true}
+        onSubmit={formHandlers.handleSubmit(handleAddUser)}
+      >
         <Field
           error={errors.identifier}
           label={isUserRegistered ? "Email" : "Name"}

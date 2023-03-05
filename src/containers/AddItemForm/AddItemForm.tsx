@@ -48,6 +48,7 @@ export const AddItemForm = () => {
   return (
     <Block title="Add new item to share">
       <AddItemLayout
+        noValidate={true}
         className="mb-3"
         onSubmit={formHandlers.handleSubmit(handleAddItem)}
       >
@@ -58,7 +59,7 @@ export const AddItemForm = () => {
             inputProps={{
               type: "text",
               placeholder: "Enter item name",
-              autoComplete: "off",
+              autoComplete: "item name",
               ...formHandlers.register("name"),
             }}
           />
@@ -77,8 +78,9 @@ export const AddItemForm = () => {
           error={errors.price}
           inputProps={{
             type: "number",
-            step: 0.1,
+            step: 1,
             min: 0,
+            formNoValidate: true,
             ...formHandlers.register("price"),
           }}
         />

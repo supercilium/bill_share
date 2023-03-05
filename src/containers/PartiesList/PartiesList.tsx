@@ -53,7 +53,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
         <div>
           {parties?.length > 0 &&
             parties.map((party) => (
-              <div>
+              <div key={party.id}>
                 <Link to={`/party/${party.id}`}>
                   {party.isOwner && (
                     <i>

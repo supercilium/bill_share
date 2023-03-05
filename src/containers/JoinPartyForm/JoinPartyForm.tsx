@@ -65,7 +65,11 @@ export const JoinPartyForm: FC<{
   };
 
   return (
-    <form className="container" onSubmit={handleSubmit(handleCreateUser)}>
+    <form
+      noValidate={true}
+      className="container"
+      onSubmit={handleSubmit(handleCreateUser)}
+    >
       <h2 className="title is-2 my-5">Joining the party</h2>
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <Columns>

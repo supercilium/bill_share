@@ -134,7 +134,7 @@ export const PartyForm: FC<{
         )}
       </PartyFormLayout>
 
-      <form>
+      <form noValidate={true}>
         {party.items.map((itemProps, i) => {
           const { users: itemUsers, ...item } = itemProps;
           return (

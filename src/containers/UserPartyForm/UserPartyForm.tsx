@@ -96,7 +96,7 @@ export const UserPartyForm: FC<{
       {!party.items?.length ? (
         <EmptyPartyLayout />
       ) : (
-        <form>
+        <form noValidate={true}>
           <Columns containerProps={{ className: "is-flex-wrap-wrap" }}>
             <FormWrapper>
               <StyledUserForm className="box mt-4">
