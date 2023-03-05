@@ -97,7 +97,7 @@ export const UserPartyForm: FC<{
         <EmptyPartyLayout />
       ) : (
         <form>
-          <Columns>
+          <Columns containerProps={{ className: "is-flex-wrap-wrap" }}>
             <FormWrapper>
               <StyledUserForm className="box mt-4">
                 {userItems.length ? (
