@@ -34,6 +34,11 @@ export const fetchAPI: FetchType = async (input, init) => {
     const data = await response.json();
     return data;
   } else {
+    if (response.status === 401) {
+      return Promise.reject<ErrorRequest>({
+        status: 401,
+      });
+    }
     try {
       const error = await response.json();
       return Promise.reject<ErrorRequest>(error);
