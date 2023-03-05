@@ -25,6 +25,7 @@ import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { NotificationList } from "./containers/NotificationList";
 import { ErrorPage } from "./pages/Error";
+import { Profile } from "./pages/Profile";
 
 library.add(
   faCrown,
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "*",
