@@ -6,7 +6,7 @@ export const AddItemLayout = styled.form`
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 0 16px;
-  align-items: flex-end;
+  align-items: flex-start;
 
   @media ${device.tablet} {
     grid-template-columns: 200px 60px 100px 100px;
@@ -17,6 +17,7 @@ export const AddItemLayout = styled.form`
 export const AddItemButton = styled.button`
   grid-column-start: 2;
   grid-column-end: 4;
+  margin-top: calc(24px + 0.5em);
 
   @media ${device.tablet} {
     grid-column-start: auto;
