@@ -178,8 +178,11 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             ) : null}
           </div>
         </Columns>
-        <div className="columns mb-0">
-          <div className="column is-two-thirds">
+        <Columns
+          columnProps={{ className: "is-two-thirds" }}
+          containerProps={{ className: "mb-0" }}
+        >
+          <div>
             <p className="has-text-grey-dark is-size-5 mb-0">
               Discounts and tips
             </p>
@@ -195,9 +198,9 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
               </article>
             )}
           </div>
-        </div>
-        <div className="columns">
-          <div className="column is-narrow">
+        </Columns>
+        <Columns columnProps={{ className: "is-narrow" }}>
+          <div>
             <label htmlFor="discount" className="label">
               Discount {isPercentage ? "(%)" : "(absolute amount)"}
             </label>
@@ -248,7 +251,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
               }}
             />
           </div>
-        </div>
+        </Columns>
       </Block>
     </div>
   );

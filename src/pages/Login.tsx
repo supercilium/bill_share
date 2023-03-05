@@ -1,4 +1,4 @@
-import { Header, Main } from "../components";
+import { Columns, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { LoginForm } from "../containers/LoginForm";
 import { useEffect, useState } from "react";
@@ -43,8 +43,13 @@ export const Login = () => {
       }
       Main={
         <Main>
-          <div className="columns is-desktop is-flex is-justify-content-center">
-            <div className="column is-half">
+          <Columns
+            columnProps={{ className: "column is-half" }}
+            containerProps={{
+              className: "is-desktop is-flex is-justify-content-center",
+            }}
+          >
+            <div>
               <div className="box">
                 {search && (
                   <p className="has-text-grey-dark is-size-5 mb-3">
@@ -55,7 +60,7 @@ export const Login = () => {
                 {activeTab === "register" && <RegisterForm />}
               </div>
             </div>
-          </div>
+          </Columns>
         </Main>
       }
     />
