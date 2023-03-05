@@ -1,17 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 interface NavbarProps {
-  MobileVisibleItems?: React.ReactNode;
   NavbarStartItems?: React.ReactNode;
   NavbarEndItems?: React.ReactNode;
 }
 
 export const Navbar: FC<NavbarProps> = ({
-  MobileVisibleItems,
   NavbarStartItems,
   NavbarEndItems,
 }) => {
+  const [isOpened, setIsOpen] = useState(false);
+
   return (
     <nav
       className="navbar is-fixed-top has-shadow"
@@ -29,29 +29,28 @@ export const Navbar: FC<NavbarProps> = ({
             Party Bill Share
           </span>
         </a>
-        {MobileVisibleItems}
-        {/* {(NavbarEndItems || NavbarStartItems) && (
+        {(NavbarEndItems || NavbarStartItems) && (
+          // eslint-disable-next-line jsx-a11y/anchor-is-valid
           <a
             role="button"
-            className="navbar-burger"
+            className={`navbar-burger${isOpened ? "  is-active" : ""}`}
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
+            onClick={() => setIsOpen((prev) => !prev)}
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
           </a>
-        )} */}
+        )}
       </div>
 
-      <div className="navbar-menu">
+      <div className={`navbar-menu${isOpened ? "  is-active" : ""}`}>
         <div className="navbar-start">{NavbarStartItems}</div>
 
-        <div className="navbar-end is-flex-grow-1">
-          <div className="navbar-item">
-            <div className="buttons">{NavbarEndItems}</div>
-          </div>
+        <div className="navbar-end">
+          <div className="navbar-item">{NavbarEndItems}</div>
         </div>
       </div>
     </nav>

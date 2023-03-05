@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { useNavigate } from "react-router";
+import { FC, useCallback, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { Navbar as NavbarUI } from "../../components/Navbar";
@@ -10,6 +10,7 @@ import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
 import { socketClient } from "../../__api__/socket";
 import { useClickOutside } from "../../hooks/useClickOutside";
+import { User } from "../../types/user";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -21,7 +22,9 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
     "login" | "registration" | null
   >(null);
   const navigate = useNavigate();
-  const handleLogout = async () => {
+  const { pathname } = useLocation();
+
+  const handleLogout = useCallback(async () => {
     try {
       await fetchLogout();
     } catch (err) {
@@ -30,66 +33,63 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
     socketClient?.disconnect();
     setUser(null);
     navigate("/");
-  };
+  }, [navigate, setUser]);
+
   const ref = useClickOutside<HTMLDivElement>(() => setOpenedPopup(null));
+
+  const renderUserMenu = useCallback(
+    (user: User) => (
+      <div className="navbar-item has-dropdown is-hoverable">
+        <a className="navbar-link">{user.name}</a>
+
+        <div className="navbar-dropdown">
+          <Link
+            to="/profile"
+            className={`navbar-item${
+              pathname === "/profile" ? " is-active" : ""
+            }`}
+          >
+            Profile
+          </Link>
+          {/* <a className="navbar-item">Stats</a> */}
+          <hr className="navbar-divider" />
+          <a
+            target="_blank"
+            rel="noreferrer"
+            className="navbar-item"
+            href="https://github.com/supercilium/bill_share/issues"
+          >
+            Report an issue
+          </a>
+        </div>
+      </div>
+    ),
+    [pathname]
+  );
 
   return (
     <>
       <NavbarUI
-        MobileVisibleItems={
-          user && (
-            <div className="navbar-item is-hidden-desktop">
-              <p className="button is-link is-rounded">{user.name}</p>
-              <button
-                onClick={() => handleLogout()}
-                className="button is-link is-inverted"
-              >
-                <FontAwesomeIcon
-                  className="mr-3"
-                  icon="arrow-right-from-bracket"
-                />
-                Log out
-              </button>
-            </div>
-          )
-        }
         NavbarEndItems={
           user ? (
             <>
-              {/* <p className="button is-link is-rounded">{user.name}</p> */}
-              <div className="navbar-item has-dropdown is-hoverable mb-2">
-                <a className="navbar-link">{user.name}</a>
-
-                <div className="navbar-dropdown">
-                  <Link to="/profile" className="navbar-item">
-                    Profile
-                  </Link>
-                  {/* <a className="navbar-item">Stats</a> */}
-                  <hr className="navbar-divider" />
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    className="navbar-item"
-                    href="https://github.com/supercilium/bill_share/issues"
-                  >
-                    Report an issue
-                  </a>
-                </div>
+              {renderUserMenu(user)}
+              <div className="buttons">
+                <button
+                  onClick={() => handleLogout()}
+                  className="button is-light"
+                >
+                  <FontAwesomeIcon
+                    className="mr-3"
+                    icon="arrow-right-from-bracket"
+                  />
+                  Log out
+                </button>
               </div>
-              <button
-                onClick={() => handleLogout()}
-                className="button is-light"
-              >
-                <FontAwesomeIcon
-                  className="mr-3"
-                  icon="arrow-right-from-bracket"
-                />
-                Log out
-              </button>
             </>
           ) : (
             shouldShowAuthButtons && (
-              <>
+              <div className="buttons">
                 <button
                   onClick={() => setOpenedPopup("registration")}
                   className="button is-primary"
@@ -102,7 +102,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
                 >
                   Sign in
                 </button>
-              </>
+              </div>
             )
           )
         }
