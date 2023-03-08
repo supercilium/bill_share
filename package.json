@@ -40,7 +40,10 @@
       "react-app",
       "react-app/jest",
       "prettier"
-    ]
+    ],
+    "rules": {
+      "no-console": "error"
+    }
   },
   "browserslist": {
     "production": [

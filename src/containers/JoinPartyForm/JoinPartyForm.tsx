@@ -56,7 +56,6 @@ export const JoinPartyForm: FC<{
   const handleCreateUser: SubmitHandler<JoinPartyFormInterface> = async (
     values
   ) => {
-    console.log(values);
     mutate({
       userId: user?.id,
       userName: values.userName || undefined,

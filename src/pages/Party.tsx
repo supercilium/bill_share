@@ -103,6 +103,7 @@ export const Party = () => {
         }
         queryClient.setQueryData(["party", partyId], data.party);
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
       }
     },

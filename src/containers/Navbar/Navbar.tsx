@@ -28,6 +28,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
     try {
       await fetchLogout();
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
     }
     socketClient?.disconnect();
@@ -40,6 +41,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
   const renderUserMenu = useCallback(
     (user: User) => (
       <div className="navbar-item has-dropdown is-hoverable">
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a className="navbar-link">{user.name}</a>
 
         <div className="navbar-dropdown">
