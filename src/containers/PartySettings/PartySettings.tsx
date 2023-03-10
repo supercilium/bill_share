@@ -8,7 +8,7 @@ import {
   useUISettings,
 } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
-import { sendEvent } from "../../utils/eventHandlers";
+import { sendEvent } from "../../services/transport";
 import { AddUserForm } from "../AddUserForm";
 import { SettingsRoot } from "./PartySettings.styles";
 

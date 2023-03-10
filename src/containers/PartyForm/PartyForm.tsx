@@ -7,7 +7,7 @@ import { PartyInterface } from "../../types/party";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../../components";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
-import { sendEvent } from "../../utils/eventHandlers";
+import { sendEvent } from "../../services/transport";
 import { OverflowHidden } from "../../components/styled/typography";
 import {
   CheckboxWrapper,

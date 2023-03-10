@@ -4,7 +4,6 @@ import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
 import { getPartyById } from "../__api__/parties";
-import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
 import { AddItemForm } from "../containers/AddItemForm/AddItemForm";
@@ -22,6 +21,7 @@ import { useLogout } from "../hooks/useLogout";
 import { EventResponseDTO, PartyEvents } from "../types/events";
 import { useNotifications } from "../contexts/NotificationContext";
 import { CopyButton } from "../containers/CopyButton";
+import { connect, createTransport, transport } from "../services/transport";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -38,7 +38,6 @@ const mapEventToText: Partial<
   "add item": "added",
   "remove item": "removed",
 };
-const socket = socketClient.socket;
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -48,7 +47,7 @@ export const Party = () => {
   const { addAlert } = useNotifications();
   const shouldNotify = useRef<boolean>(false);
 
-  const [socketState, setSocketState] = useState<number>(socket.readyState);
+  const [socketState, setSocketState] = useState<number>();
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
@@ -62,8 +61,13 @@ export const Party = () => {
     ["party", partyId],
     () =>
       getPartyById(partyId as string).then((result) => {
-        if (!socketClient.connected) {
-          socketClient.connect(partyId as string, eventHandler, setSocketState);
+        if (!transport) {
+          createTransport(
+            eventHandler,
+            setSocketState,
+            setSocketState,
+            partyId as string
+          );
         }
         return Promise.resolve(result);
       }),
@@ -79,11 +83,17 @@ export const Party = () => {
   );
 
   const eventHandler = useCallback(
-    (event: MessageEvent<string>) => {
+    (data: EventResponseDTO) => {
       try {
-        const data = JSON.parse(event.data) as EventResponseDTO;
         if (data.type === "error") {
           addAlert({ mode: "danger", text: data.message });
+          return;
+        }
+        if (data.type === "connect") {
+          return;
+        }
+        if (data.type === "change state") {
+          setSocketState(Number(data.message));
           return;
         }
         if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
@@ -123,7 +133,7 @@ export const Party = () => {
         text: "Connection is lost",
       });
       shouldNotify.current = true;
-      socketClient.reConnect(partyId as string, eventHandler, setSocketState);
+      connect(partyId as string);
       refetch();
     }
     if (socketState === 1 && shouldNotify.current) {
@@ -163,7 +173,7 @@ export const Party = () => {
     );
   }
 
-  if (!socket || socketState === 2 || socketClient.error) {
+  if (!transport || socketState === 2) {
     return (
       <HeroLayout>
         <div>
@@ -171,9 +181,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() =>
-                socketClient.reConnect(partyId, eventHandler, setSocketState)
-              }
+              onClick={() => connect(partyId as string)}
               className="button ml-2"
             >
               re-connect

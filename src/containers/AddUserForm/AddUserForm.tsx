@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendEvent } from "../../utils/eventHandlers";
-import { addUserSchema } from "../../utils/validation";
+import { sendEvent } from "../../services/transport";
+import { addUserSchema } from "../../services/validation";
 import { AddUserLayout } from "../../components/styled/addUserLayout";
 
 export const AddUserForm = () => {

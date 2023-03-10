@@ -12,13 +12,13 @@ import {
   getPartyUserDiscount,
   splitItems,
 } from "../../utils/calculation";
-import { sendEvent } from "../../utils/eventHandlers";
 import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
 import { PricePerRow, StyledUserForm } from "./UserPartyForm.styles";
 import { FormWrapper } from "../../components/styled/formWrapper";
 import { OverflowHidden } from "../../components/styled/typography";
 import { useParty } from "../../hooks/useParty";
+import { sendEvent } from "../../services/transport";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
