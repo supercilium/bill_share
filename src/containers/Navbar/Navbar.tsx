@@ -15,9 +15,17 @@ import { Transport } from "../../services/transport";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
+  navbarProps?: {
+    isTransparent?: boolean;
+    isFixed?: boolean;
+    hasShadow?: boolean;
+  };
 }
 
-export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
+export const Navbar: FC<NavbarProps> = ({
+  shouldShowAuthButtons = true,
+  navbarProps,
+}) => {
   const { setUser, user } = useUser();
   const [openedPopup, setOpenedPopup] = useState<
     "login" | "registration" | null
@@ -43,7 +51,11 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a className="navbar-link">{user.name}</a>
 
-        <div className="navbar-dropdown">
+        <div
+          className={`navbar-dropdown${
+            navbarProps?.isTransparent ? " is-boxed has-background-dark" : ""
+          }`}
+        >
           <Link
             to="/profile"
             className={`navbar-item${
@@ -104,6 +116,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
             )
           )
         }
+        navbarProps={navbarProps}
       />
       {openedPopup && (
         <div className={`modal${openedPopup ? " is-active" : ""}`}>

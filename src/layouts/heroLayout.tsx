@@ -9,7 +9,7 @@ interface PlainLayoutInterface {
 export const HeroLayout: FC<PlainLayoutInterface> = ({ children }) => {
   return (
     <div>
-      <Navbar />
+      <Navbar navbarProps={{ hasShadow: true }} />
       <section className="hero is-fullheight">
         <div className="hero-body">{children}</div>
         <div className="hero-foot">
