@@ -1,13 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useState } from "react";
-import { useQuery } from "react-query";
+import { FC, MouseEvent, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import { Block } from "../../components";
 import { Loader } from "../../components/Loader";
 import { Pagination } from "../../components/Pagination";
+import { useNotifications } from "../../contexts/NotificationContext";
 import { useUser } from "../../contexts/UserContext";
 import { PartiesListDTO } from "../../types/party";
-import { getParties } from "../../__api__/parties";
+import { ErrorRequest } from "../../__api__/helpers";
+import { deleteParty, getParties } from "../../__api__/parties";
+import { MiddleRow, PaginationBlock, StyledPanel } from "./PartiesList.styles";
 
 interface PartiesListProps {}
 
@@ -17,8 +19,13 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
   const [page, setPage] = useState(0);
   const { user, setUser } = useUser();
   const userId = user?.id;
+  const { addAlert } = useNotifications();
 
-  const { data, status } = useQuery<PartiesListDTO, Response, PartiesListDTO>(
+  const { data, status, refetch } = useQuery<
+    PartiesListDTO,
+    Response,
+    PartiesListDTO
+  >(
     ["parties", userId, page],
     () =>
       getParties({
@@ -36,42 +43,80 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
       },
     }
   );
+  const { mutate, isLoading } = useMutation<void, ErrorRequest, string, void>(
+    deleteParty,
+    {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: async (error) => {
+        if (error.status === 401) {
+          setUser(null);
+        }
+        if (error) {
+          addAlert({
+            mode: "danger",
+            text: "Party was not deleted due to error",
+          });
+        }
+      },
+    }
+  );
 
-  if (status === "loading") {
-    return <Loader />;
-  }
+  const handleRemoveParty = async (id: string) => {
+    mutate(id);
+  };
 
-  if (!data || !data.data || !data.amount) return null;
+  const { amount, data: parties } = data || {};
 
-  const { amount, data: parties } = data;
-
-  const pages = Math.ceil(amount / PAGE_SIZE);
+  const pages = amount ? Math.ceil(amount / PAGE_SIZE) : 1;
 
   return (
-    <div className="box">
-      <Block title="Your parties">
-        <div>
-          {parties?.length > 0 &&
-            parties.map((party) => (
-              <div key={party.id}>
-                <Link to={`/party/${party.id}`}>
-                  {party.isOwner && (
-                    <i>
-                      <FontAwesomeIcon
-                        className="mr-2"
-                        icon="crown"
-                        size="2xs"
-                        title="You are the master of the party"
-                      />
-                    </i>
-                  )}
-                  {party.name}
-                </Link>
-              </div>
-            ))}
-        </div>
-      </Block>
-      <div>
+    <StyledPanel className="panel has-background-white">
+      <p className="panel-heading">Your parties</p>
+      {(status === "loading" || isLoading) && (
+        <MiddleRow className="panel-block is-justify-content-center">
+          <Loader />
+        </MiddleRow>
+      )}
+      {status !== "loading" && !parties?.length && (
+        <MiddleRow className="panel-block is-justify-content-center has-text-grey-light">
+          You have no parties
+        </MiddleRow>
+      )}
+
+      {status === "success" &&
+        (parties || [])?.length > 0 &&
+        parties?.map((party) => (
+          // eslint-disable-next-line jsx-a11y/anchor-is-valid
+          <div className="panel-block" key={party.id}>
+            <i className="panel-icon">
+              {party.isOwner && (
+                <FontAwesomeIcon
+                  className="mr-2"
+                  icon="crown"
+                  size="2xs"
+                  title="You are the master of the party"
+                />
+              )}
+            </i>
+            <Link className="is-flex-grow-1" to={`/party/${party.id}`}>
+              {party.name}
+            </Link>
+            {party.isOwner && (
+              <button
+                type="button"
+                className="delete is-flex-grow-0"
+                title="Delete party"
+                onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  handleRemoveParty(party.id);
+                }}
+              />
+            )}
+          </div>
+        ))}
+      <PaginationBlock className="panel-block is-block">
         {pages > 1 && (
           <Pagination
             size={pages}
@@ -81,7 +126,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
             }}
           />
         )}
-      </div>
-    </div>
+      </PaginationBlock>
+    </StyledPanel>
   );
 };

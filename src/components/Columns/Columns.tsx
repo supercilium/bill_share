@@ -14,14 +14,14 @@ export const Columns: FC<Props> = ({
   return children ? (
     <div
       {...(containerProps || {})}
-      className={`columns ${containerProps?.className}`}
+      className={`columns ${containerProps?.className || ""}`}
     >
       {Array.isArray(children) ? (
         children.map((elem, i) => (
           <div
             key={i}
             {...(columnProps || {})}
-            className={`column ${columnProps?.className}`}
+            className={`column ${columnProps?.className || ""}`}
           >
             {elem}
           </div>
@@ -29,7 +29,7 @@ export const Columns: FC<Props> = ({
       ) : (
         <div
           {...(columnProps || {})}
-          className={`column ${columnProps?.className}`}
+          className={`column ${columnProps?.className || ""}`}
         >
           {children}
         </div>
