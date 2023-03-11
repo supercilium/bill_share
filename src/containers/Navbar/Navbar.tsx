@@ -10,7 +10,7 @@ import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { User } from "../../types/user";
-import { transport } from "../../services/transport";
+import { Transport } from "../../services/transport";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -31,7 +31,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
       // eslint-disable-next-line no-console
       console.error(err);
     }
-    transport?.terminate();
+    Transport.terminate();
     setUser(null);
     navigate("/");
   }, [navigate, setUser]);

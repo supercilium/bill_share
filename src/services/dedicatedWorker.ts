@@ -1,28 +1,26 @@
 /* eslint-disable no-console */
 
-import { EventResponseDTO } from "../types/events";
+import { EventData, EventResponseDTO } from "../types/events";
+import { SOCKET_STATE } from "./constants";
 
 //Main thread
-export class DedicatedWorkerClass {
+export class DedicatedWorker {
   worker: Worker | null;
   userCallbacks: {
     onMessageCtxNFunc: (event: EventResponseDTO) => void;
-    onErrorCtxNFunc: (state: number) => void;
     onChangeSocketState: (state: number) => void;
   };
 
   constructor(
     onMessageCtxNFunc: (event: EventResponseDTO) => void,
-    onErrorCtxNFunc: (state: number) => void,
     onChangeSocketState: (state: number) => void
   ) {
     if (!!window.Worker) {
-      this.worker = new Worker(new URL("./socket-worker.ts", import.meta.url));
+      this.worker = new Worker(new URL("./socketWorker.ts", import.meta.url));
       this.worker.onerror = (e) => this.onError(e);
       this.worker.onmessage = (e) => this.onMessage(e);
       this.userCallbacks = {
         onMessageCtxNFunc,
-        onErrorCtxNFunc,
         onChangeSocketState,
       };
     } else {
@@ -32,43 +30,30 @@ export class DedicatedWorkerClass {
     }
   }
 
-  sendMessage(data = {}, transferData = []) {
+  sendMessage(data: EventData) {
     if (!this.worker) {
       return;
     }
-    this.worker.postMessage(data, transferData);
+    this.worker.postMessage(data);
   }
 
   terminate() {
     if (!this.worker) {
       return;
     }
-    this.userCallbacks.onChangeSocketState(3);
+    this.worker.postMessage({ type: "close" });
     // this.worker.closeWebSocket();
     this.worker.terminate();
+    this.userCallbacks.onChangeSocketState(SOCKET_STATE.closed);
     this.worker = null;
   }
 
   onError(e: any) {
-    console.log(
-      "There is an error with the dedicated worker thread of Order Table",
-      e
-    );
-    this.userCallbacks.onChangeSocketState(3);
-    // this.userCallbacks.onErrorCtxNFunc &&
-    //   this.userCallbacks.onErrorCtxNFunc.apply(
-    //     this.userCallbacks.onErrorCtxNFunc.ctx,
-    //     [e]
-    //   );
+    console.error("There is an error with the dedicated worker thread", e);
+    this.userCallbacks.onChangeSocketState(SOCKET_STATE.closed);
   }
 
   onMessage(e: MessageEvent<EventResponseDTO>) {
-    console.log("Message from worker thread", e);
     this.userCallbacks.onMessageCtxNFunc(e.data);
-    // this.userCallbacks.onMessageCtxNFunc &&
-    //   this.userCallbacks.onMessageCtxNFunc.apply(
-    //     this.userCallbacks.onMessageCtxNFunc.ctx,
-    //     [e.data]
-    //   );
   }
 }

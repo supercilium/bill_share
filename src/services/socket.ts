@@ -1,4 +1,5 @@
 import { EventData } from "../types/events";
+import { SOCKET_STATE } from "./constants";
 
 export class SocketClient {
   socket: WebSocket | null;
@@ -16,10 +17,11 @@ export class SocketClient {
 
   init(url: string) {
     this.socket = new WebSocket(url);
-    this.socket.onclose = this.onClose;
-    this.socket.onerror = this.onError;
-    this.socket.onmessage = (e) => this.onMessage(e);
-    this.socket.onopen = () => this.onOpen();
+    this.socket.onclose = () => this.onClose.call(this);
+    this.socket.onerror = (e: Event) => this.onError.call(this, e);
+    this.socket.onmessage = (e: MessageEvent<string>) =>
+      this.onMessage.call(this, e);
+    this.socket.onopen = () => this.onOpen.call(this);
     return this;
   }
 
@@ -29,17 +31,17 @@ export class SocketClient {
   }
 
   private onClose() {
-    if (!this.socket) {
-      return;
+    this.onChangeStateCallback(SOCKET_STATE.closed);
+    if (this.socket) {
+      this.socket = null;
     }
-    this.onChangeStateCallback(this.socket?.readyState);
   }
 
-  private onError() {
-    if (!this.socket) {
-      return;
+  private onError(e: Event) {
+    this.onChangeStateCallback(SOCKET_STATE.closed);
+    if (this.socket) {
+      this.socket = null;
     }
-    this.onChangeStateCallback(this.socket?.readyState);
   }
 
   private onMessage(message: MessageEvent<string>) {

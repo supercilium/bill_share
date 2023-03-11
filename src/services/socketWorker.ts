@@ -1,14 +1,15 @@
-/* eslint-disable no-console */
 /* eslint-disable no-restricted-globals */
 import { EventData, WorkerData } from "../types/events";
+import { SOCKET_STATE } from "./constants";
 import { SocketClient } from "./socket";
 
 self.onmessage = (e: MessageEvent<EventData>) => {
-  console.log("Message from main thread", e);
+  // console.log("Message from main thread", e);
   const data = e.data;
   if (validateEventData(data)) {
     actionSwitcher(data);
   } else {
+    // eslint-disable-next-line no-console
     console.log(
       "Invalid message data passed from main thread so taking no action"
     );
@@ -47,12 +48,12 @@ const actionSwitcher = (data: EventData) => {
           (data as WorkerData).id
         }`
       );
-      if (webSocket.socket?.readyState !== 1) {
+      if (webSocket.socket?.readyState !== SOCKET_STATE.open) {
         return;
       }
       self.postMessage({
         type: data.type,
-        message: "Connected",
+        message: "Connected to the server",
       });
       return;
     }
@@ -60,18 +61,18 @@ const actionSwitcher = (data: EventData) => {
       closeWebSocket();
       self.postMessage({
         type: data.type,
-        message: "Disconnected",
+        message: "Disconnected from the server",
       });
       return;
     }
     if (!webSocket) {
       self.postMessage({
         type: "error",
-        message: "Error",
+        message: "Oops! An error occurred while connecting",
       });
       return;
     }
-    if (webSocket.socket?.readyState !== 1) {
+    if (webSocket.socket?.readyState !== SOCKET_STATE.open) {
       stateChangeHandler(webSocket.socket?.readyState as number);
       return;
     }
@@ -80,7 +81,10 @@ const actionSwitcher = (data: EventData) => {
   } catch (e) {
     self.postMessage({
       type: "error",
-      message: "Error",
+      message:
+        "Have no idea what went wrong, try to find out the answer in console",
     });
+    // eslint-disable-next-line no-console
+    console.error(e);
   }
 };

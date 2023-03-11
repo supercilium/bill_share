@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { Block, Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendEvent } from "../../services/transport";
+import { Transport } from "../../services/transport";
 import { addUserSchema } from "../../services/validation";
 import { AddUserLayout } from "../../components/styled/addUserLayout";
 
@@ -24,7 +24,7 @@ export const AddUserForm = () => {
   const { isValid, isDirty, errors } = formHandlers.formState;
   const isUserRegistered = formHandlers.watch("isUserRegistered");
   const handleAddUser = ({ identifier }: { identifier: string }) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "add user",
       userName: isUserRegistered ? undefined : identifier,
       email: isUserRegistered ? identifier : undefined,

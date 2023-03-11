@@ -8,7 +8,7 @@ import {
   useUISettings,
 } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
-import { sendEvent } from "../../services/transport";
+import { Transport } from "../../services/transport";
 import { AddUserForm } from "../AddUserForm";
 import { SettingsRoot } from "./PartySettings.styles";
 
@@ -36,7 +36,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   }, []);
 
   const handleUpdateDiscount = async () => {
-    sendEvent({
+    Transport.sendEvent({
       type: "update discount",
       partyId: party.id,
       discount: handlers.getValues("discount") || 0,
@@ -44,7 +44,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
     });
   };
   const handleRemoveUser = (userId: string) => {
-    sendEvent({ type: "remove user", userId, partyId: party.id });
+    Transport.sendEvent({ type: "remove user", userId, partyId: party.id });
   };
 
   const header = (
