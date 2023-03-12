@@ -81,69 +81,72 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
     <div className="box">
       <Block title={header}>
         <Columns>
-          <Block>
-            <p className="has-text-grey-dark is-size-5 mb-3">
-              Visibility settings
-            </p>
-            {areHintsVisible && (
-              <article className="message">
-                <div className="message-body">
-                  We hid unimportant columns, because the form already has a lot
-                  of staff and we do not have a designer to make it fits the
-                  screen (at least for now). So you can choose to show discount
-                  and is shared columns here.
-                </div>
-              </article>
-            )}
-
-            <Field
-              label=" Show discount column for items (D)"
-              inputProps={{
-                type: "checkbox",
-                ...handlers.register("isDiscountVisible"),
-              }}
-            />
-            <Field
-              label=" Show «Is shared» column (S)"
-              inputProps={{
-                type: "checkbox",
-                ...handlers.register("isEquallyVisible"),
-              }}
-            />
-
-            {areHintsVisible && (
-              <article className="message">
-                <div className="message-body">
-                  Is shared - means items will shared between all participants
-                  (guys with checked checkboxes), in the other way you will have
-                  an opportunity to write amounts of items to each member.
-                </div>
-              </article>
-            )}
-          </Block>
-          <Block>
-            <p className="has-text-grey-dark is-size-5 mb-3">Switch view</p>
-            {areHintsVisible && (
-              <article className="message">
-                <div className="message-body">
-                  You can switch view to see full party with all participants
-                  and tons of checkboxes or only your items. Clicking on
-                  member's name or totals will switch the form to that member's
-                  view. Press U/P keys to switch between them.
-                </div>
-              </article>
-            )}
-
-            <Field
-              labels={[" User (U)", " Full party (P)"]}
-              inputProps={{
-                type: "radio",
-                value: ["user", "party"],
-                ...handlers.register("view"),
-              }}
-            />
-          </Block>
           <div>
+            <Block>
+              <p className="has-text-grey-dark is-size-5 mb-3">
+                Visibility settings
+              </p>
+              {areHintsVisible && (
+                <article className="message">
+                  <div className="message-body">
+                    We hid unimportant columns, because the form already has a
+                    lot of staff and we do not have a designer to make it fits
+                    the screen (at least for now). So you can choose to show
+                    discount and is shared columns here.
+                  </div>
+                </article>
+              )}
+
+              <Field
+                label=" Show discount column for items (D)"
+                inputProps={{
+                  type: "checkbox",
+                  ...handlers.register("isDiscountVisible"),
+                }}
+              />
+              <Field
+                label=" Show «Is shared» column (S)"
+                inputProps={{
+                  type: "checkbox",
+                  ...handlers.register("isEquallyVisible"),
+                }}
+              />
+
+              {areHintsVisible && (
+                <article className="message">
+                  <div className="message-body">
+                    Is shared - means items will shared between all participants
+                    (guys with checked checkboxes), in the other way you will
+                    have an opportunity to write amounts of items to each
+                    member.
+                  </div>
+                </article>
+              )}
+            </Block>
+            <Block>
+              <p className="has-text-grey-dark is-size-5 mb-3">Switch view</p>
+              {areHintsVisible && (
+                <article className="message">
+                  <div className="message-body">
+                    You can switch view to see full party with all participants
+                    and tons of checkboxes or only your items. Clicking on
+                    member's name or totals will switch the form to that
+                    member's view. Press U/P keys to switch between them.
+                  </div>
+                </article>
+              )}
+
+              <Field
+                labels={[" User (U)", " Full party (P)"]}
+                inputProps={{
+                  type: "radio",
+                  value: ["user", "party"],
+                  ...handlers.register("view"),
+                }}
+              />
+            </Block>
+          </div>
+          <div className="ml-6">
             <Block>
               <AddUserForm />
             </Block>

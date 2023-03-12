@@ -86,7 +86,7 @@ export const loginSchema = object({
 
 export const partySettingsSchema = object({
   discount: number()
-    .positive()
+    .min(0)
     .test({
       name: "max",
       exclusive: false,
