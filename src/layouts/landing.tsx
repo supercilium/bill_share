@@ -1,17 +1,18 @@
 import { FC, ReactNode } from "react";
-import { Footer } from "../components";
 import { Navbar } from "../containers/Navbar";
 
 interface LandingLayoutProps {
   showcaseBody: ReactNode;
   showcaseFoot?: ReactNode;
   sections: ReactNode;
+  footer: ReactNode;
 }
 
 export const LandingLayout: FC<LandingLayoutProps> = ({
   showcaseBody,
   showcaseFoot,
   sections,
+  footer,
 }) => {
   return (
     <>
@@ -23,7 +24,7 @@ export const LandingLayout: FC<LandingLayoutProps> = ({
         <div className="hero-foot">{showcaseFoot}</div>
       </div>
       {sections}
-      <Footer>There is nothing better than a good party! ❤️</Footer>
+      {footer}
     </>
   );
 };

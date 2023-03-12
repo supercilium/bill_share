@@ -232,3 +232,5 @@ export const Party = () => {
     </PartySettingsProvider>
   );
 };
+
+export default Party;

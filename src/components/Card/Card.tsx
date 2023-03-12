@@ -10,7 +10,7 @@ interface CardProps {
   card?: {
     isFullHeight?: boolean;
   };
-  content: ReactNode;
+  content?: ReactNode;
 }
 
 export const Card: FC<CardProps> = ({ image, content, card }) => {
@@ -23,9 +23,11 @@ export const Card: FC<CardProps> = ({ image, content, card }) => {
           </figure>
         </div>
       )}
-      <div className="card-content">
-        <div className="content">{content}</div>
-      </div>
+      {content && (
+        <div className="card-content">
+          <div className="content">{content}</div>
+        </div>
+      )}
     </div>
   );
 };

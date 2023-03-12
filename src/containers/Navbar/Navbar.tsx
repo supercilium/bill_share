@@ -77,7 +77,7 @@ export const Navbar: FC<NavbarProps> = ({
         </div>
       </div>
     ),
-    [pathname]
+    [navbarProps?.isTransparent, pathname]
   );
 
   return (

@@ -1,4 +1,4 @@
-import { Columns } from "../components";
+import { Columns, Footer } from "../components";
 import { LoginForm } from "../containers/LoginForm";
 import { RegisterForm } from "../containers/RegisterForm";
 import { useState } from "react";
@@ -6,32 +6,17 @@ import { useUser } from "../contexts/UserContext";
 import { CreatePartyForm } from "../containers/CreatePartyForm";
 import { PartiesList } from "../containers/PartiesList";
 import { LandingLayout } from "../layouts/landing";
-import { PartyInterface } from "../types/party";
-import { FISH_PARTY } from "../__data__/fish-party";
-import { SALAD_PARTY } from "../__data__/salad-party";
-import { MEAT_PARTY } from "../__data__/meat-party";
-import { COCKTAIL_PARTY } from "../__data__/cocktail-party";
-import { HARD_PARTY } from "../__data__/hard-party";
 import { Card } from "../components/Card";
 import { getBaseTotal } from "../utils/calculation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PartyTotals } from "../containers/PartyTotals";
 import { PartyFormLayout } from "../components/PartyFormLayout";
-
-type PartiesShowcase =
-  | "shared"
-  | "parts"
-  | "discount"
-  | "discount-percentage"
-  | "discount-items";
-
-const DATA_MOCKS: Record<PartiesShowcase, PartyInterface> = {
-  shared: FISH_PARTY,
-  parts: SALAD_PARTY,
-  discount: MEAT_PARTY,
-  "discount-percentage": COCKTAIL_PARTY,
-  "discount-items": HARD_PARTY,
-};
+import {
+  CARDS,
+  DATA_MOCKS,
+  PartiesShowcase,
+  TAB_LABELS,
+} from "../__data__/landing";
 
 export const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -49,6 +34,7 @@ export const Home = () => {
 
   return (
     <LandingLayout
+      footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
       showcaseFoot={
         <p className="subtitle is-size-5 has-text-grey-lighter has-text-centered mb-5">
           Memento hangover!
@@ -70,39 +56,9 @@ export const Home = () => {
               <Columns
                 containerProps={{ className: "is-align-content-stretch" }}
               >
-                <Card
-                  key={1}
-                  card={{
-                    isFullHeight: true,
-                  }}
-                  image={{ imageUrl: "/get-some-drinks.jpg" }}
-                  content={
-                    <p>
-                      Share party with friends and start adding your drinks and
-                      snaks
-                    </p>
-                  }
-                />
-                <Card
-                  key={2}
-                  card={{
-                    isFullHeight: true,
-                  }}
-                  image={{ imageUrl: "/pay-bill.jpg" }}
-                  content={
-                    <p>
-                      Check, please! You already know how much you should pay
-                    </p>
-                  }
-                />
-                <Card
-                  key={3}
-                  card={{
-                    isFullHeight: true,
-                  }}
-                  image={{ imageUrl: "/friends-convince.jpg" }}
-                  content={<p>Convince your friends to return your money</p>}
-                />
+                {CARDS.map((cardProps) => (
+                  <Card key={cardProps.image?.imageUrl} {...cardProps} />
+                ))}
               </Columns>
             </div>
           </section>
@@ -116,48 +72,26 @@ export const Home = () => {
               </p>
               <div className="tabs">
                 <ul>
-                  <li className={activeCase === "shared" ? "is-active" : ""}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setActiveCase("shared")}>
-                      Shared everything
-                    </a>
-                  </li>
-                  <li className={activeCase === "parts" ? "is-active" : ""}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setActiveCase("parts")}>In parts</a>
-                  </li>
-                  <li className={activeCase === "discount" ? "is-active" : ""}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setActiveCase("discount")}>
-                      With discount
-                    </a>
-                  </li>
-                  <li
-                    className={
-                      activeCase === "discount-percentage" ? "is-active" : ""
-                    }
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setActiveCase("discount-percentage")}>
-                      With discount in %
-                    </a>
-                  </li>
-                  <li
-                    className={
-                      activeCase === "discount-items" ? "is-active" : ""
-                    }
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setActiveCase("discount-items")}>
-                      With discount for some items
-                    </a>
-                  </li>
+                  {(Object.keys(TAB_LABELS) as Array<PartiesShowcase>).map(
+                    (key) => (
+                      <li
+                        key={key}
+                        className={activeCase === key ? "is-active" : ""}
+                      >
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a onClick={() => setActiveCase(key)}>
+                          {TAB_LABELS[key]}
+                        </a>
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
               <div className="columns is-flex-wrap-wrap">
                 <div key={`${party.id}-bill`} className="column is-one-third">
                   <nav className="panel">
                     <p className="panel-heading">Your bill</p>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a key="head" className="panel-block ">
                       <span className="panel-icon is-size-7">Qty</span>
                       <span className="is-size-7 has-text-grey ml-1">Name</span>
@@ -166,6 +100,7 @@ export const Home = () => {
                       </span>
                     </a>
                     {party.items.map((item) => (
+                      // eslint-disable-next-line jsx-a11y/anchor-is-valid
                       <a key={item.id} className="panel-block ">
                         <span className="panel-icon">
                           <i>{item.amount}</i>
@@ -175,6 +110,7 @@ export const Home = () => {
                       </a>
                     ))}
                     {party.discount ? (
+                      // eslint-disable-next-line jsx-a11y/anchor-is-valid
                       <a
                         key="discount"
                         className="panel-block has-background-white-ter"
@@ -188,6 +124,7 @@ export const Home = () => {
                         </span>
                       </a>
                     ) : null}
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a
                       key="total"
                       className="panel-block has-background-white-ter"
@@ -201,7 +138,7 @@ export const Home = () => {
                 </div>
                 <div key={party.id} className="column">
                   <p className="title is-size-4">{party.name}</p>
-                  <div className="with-scroll-horizontal">
+                  <div className="with-scroll-horizontal pt-3">
                     <PartyFormLayout {...partyLayoutProps}>
                       <span className="is-size-6 has-text-grey">Item name</span>
                       <span className="is-size-6 has-text-grey">Amount</span>
@@ -281,7 +218,7 @@ export const Home = () => {
                           {party.users.map(({ id }) => {
                             if (item.equally) {
                               return (
-                                <span className="is-size-6">
+                                <span key={id} className="is-size-6">
                                   {!!itemUsers?.find((user) => user.id === id)
                                     ? "✅"
                                     : "❌"}
@@ -334,6 +271,78 @@ export const Home = () => {
               </div>
             </div>
           </section>
+          <section className="hero is-light py-6 px-2">
+            <div className="container">
+              <p className="title is-size-3 has-text-centered mb-6">
+                How does it work? 🤔
+              </p>
+              <div className="step-grid">
+                <div className="step-grid-item-1">
+                  <p className="subtitle is-size-5 mb-5">
+                    Create your party and share it with guys, or join to
+                    somebody's else
+                  </p>
+                  <Card
+                    image={{
+                      imageUrl: "/create-party.gif",
+                      className: "is-5by3",
+                    }}
+                  />
+                </div>
+                <div className="step-grid-item-2">
+                  <p className="subtitle is-size-5 mb-5">
+                    Start adding your staff{" "}
+                  </p>
+                  <Card
+                    image={{
+                      imageUrl: "/add-staff.gif",
+                      className: "is-5by3",
+                    }}
+                  />
+                </div>
+                <div className="step-grid-item-3">
+                  <p className="subtitle is-size-5 mb-5">
+                    Change staff names, amounts, price using full party view or
+                    more detailed user's. To switch view use tabs, click on
+                    user's name or press U to open you items list, P - to return
+                    to full party
+                  </p>
+                  <Card
+                    image={{
+                      imageUrl: "/switch-view.gif",
+                      className: "is-5by3",
+                    }}
+                  />
+                </div>
+                <div className="step-grid-item-4">
+                  <p className="subtitle is-size-5 mb-5">
+                    Open settings and manage table appearance - you can hide
+                    non-important columns. Use keybindings - D for discount, S
+                    for shared, V - for vendetta. Here you can add discount for
+                    your bill if you're lucky enough to have it
+                  </p>
+                  <Card
+                    image={{
+                      imageUrl: "/settings.gif",
+                      className: "is-5by3",
+                    }}
+                  />
+                </div>
+              </div>
+              <p className="subtitle is-size-5 mt-6 has-text-centered">
+                Once party is done, you have all calculations for you and the
+                rest folks 🎉
+              </p>
+              <div style={{ maxWidth: "50%", margin: "0 auto" }}>
+                <Card
+                  image={{
+                    imageUrl: "/total.jpg",
+                    className: "is-5by3",
+                  }}
+                />
+              </div>
+            </div>
+          </section>
           <section className="py-6 px-2">
             <div className="container">
               <p className="title is-size-3 has-text-centered mb-6">
@@ -378,7 +387,11 @@ export const Home = () => {
                   </div>
                 </div>
                 <div className="column">
-                  {user ? <PartiesList /> : <div className="get-in-touch" />}
+                  {user ? (
+                    <PartiesList />
+                  ) : (
+                    <div className="get-in-touch box" />
+                  )}
                 </div>
               </div>
             </div>
@@ -397,3 +410,5 @@ export const Home = () => {
 };
 
 Home.whyDidYouRender = true;
+
+export default Home;

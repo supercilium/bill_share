@@ -68,3 +68,5 @@ export const Login = () => {
 };
 
 Login.whyDidYouRender = true;
+
+export default Login;
