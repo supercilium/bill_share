@@ -76,7 +76,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
           user ? (
             <>
               {renderUserMenu(user)}
-              <div className="buttons">
+              <div className="buttons is-justify-content-flex-end">
                 <button
                   onClick={() => handleLogout()}
                   className="button is-light"
@@ -91,7 +91,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
             </>
           ) : (
             shouldShowAuthButtons && (
-              <div className="buttons">
+              <div className="buttons is-justify-content-flex-end">
                 <button
                   onClick={() => setOpenedPopup("registration")}
                   className="button is-primary"
