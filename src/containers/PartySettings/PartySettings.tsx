@@ -10,6 +10,7 @@ import {
 import { PartyInterface } from "../../types/party";
 import { sendEvent } from "../../utils/eventHandlers";
 import { AddUserForm } from "../AddUserForm";
+import { SettingsRoot } from "./PartySettings.styles";
 
 export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const handlers = useFormContext<FormSettings>();
@@ -78,7 +79,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   );
 
   return (
-    <div className="box">
+    <SettingsRoot className="box">
       <Block title={header}>
         <Columns>
           <div>
@@ -256,6 +257,6 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
           </div>
         </Columns>
       </Block>
-    </div>
+    </SettingsRoot>
   );
 };

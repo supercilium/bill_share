@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 
 export const IS_PARTY_HINTS_HIDDEN = "IS_PARTY_HINTS_HIDDEN";
 
@@ -29,6 +29,18 @@ export const UISettingsProvider: FC<{
     setAsideVisibility,
     setHintsVisibility,
   };
+
+  useEffect(() => {
+    if (isAsideVisible) {
+      window.requestAnimationFrame(() => {
+        document.documentElement.classList.add("is-clipped");
+      });
+    } else {
+      window.requestAnimationFrame(() => {
+        document.documentElement.classList.remove("is-clipped");
+      });
+    }
+  }, [isAsideVisible]);
 
   return (
     <UISettingsContext.Provider value={value}>
