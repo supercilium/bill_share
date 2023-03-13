@@ -17,6 +17,7 @@ export const Navbar: FC<NavbarProps> = ({
   NavbarEndItems,
   navbarProps,
 }) => {
+  // TODO move to context
   const [isOpened, setIsOpen] = useState(false);
   const navbarClassName = `${navbarProps?.hasShadow ? " has-shadow" : ""}${
     navbarProps?.isTransparent ? " is-transparent" : ""
@@ -48,7 +49,7 @@ export const Navbar: FC<NavbarProps> = ({
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <a
               role="button"
-              className={`navbar-burger${isOpened ? "  is-active" : ""}`}
+              className={`navbar-burger${isOpened ? " is-active" : ""}`}
               aria-label="menu"
               aria-expanded="false"
               data-target="navbarBasicExample"
@@ -61,7 +62,7 @@ export const Navbar: FC<NavbarProps> = ({
           )}
         </div>
 
-        <div className={`navbar-menu${isOpened ? "  is-active" : ""}`}>
+        <div className={`navbar-menu${isOpened ? " is-active" : ""}`}>
           <div className="navbar-start">{NavbarStartItems}</div>
 
           <div className="navbar-end">

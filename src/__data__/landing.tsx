@@ -34,7 +34,7 @@ export const CARDS: Array<React.ComponentPropsWithoutRef<typeof Card>> = [
     card: {
       isFullHeight: true,
     },
-    image: { imageUrl: "/get-some-drinks.jpg" },
+    image: { imageUrl: "/static/media/get-some-drinks.jpg" },
     content: (
       <p>Share party with friends and start adding your drinks and snaks</p>
     ),
@@ -43,14 +43,14 @@ export const CARDS: Array<React.ComponentPropsWithoutRef<typeof Card>> = [
     card: {
       isFullHeight: true,
     },
-    image: { imageUrl: "/pay-bill.jpg" },
+    image: { imageUrl: "/static/media/pay-bill.jpg" },
     content: <p>Check, please! You already know how much you should pay</p>,
   },
   {
     card: {
       isFullHeight: true,
     },
-    image: { imageUrl: "/friends-convince.jpg" },
+    image: { imageUrl: "/static/media/friends-convince.jpg" },
     content: <p>Convince your friends to return your money</p>,
   },
 ];

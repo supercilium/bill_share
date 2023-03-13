@@ -20,7 +20,6 @@ $button-ghost-hover-decoration: none;
 @import "../node_modules/bulma/sass/components/dropdown.sass";
 @import "../node_modules/bulma/sass/components/message.sass";
 @import "../node_modules/bulma/sass/components/modal.sass";
-@import "../node_modules/bulma/sass/components/pagination.sass";
 @import "../node_modules/bulma/sass/components/tabs.sass";
 
 @import "../node_modules/bulma/sass/grid/_all.sass";
@@ -94,68 +93,12 @@ body {
   transform: translateX(0);
 }
 
-.hero-with-background {
-  background-image: linear-gradient(
-      to bottom,
-      rgba(90, 90, 90, 0.5),
-      rgba(0, 0, 0, 0.4)
-    ),
-    url("../public/main-bg.jpg");
-  background-position: center center;
-  background-size: cover;
-}
+.user-column-title {
+  position: relative;
 
-.get-in-touch {
-  background-image: url("../public/get-in-touch.jpg");
-  background-position: center center;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
-}
-
-.step-grid {
-  display: grid;
-  gap: 4rem;
-  grid-template-columns: 90%;
-  justify-content: center;
-  @include from($tablet) {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(5, 1fr);
-  }
-}
-
-.step-grid-item-1 {
-  @include from($tablet) {
-    grid-row-start: 1;
-    grid-row-end: 3;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-}
-
-.step-grid-item-2 {
-  @include from($tablet) {
-    grid-row-start: 2;
-    grid-row-end: 4;
-    grid-column-start: 2;
-    grid-column-end: 3;
-  }
-}
-
-.step-grid-item-3 {
-  @include from($tablet) {
-    grid-row-start: 3;
-    grid-row-end: 5;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-}
-
-.step-grid-item-4 {
-  @include from($tablet) {
-    grid-row-start: 4;
-    grid-row-end: 6;
-    grid-column-start: 2;
-    grid-column-end: 3;
+  & > i {
+    position: absolute;
+    top: -45%;
+    left: 0;
   }
 }

@@ -17,12 +17,16 @@ import {
   PartiesShowcase,
   TAB_LABELS,
 } from "../__data__/landing";
+import { HOW_DOES_IT_WORK } from "../__data__/howItWork";
+import { useNavigate } from "react-router";
+import "./Home.scss";
 
 export const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const { user } = useUser();
   const { token } = user || {};
   const [activeCase, setActiveCase] = useState<PartiesShowcase>("shared");
+  const navigate = useNavigate();
 
   const party = DATA_MOCKS[activeCase];
   const total = getBaseTotal(party.items);
@@ -35,20 +39,22 @@ export const Home = () => {
   return (
     <LandingLayout
       footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
-      showcaseFoot={
-        <p className="subtitle is-size-5 has-text-grey-lighter has-text-centered mb-5">
-          Memento hangover!
-        </p>
-      }
-      showcaseBody={
-        <div className="container has-text-centered">
-          <p className="title is-size-1">You have fun, We do the math</p>
-          <p className="subtitle is-size-3">
-            Share items between all or some users, equally or in parts. Apply
-            discounts to your bill in percentages, or in absolute values.
+      showcase={{
+        foot: (
+          <p className="subtitle is-size-5 has-text-grey-lighter has-text-centered mb-5">
+            Memento hangover!
           </p>
-        </div>
-      }
+        ),
+        body: (
+          <div className="container has-text-centered">
+            <p className="title is-size-1">You have fun, We do the math</p>
+            <p className="subtitle is-size-3">
+              Share items between all or some users, equally or in parts. Apply
+              discounts to your bill in percentages, or in absolute values.
+            </p>
+          </div>
+        ),
+      }}
       sections={
         <>
           <section className="py-6 px-2">
@@ -143,17 +149,25 @@ export const Home = () => {
                       <span className="is-size-6 has-text-grey">Item name</span>
                       <span className="is-size-6 has-text-grey">Amount</span>
                       <span className="is-size-6 has-text-grey">Price</span>
-                      {partyLayoutProps.isDiscountVisible && (
-                        <span className="is-size-6 has-text-grey">
-                          Discount
-                          <span className="is-size-7 ml-1">(%)</span>
-                        </span>
-                      )}
-                      {partyLayoutProps.isEquallyVisible && (
-                        <span className="is-size-6 has-text-grey">
-                          Is shared
-                        </span>
-                      )}
+                      <span
+                        className={`is-size-6 has-text-grey${
+                          partyLayoutProps.isDiscountVisible
+                            ? ""
+                            : " is-invisible"
+                        }`}
+                      >
+                        Discount
+                        <span className="is-size-7 ml-1">(%)</span>
+                      </span>
+                      <span
+                        className={`is-size-6 has-text-grey${
+                          partyLayoutProps.isEquallyVisible
+                            ? ""
+                            : " is-invisible"
+                        }`}
+                      >
+                        Is shared
+                      </span>
                       {party.users?.length > 0 ? (
                         party.users.map((user) => {
                           const isCurrentUser = user.id === party.owner.id;
@@ -201,20 +215,26 @@ export const Home = () => {
                           <span className="is-size-6">
                             {item.price.toFixed(2)}
                           </span>
-                          {partyLayoutProps.isDiscountVisible && (
-                            <span
-                              className={`is-size-6${
-                                item.discount ? "" : " has-text-grey-light"
-                              }`}
-                            >
-                              {item.discount?.toFixed(2)}
-                            </span>
-                          )}
-                          {partyLayoutProps.isEquallyVisible && (
-                            <span className="is-size-6">
-                              {item.equally ? "✅" : "❌"}
-                            </span>
-                          )}
+                          <span
+                            className={`is-size-6${
+                              item.discount ? "" : " has-text-grey-light"
+                            }${
+                              partyLayoutProps.isDiscountVisible
+                                ? ""
+                                : " is-invisible"
+                            }`}
+                          >
+                            {item.discount?.toFixed(2)}
+                          </span>
+                          <span
+                            className={`is-size-6${
+                              partyLayoutProps.isEquallyVisible
+                                ? ""
+                                : " is-invisible"
+                            }`}
+                          >
+                            {item.equally ? "✅" : "❌"}
+                          </span>
                           {party.users.map(({ id }) => {
                             if (item.equally) {
                               return (
@@ -277,63 +297,31 @@ export const Home = () => {
                 How does it work? 🤔
               </p>
               <div className="step-grid">
-                <div className="step-grid-item-1">
-                  <p className="subtitle is-size-5 mb-5">
-                    Create your party and share it with guys, or join to
-                    somebody's else
-                  </p>
-                  <Card
-                    image={{
-                      imageUrl: "/create-party.gif",
-                      className: "is-5by3",
-                    }}
-                  />
-                </div>
-                <div className="step-grid-item-2">
-                  <p className="subtitle is-size-5 mb-5">
-                    Start adding your staff{" "}
-                  </p>
-                  <Card
-                    image={{
-                      imageUrl: "/add-staff.gif",
-                      className: "is-5by3",
-                    }}
-                  />
-                </div>
-                <div className="step-grid-item-3">
-                  <p className="subtitle is-size-5 mb-5">
-                    Change staff names, amounts, price using full party view or
-                    more detailed user's. To switch view use tabs, click on
-                    user's name or press U to open you items list, P - to return
-                    to full party
-                  </p>
-                  <Card
-                    image={{
-                      imageUrl: "/switch-view.gif",
-                      className: "is-5by3",
-                    }}
-                  />
-                </div>
-                <div className="step-grid-item-4">
-                  <p className="subtitle is-size-5 mb-5">
-                    Open settings and manage table appearance - you can hide
-                    non-important columns. Use keybindings - D for discount, S
-                    for shared, V - for vendetta. Here you can add discount for
-                    your bill if you're lucky enough to have it
-                  </p>
-                  <Card
-                    image={{
-                      imageUrl: "/settings.gif",
-                      className: "is-5by3",
-                    }}
-                  />
-                </div>
+                {HOW_DOES_IT_WORK.map((item, i) => (
+                  <div key={i} className={`step-grid-item-${i + 1}`}>
+                    <p className="subtitle is-size-5 mb-5">
+                      <i className="is-size-2 has-text-primary party-step mr-3">
+                        {i + 1}
+                      </i>
+                      {item.title}
+                    </p>
+                    <Card
+                      image={{
+                        imageUrl: item.imageUrl,
+                        className: "is-5by3",
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
               <p className="subtitle is-size-5 mt-6 has-text-centered">
+                <i className="is-size-2 has-text-primary party-step mr-3">
+                  {HOW_DOES_IT_WORK.length + 1}
+                </i>
                 Once party is done, you have all calculations for you and the
                 rest folks 🎉
               </p>
-              <div style={{ maxWidth: "50%", margin: "0 auto" }}>
+              <div className="total-item">
                 <Card
                   image={{
                     imageUrl: "/total.jpg",
@@ -380,8 +368,14 @@ export const Home = () => {
                             </li>
                           </ul>
                         </div>
-                        {activeTab === "login" && <LoginForm />}
-                        {activeTab === "register" && <RegisterForm />}
+                        {activeTab === "login" && (
+                          <LoginForm onLogin={() => navigate("/profile")} />
+                        )}
+                        {activeTab === "register" && (
+                          <RegisterForm
+                            onRegister={() => navigate("/profile")}
+                          />
+                        )}
                       </>
                     )}
                   </div>

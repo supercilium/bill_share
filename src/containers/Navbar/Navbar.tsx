@@ -45,6 +45,11 @@ export const Navbar: FC<NavbarProps> = ({
 
   const ref = useClickOutside<HTMLDivElement>(() => setOpenedPopup(null));
 
+  const handleSuccess = () => {
+    setOpenedPopup(null);
+    navigate("/profile");
+  };
+
   const renderUserMenu = useCallback(
     (user: User) => (
       <div className="navbar-item has-dropdown is-hoverable">
@@ -146,11 +151,11 @@ export const Navbar: FC<NavbarProps> = ({
 
               {openedPopup === "login" ? (
                 <Block title="Log in">
-                  <LoginForm onLogin={() => setOpenedPopup(null)} />
+                  <LoginForm onLogin={handleSuccess} />
                 </Block>
               ) : (
                 <Block title="Registration">
-                  <RegisterForm onRegister={() => setOpenedPopup(null)} />
+                  <RegisterForm onRegister={handleSuccess} />
                 </Block>
               )}
             </div>

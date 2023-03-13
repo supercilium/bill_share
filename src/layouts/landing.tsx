@@ -2,15 +2,16 @@ import { FC, ReactNode } from "react";
 import { Navbar } from "../containers/Navbar";
 
 interface LandingLayoutProps {
-  showcaseBody: ReactNode;
-  showcaseFoot?: ReactNode;
   sections: ReactNode;
   footer: ReactNode;
+  showcase: {
+    body: ReactNode;
+    foot?: ReactNode;
+  };
 }
 
 export const LandingLayout: FC<LandingLayoutProps> = ({
-  showcaseBody,
-  showcaseFoot,
+  showcase,
   sections,
   footer,
 }) => {
@@ -20,8 +21,8 @@ export const LandingLayout: FC<LandingLayoutProps> = ({
         <div className="hero-head">
           <Navbar navbarProps={{ isTransparent: true }} />
         </div>
-        <div className="hero-body">{showcaseBody}</div>
-        <div className="hero-foot">{showcaseFoot}</div>
+        <div className="hero-body">{showcase.body}</div>
+        <div className="hero-foot">{showcase.foot}</div>
       </div>
       {sections}
       {footer}
