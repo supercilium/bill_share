@@ -26,6 +26,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { NotificationList } from "./containers/NotificationList";
 import { ErrorPage } from "./pages/Error";
 import { Profile } from "./pages/Profile";
+import { ServiceAgreement } from "./pages/Agreement";
 
 library.add(
   faCrown,
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/service-agreement",
+    element: <ServiceAgreement />,
   },
   {
     path: "*",
