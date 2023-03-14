@@ -8,9 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
-import { socketClient } from "../../__api__/socket";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { User } from "../../types/user";
+import { Transport } from "../../services/transport";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -31,7 +31,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
       // eslint-disable-next-line no-console
       console.error(err);
     }
-    socketClient?.disconnect();
+    Transport.terminate();
     setUser(null);
     navigate("/");
   }, [navigate, setUser]);

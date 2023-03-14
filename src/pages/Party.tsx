@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Aside, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
 import { getPartyById } from "../__api__/parties";
-import { socketClient } from "../__api__/socket";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
 import { User } from "../types/user";
 import { AddItemForm } from "../containers/AddItemForm/AddItemForm";
@@ -22,6 +21,8 @@ import { useLogout } from "../hooks/useLogout";
 import { EventResponseDTO, PartyEvents } from "../types/events";
 import { useNotifications } from "../contexts/NotificationContext";
 import { CopyButton } from "../containers/CopyButton";
+import { Transport } from "../services/transport";
+import { SOCKET_STATE } from "../services/constants";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -38,7 +39,6 @@ const mapEventToText: Partial<
   "add item": "added",
   "remove item": "removed",
 };
-const socket = socketClient.socket;
 
 export const Party = () => {
   const { partyId } = useParams();
@@ -46,9 +46,8 @@ export const Party = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const { addAlert } = useNotifications();
-  const shouldNotify = useRef<boolean>(false);
 
-  const [socketState, setSocketState] = useState<number>(socket.readyState);
+  const [socketState, setSocketState] = useState<number>();
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") || "{}") || {}
   );
@@ -62,8 +61,13 @@ export const Party = () => {
     ["party", partyId],
     () =>
       getPartyById(partyId as string).then((result) => {
-        if (!socketClient.connected) {
-          socketClient.connect(partyId as string, eventHandler, setSocketState);
+        setSocketState(SOCKET_STATE.connecting);
+        if (!Transport.transport) {
+          Transport.createTransport(
+            eventHandler,
+            setSocketState,
+            partyId as string
+          );
         }
         return Promise.resolve(result);
       }),
@@ -79,11 +83,28 @@ export const Party = () => {
   );
 
   const eventHandler = useCallback(
-    (event: MessageEvent<string>) => {
+    (data: EventResponseDTO) => {
       try {
-        const data = JSON.parse(event.data) as EventResponseDTO;
         if (data.type === "error") {
           addAlert({ mode: "danger", text: data.message });
+          return;
+        }
+        if (data.type === "connect") {
+          refetch();
+          addAlert({
+            mode: "success",
+            text: `Connected to ${party?.name}`,
+          });
+          return;
+        }
+        if (data.type === "change state") {
+          setSocketState(Number(data.message));
+          if (Number(data.message) !== SOCKET_STATE.open) {
+            addAlert({
+              mode: "danger",
+              text: "Connection is lost",
+            });
+          }
           return;
         }
         if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
@@ -107,7 +128,7 @@ export const Party = () => {
         console.error(err);
       }
     },
-    [addAlert, partyId, queryClient]
+    [addAlert, party?.name, partyId, queryClient, refetch]
   );
 
   useEffect(() => {
@@ -116,28 +137,9 @@ export const Party = () => {
     }
   }, [navigate, pathname, user]);
 
-  useEffect(() => {
-    if (socketState === 3) {
-      addAlert({
-        mode: "danger",
-        text: "Connection is lost",
-      });
-      shouldNotify.current = true;
-      socketClient.reConnect(partyId as string, eventHandler, setSocketState);
-      refetch();
-    }
-    if (socketState === 1 && shouldNotify.current) {
-      addAlert({
-        mode: "success",
-        text: `Connected to ${party?.name}`,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addAlert, socketState]);
-
   useLogout({ queryKey: ["party", partyId] });
 
-  if (status === "loading") {
+  if (status === "loading" || socketState === SOCKET_STATE.connecting) {
     return (
       <HeroLayout>
         <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
@@ -163,7 +165,7 @@ export const Party = () => {
     );
   }
 
-  if (!socket || socketState === 2 || socketClient.error) {
+  if (socketState !== SOCKET_STATE.open) {
     return (
       <HeroLayout>
         <div>
@@ -171,9 +173,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() =>
-                socketClient.reConnect(partyId, eventHandler, setSocketState)
-              }
+              onClick={() => Transport.connect(partyId as string)}
               className="button ml-2"
             >
               re-connect
@@ -206,7 +206,7 @@ export const Party = () => {
   };
 
   return (
-    <PartySettingsProvider>
+    <PartySettingsProvider isOnline={socketState === SOCKET_STATE.open}>
       <PlainLayout
         Navbar={<Navbar />}
         Header={

@@ -4,7 +4,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyInterface } from "../types/party";
 import { getBaseTotal } from "../utils/calculation";
-import { itemsSchema } from "../utils/validation";
+import { itemsSchema } from "../services/validation";
 
 interface Params {
   party: PartyInterface;

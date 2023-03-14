@@ -12,13 +12,13 @@ import {
   getPartyUserDiscount,
   splitItems,
 } from "../../utils/calculation";
-import { sendEvent } from "../../utils/eventHandlers";
 import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
 import { PricePerRow, StyledUserForm } from "./UserPartyForm.styles";
 import { FormWrapper } from "../../components/styled/formWrapper";
 import { OverflowHidden } from "../../components/styled/typography";
 import { useParty } from "../../hooks/useParty";
+import { Transport } from "../../services/transport";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -38,7 +38,7 @@ export const UserPartyForm: FC<{
   const [userItems, restItems] = splitItems(party.items, userId);
 
   const handleRemoveItemFromUser = (id: string) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "remove user item",
       userId,
       partyId,
@@ -48,14 +48,14 @@ export const UserPartyForm: FC<{
 
   const handleChangeUserInItem = (item: Item) => {
     if (item.equally) {
-      sendEvent({
+      Transport.sendEvent({
         type: "add user item",
         userId,
         partyId,
         itemId: item.id,
       });
     } else {
-      sendEvent({
+      Transport.sendEvent({
         type: "update user item",
         userId,
         partyId,
@@ -68,7 +68,7 @@ export const UserPartyForm: FC<{
   const handleChangeItem = async (
     data: Partial<Omit<Item, "id" | "users">> & { itemId: string }
   ) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "update item",
       userId,
       partyId,
@@ -79,7 +79,7 @@ export const UserPartyForm: FC<{
     itemId: string;
     value: number;
   }) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "update user item",
       userId,
       partyId,

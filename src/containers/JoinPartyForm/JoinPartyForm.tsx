@@ -6,7 +6,7 @@ import { Columns, Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
 import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
-import { getValidationErrorsFromREsponse } from "../../utils/validation";
+import { getValidationErrorsFromREsponse } from "../../services/validation";
 import { ErrorRequest } from "../../__api__/helpers";
 import { createUser } from "../../__api__/users";
 

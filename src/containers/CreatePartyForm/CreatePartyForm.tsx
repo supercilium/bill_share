@@ -9,7 +9,7 @@ import { useUser } from "../../contexts/UserContext";
 import {
   createPartySchema,
   getValidationErrorsFromREsponse,
-} from "../../utils/validation";
+} from "../../services/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 

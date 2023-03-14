@@ -7,7 +7,7 @@ import { PartyInterface } from "../../types/party";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyFormLayout } from "../../components";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
-import { sendEvent } from "../../utils/eventHandlers";
+import { Transport } from "../../services/transport";
 import { OverflowHidden } from "../../components/styled/typography";
 import {
   CheckboxWrapper,
@@ -36,7 +36,7 @@ export const PartyForm: FC<{
     id,
     ...data
   }: Partial<Omit<Item, "users">>) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "update item",
       userId: currentUser.id,
       partyId,
@@ -49,7 +49,7 @@ export const PartyForm: FC<{
     userId: string,
     itemId: string
   ) => {
-    sendEvent({
+    Transport.sendEvent({
       type: shouldAddUser ? "add user item" : "remove user item",
       userId,
       partyId,
@@ -57,7 +57,7 @@ export const PartyForm: FC<{
     });
   };
   const handleRemoveItem = (id: string) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "remove item",
       userId: currentUser.id,
       partyId,
@@ -69,7 +69,7 @@ export const PartyForm: FC<{
     value: number;
     userId: string;
   }) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "update user item",
       partyId,
       ...data,

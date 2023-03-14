@@ -2,8 +2,8 @@ import { Block, Field } from "../../components";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendEvent } from "../../utils/eventHandlers";
-import { addItemSchema } from "../../utils/validation";
+import { Transport } from "../../services/transport";
+import { addItemSchema } from "../../services/validation";
 import { useState } from "react";
 import { AddItemButton, AddItemLayout, WideTrack } from "./AddItemForm.styles";
 
@@ -35,7 +35,7 @@ export const AddItemForm = () => {
   const { isValid, isDirty, errors } = formHandlers.formState;
 
   const handleAddItem = (data: ItemCreationInterface) => {
-    sendEvent({
+    Transport.sendEvent({
       type: "add item",
       userId: currentUser.id,
       partyId: partyId as string,
