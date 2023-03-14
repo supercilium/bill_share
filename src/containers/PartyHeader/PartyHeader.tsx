@@ -44,7 +44,7 @@ export const PartyHeader: FC<{
                 title="Back to party view"
                 onClick={() => {
                   setValue("view", "party");
-                  setValue("user", undefined);
+                  setValue("user", currentUser);
                 }}
               >
                 <span className="icon-text">
