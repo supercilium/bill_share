@@ -8,7 +8,7 @@ export interface FormSettings {
   isEquallyVisible: boolean;
   isDiscountVisible: boolean;
   view: "party" | "user";
-  user?: User;
+  user: User;
   discount?: number;
   isPercentage: boolean;
   discountPercent?: number;
@@ -45,7 +45,7 @@ export const PartySettingsProvider: FC<{
 
   useEffect(() => {
     if (view === "party") {
-      handlers.setValue("user", undefined);
+      handlers.setValue("user", currentUser);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);

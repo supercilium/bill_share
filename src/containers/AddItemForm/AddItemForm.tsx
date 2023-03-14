@@ -1,11 +1,12 @@
 import { Block, Field } from "../../components";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Transport } from "../../services/transport";
 import { addItemSchema } from "../../services/validation";
 import { useState } from "react";
 import { AddItemButton, AddItemLayout, WideTrack } from "./AddItemForm.styles";
+import { FormSettings } from "../../contexts/PartySettingsContext";
 
 interface ItemCreationInterface {
   name: string;
@@ -18,7 +19,10 @@ type PriceType = "per item" | "full";
 
 export const AddItemForm = () => {
   const { partyId } = useParams();
+  const { watch } = useFormContext<FormSettings>();
+
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const userForAdding = watch().user;
   const [priceType, setPriceType] = useState<PriceType>("full");
 
   const formHandlers = useForm<ItemCreationInterface>({
@@ -37,7 +41,7 @@ export const AddItemForm = () => {
   const handleAddItem = (data: ItemCreationInterface) => {
     Transport.sendEvent({
       type: "add item",
-      userId: currentUser.id,
+      userId: userForAdding.id,
       partyId: partyId as string,
       ...data,
       price: priceType === "full" ? data.price / data.amount : data.price,
@@ -46,7 +50,18 @@ export const AddItemForm = () => {
   };
 
   return (
-    <Block title="Add new item to share">
+    <Block
+      title={
+        <>
+          <p className="mb-2">Add new item to share </p>
+          <p className="is-size-6 mb-3 has-text-info">
+            {userForAdding.id === currentUser.id
+              ? "Item will be added to your list"
+              : `Item will be added to ${userForAdding.name}`}
+          </p>
+        </>
+      }
+    >
       <AddItemLayout
         noValidate={true}
         className="mb-3"
