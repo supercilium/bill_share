@@ -33,7 +33,7 @@ export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
         setIsCopied(result);
       }}
     >
-      <span className="is-size-3 mr-2">{title}</span>
+      <span className="is-size-3 mr-2 has-text-black">{title}</span>
       <CopyButtonIcon $isMessageVisible={isCopied}>
         <FontAwesomeIcon
           size="lg"
