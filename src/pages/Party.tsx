@@ -206,7 +206,7 @@ export const Party = () => {
   };
 
   return (
-    <PartySettingsProvider>
+    <PartySettingsProvider isOnline={socketState === SOCKET_STATE.open}>
       <PlainLayout
         Navbar={<Navbar />}
         Header={

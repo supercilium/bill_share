@@ -13,11 +13,13 @@ export interface FormSettings {
   isPercentage: boolean;
   discountPercent?: number;
   total: number;
+  isOnline: boolean;
 }
 
 export const PartySettingsProvider: FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+  isOnline: boolean;
+}> = ({ children, isOnline }) => {
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
   const handlers = useForm<FormSettings>({
@@ -30,6 +32,7 @@ export const PartySettingsProvider: FC<{
       discountPercent: 0,
       discount: 0,
       isPercentage: true,
+      isOnline,
     },
     resolver: yupResolver(partySettingsSchema),
     mode: "all",

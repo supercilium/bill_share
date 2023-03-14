@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { useUISettings } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
-import { StyledTab, StyledTabs } from "./PartyHeader.styles";
+import { StatusDot, StyledTab, StyledTabs } from "./PartyHeader.styles";
 
 export const PartyHeader: FC<{
   users: PartyInterface["users"];
@@ -26,10 +26,10 @@ export const PartyHeader: FC<{
         onClick={() => setAsideVisibility(true)}
       >
         <span className="icon-text">
-          <span className="icon mr-1">
+          <span className="icon">
             <FontAwesomeIcon icon="sliders" />
           </span>
-          <span className="is-hidden-mobile">Bill config</span>
+          <span className="ml-1 is-hidden-mobile">Bill config</span>
         </span>
       </button>
       <StyledTabs>
@@ -55,31 +55,44 @@ export const PartyHeader: FC<{
                 </span>
               </a>
             </StyledTab>
-            {sortedUsers.map((one) => (
-              <StyledTab
-                className={`is-flex ${
-                  one.id === partySettings?.user?.id ? "is-active" : ""
-                }`}
-                key={one.id}
-              >
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a
-                  onClick={() => {
-                    setValue("view", "user");
-                    setValue("user", one);
-                  }}
+            {sortedUsers.map((one) => {
+              return (
+                <StyledTab
+                  className={`is-flex ${
+                    one.id === partySettings?.user?.id ? "is-active" : ""
+                  }`}
+                  key={one.id}
                 >
-                  <span className="icon-text">
-                    {one.id === master.id && (
-                      <span className="icon mr-1">
-                        <FontAwesomeIcon icon="crown" />
-                      </span>
-                    )}
-                    <span>{one.name}</span>
-                  </span>
-                </a>
-              </StyledTab>
-            ))}
+                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                  <a
+                    className="is-relative"
+                    onClick={() => {
+                      setValue("view", "user");
+                      setValue("user", one);
+                    }}
+                  >
+                    <span className="icon-text">
+                      {one.id === master.id && (
+                        <span className="icon mr-1">
+                          <FontAwesomeIcon icon="crown" />
+                        </span>
+                      )}
+                      <span>{one.name}</span>
+                      {/* TODO add to all users when their status comes from BE */}
+                      {currentUser.id === one.id && (
+                        <StatusDot
+                          className={`is-size-3 ${
+                            partySettings ? "has-text-success" : "has-text-gray"
+                          }`}
+                        >
+                          •
+                        </StatusDot>
+                      )}
+                    </span>
+                  </a>
+                </StyledTab>
+              );
+            })}
           </ul>
         </div>
       </StyledTabs>
