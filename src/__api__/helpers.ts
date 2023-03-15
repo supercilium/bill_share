@@ -30,20 +30,23 @@ export const fetchAPI: FetchType = async (input, init) => {
     },
     ...(rest || {}),
   });
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  } else {
-    if (response.status === 401) {
-      return Promise.reject<ErrorRequest>({
-        status: 401,
-      });
-    }
-    try {
+  try {
+    if (response.ok) {
+      if (response.status === 204) {
+        return;
+      }
+      const data = await response.json();
+      return data;
+    } else {
+      if (response.status === 401) {
+        return Promise.reject<ErrorRequest>({
+          status: 401,
+        });
+      }
       const error = await response.json();
       return Promise.reject<ErrorRequest>(error);
-    } catch (err) {
-      return Promise.reject<ErrorRequest>(err);
     }
+  } catch (err) {
+    return Promise.reject<ErrorRequest>(err);
   }
 };

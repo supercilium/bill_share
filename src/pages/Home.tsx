@@ -23,7 +23,7 @@ export const Home = () => {
       }
       Main={
         <Main>
-          <Columns>
+          <Columns containerProps={{ className: "is-align-content-stretch" }}>
             {token ? (
               <div className="box">
                 <CreatePartyForm />
