@@ -16,22 +16,30 @@ export type FetchType = <JSON = unknown>(
   init?: RequestInit
 ) => Promise<JSON>;
 
-export const fetchAPI: FetchType = async (input, init) => {
-  const requestInfo: RequestInfo =
-    typeof input === "string"
-      ? getURL(input)
-      : { ...input, url: getURL(input.url) };
+const getCSRFToken = () => {
   const token = document.cookie.replace(
     /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
     "$1"
   );
 
-  const { headers, ...rest } = init || {};
+  return token;
+};
+
+export const fetchAPI: FetchType = async (input, init) => {
+  const requestInfo: RequestInfo =
+    typeof input === "string"
+      ? getURL(input)
+      : { ...input, url: getURL(input.url) };
+
+  const { headers = {}, ...rest } = init || {};
+  const token = getCSRFToken();
+  if (token && init?.method !== "GET") {
+    (headers as Record<string, string>)["X-XSRF-TOKEN"] = token;
+  }
   const response = await fetch(requestInfo, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-XSRF-TOKEN": token,
       ...(headers || {}),
     },
     ...(rest || {}),
