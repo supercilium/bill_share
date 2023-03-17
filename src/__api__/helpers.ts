@@ -21,11 +21,17 @@ export const fetchAPI: FetchType = async (input, init) => {
     typeof input === "string"
       ? getURL(input)
       : { ...input, url: getURL(input.url) };
+  const token = document.cookie.replace(
+    /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
+    "$1"
+  );
+
   const { headers, ...rest } = init || {};
   const response = await fetch(requestInfo, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      "X-XSRF-TOKEN": token,
       ...(headers || {}),
     },
     ...(rest || {}),
