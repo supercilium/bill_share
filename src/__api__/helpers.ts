@@ -16,7 +16,7 @@ export type FetchType = <JSON = unknown>(
   init?: RequestInit
 ) => Promise<JSON>;
 
-const getCSRFToken = () => {
+export const getCSRFToken = () => {
   const token = document
     .querySelector("meta[name='_csrf_header']")
     ?.getAttribute("content");
@@ -32,17 +32,16 @@ export const fetchAPI: FetchType = async (input, init) => {
       ? getURL(input)
       : { ...input, url: getURL(input.url) };
 
-  const { headers = {}, ...rest } = init || {};
+  // TODO figure out that to do with input headers
+  const { headers: inputHeaders, ...rest } = init || {};
+  const headers: [string, string][] = [["Content-Type", "application/json"]];
   const token = getCSRFToken();
   if (token && CSRF_TOKEN_HEADERS.includes(init?.method || "")) {
-    (headers as Record<string, string>)["X-XSRF-TOKEN"] = token;
+    headers.push(["X-XSRF-TOKEN", token]);
   }
   const response = await fetch(requestInfo, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(headers || {}),
-    },
+    headers,
     ...(rest || {}),
   });
   try {

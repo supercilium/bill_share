@@ -35,6 +35,16 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   >(fetchRegister, {
     onSuccess: (data) => {
       onRegister?.();
+      const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector("meta[name='_csrf_header']")
+          ?.setAttribute("content", token);
+      });
+
       setUser && setUser(data);
     },
     onError: async (error) => {
