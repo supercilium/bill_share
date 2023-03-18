@@ -17,13 +17,14 @@ export type FetchType = <JSON = unknown>(
 ) => Promise<JSON>;
 
 const getCSRFToken = () => {
-  const token = document.cookie.replace(
-    /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
+  const token = document
+    .querySelector("meta[name='_csrf_header']")
+    ?.getAttribute("content");
 
   return token;
 };
+
+const CSRF_TOKEN_HEADERS = ["POST", "PATCH", "DELETE", "PUT"];
 
 export const fetchAPI: FetchType = async (input, init) => {
   const requestInfo: RequestInfo =
@@ -33,7 +34,7 @@ export const fetchAPI: FetchType = async (input, init) => {
 
   const { headers = {}, ...rest } = init || {};
   const token = getCSRFToken();
-  if (token && init?.method !== "GET") {
+  if (token && CSRF_TOKEN_HEADERS.includes(init?.method || "")) {
     (headers as Record<string, string>)["X-XSRF-TOKEN"] = token;
   }
   const response = await fetch(requestInfo, {
