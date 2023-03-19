@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { useUISettings } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
-import { StatusDot, StyledTab, StyledTabs } from "./PartyHeader.styles";
+import "./PartyHeader.scss";
 
 export const PartyHeader: FC<{
   users: PartyInterface["users"];
@@ -32,12 +32,14 @@ export const PartyHeader: FC<{
           <span className="ml-1 is-hidden-mobile">Bill config</span>
         </span>
       </button>
-      <StyledTabs>
+      <div className="styled-tabs">
         <div className="tabs">
           <ul>
-            <StyledTab
+            <li
               key="very-first"
-              className={partySettings.view === "party" ? "is-active" : ""}
+              className={`styled-tab${
+                partySettings.view === "party" ? " is-active" : ""
+              }`}
             >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a
@@ -54,11 +56,11 @@ export const PartyHeader: FC<{
                   <span>All</span>
                 </span>
               </a>
-            </StyledTab>
+            </li>
             {sortedUsers.map((one) => {
               return (
-                <StyledTab
-                  className={`is-flex ${
+                <li
+                  className={`is-flex styled-tab ${
                     one.id === partySettings?.user?.id ? "is-active" : ""
                   }`}
                   key={one.id}
@@ -80,22 +82,22 @@ export const PartyHeader: FC<{
                       <span>{one.name}</span>
                       {/* TODO add to all users when their status comes from BE */}
                       {currentUser.id === one.id && (
-                        <StatusDot
-                          className={`is-size-3 ${
+                        <span
+                          className={`status-dot is-size-3 ${
                             partySettings ? "has-text-success" : "has-text-gray"
                           }`}
                         >
                           •
-                        </StatusDot>
+                        </span>
                       )}
                     </span>
                   </a>
-                </StyledTab>
+                </li>
               );
             })}
           </ul>
         </div>
-      </StyledTabs>
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ import { useUser } from "../../contexts/UserContext";
 import { PartiesListDTO } from "../../types/party";
 import { ErrorRequest } from "../../__api__/helpers";
 import { deleteParty, getParties } from "../../__api__/parties";
-import { MiddleRow, PaginationBlock, StyledPanel } from "./PartiesList.styles";
+import "./PartiesList.scss";
 
 interface PartiesListProps {}
 
@@ -72,17 +72,17 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
   const pages = amount ? Math.ceil(amount / PAGE_SIZE) : 1;
 
   return (
-    <StyledPanel className="panel has-background-white">
+    <div className="panel styled-panel has-background-white">
       <p className="panel-heading">Your parties</p>
       {(status === "loading" || isLoading) && (
-        <MiddleRow className="panel-block is-justify-content-center">
+        <div className="panel-block middle-row is-justify-content-center">
           <Loader />
-        </MiddleRow>
+        </div>
       )}
       {status !== "loading" && !parties?.length && (
-        <MiddleRow className="panel-block is-justify-content-center has-text-grey-light">
+        <div className="panel-block middle-row is-justify-content-center has-text-grey-light">
           You have no parties
-        </MiddleRow>
+        </div>
       )}
 
       {status === "success" &&
@@ -116,7 +116,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
             )}
           </div>
         ))}
-      <PaginationBlock className="panel-block is-block">
+      <div className="panel-block pagination-block is-block">
         {pages > 1 && (
           <Pagination
             size={pages}
@@ -126,7 +126,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
             }}
           />
         )}
-      </PaginationBlock>
-    </StyledPanel>
+      </div>
+    </div>
   );
 };

@@ -10,7 +10,7 @@ import {
 import { PartyInterface } from "../../types/party";
 import { Transport } from "../../services/transport";
 import { AddUserForm } from "../AddUserForm";
-import { SettingsRoot } from "./PartySettings.styles";
+import "./PartySettings.scss";
 
 export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const handlers = useFormContext<FormSettings>();
@@ -79,7 +79,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   );
 
   return (
-    <SettingsRoot className="box">
+    <div className="box settings-root">
       <Block title={header}>
         <Columns>
           <div>
@@ -257,6 +257,6 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
           </div>
         </Columns>
       </Block>
-    </SettingsRoot>
+    </div>
   );
 };

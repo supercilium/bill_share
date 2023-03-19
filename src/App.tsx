@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.scss";
-// import "./bulma.min.css";
 import { Party } from "./pages/Party";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";

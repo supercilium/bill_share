@@ -1,19 +1,19 @@
-import styled from "styled-components";
+@import "../../../node_modules/bulma/sass/components/panel.sass";
 
-export const StyledPanel = styled.nav`
+.styled-panel {
   display: grid;
   grid-template-rows: 55px repeat(10, 41px) 46px;
 
   .panel-block:hover {
     background-color: #f5f5f5;
   }
-`;
+}
 
-export const PaginationBlock = styled.div`
+.pagination-block {
   grid-row-start: 12;
-`;
+}
 
-export const MiddleRow = styled.div`
+.middle-row {
   grid-row-start: 6;
   border-bottom: none !important;
-`;
+}

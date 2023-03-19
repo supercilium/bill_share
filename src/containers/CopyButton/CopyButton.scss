@@ -1,15 +1,10 @@
-import styled from "styled-components";
-
-export const CopyButtonIcon = styled.span<{
-  $isMessageVisible: boolean;
-}>`
+.copy-button-icon {
   position: relative;
 
   &:after {
     content: "Copied!";
     position: absolute;
-    display: ${({ $isMessageVisible }) =>
-      $isMessageVisible ? "block" : "none"};
+    display: none;
     padding: 4px;
     background-color: #000;
     color: #fff;
@@ -18,4 +13,8 @@ export const CopyButtonIcon = styled.span<{
     border-radius: 4px;
     width: 80px;
   }
-`;
+
+  &.copied::after {
+    display: block;
+  }
+}

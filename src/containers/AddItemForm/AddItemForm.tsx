@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Transport } from "../../services/transport";
 import { addItemSchema } from "../../services/validation";
 import { useState } from "react";
-import { AddItemButton, AddItemLayout, WideTrack } from "./AddItemForm.styles";
+import "./AddItemForm.scss";
 
 interface ItemCreationInterface {
   name: string;
@@ -47,12 +47,12 @@ export const AddItemForm = () => {
 
   return (
     <Block title="Add new item to share">
-      <AddItemLayout
+      <form
         noValidate={true}
-        className="mb-3"
+        className="add-item-layout mb-3"
         onSubmit={formHandlers.handleSubmit(handleAddItem)}
       >
-        <WideTrack className="mb-3">
+        <div className="wide-track mb-3">
           <Field
             label="Item name"
             error={errors.name}
@@ -63,7 +63,7 @@ export const AddItemForm = () => {
               ...formHandlers.register("name"),
             }}
           />
-        </WideTrack>
+        </div>
         <Field
           label="Amount"
           error={errors.amount}
@@ -84,14 +84,14 @@ export const AddItemForm = () => {
             ...formHandlers.register("price"),
           }}
         />
-        <AddItemButton
+        <button
           type="submit"
-          className="button mb-3"
+          className="button add-item-button mb-3"
           disabled={!isValid || !isDirty}
         >
           Add item
-        </AddItemButton>
-        <WideTrack>
+        </button>
+        <div className="wide-track">
           <Field
             label=" Share item for all"
             inputProps={{
@@ -99,8 +99,8 @@ export const AddItemForm = () => {
               ...formHandlers.register("equally"),
             }}
           />
-        </WideTrack>
-      </AddItemLayout>
+        </div>
+      </form>
       <div>
         <div className="field">
           <div className="control">

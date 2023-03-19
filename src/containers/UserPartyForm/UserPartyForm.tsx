@@ -4,7 +4,6 @@ import { Block, Columns, Field } from "../../components";
 import { PartyInterface } from "../../types/party";
 import { useParams } from "react-router";
 import { Item } from "../../types/item";
-import { UserFormLayout } from "../../components/styled/userFormLayout";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
 import {
@@ -14,11 +13,10 @@ import {
 } from "../../utils/calculation";
 import { User } from "../../types/user";
 import { PartyHeader } from "../PartyHeader";
-import { PricePerRow, StyledUserForm } from "./UserPartyForm.styles";
-import { FormWrapper } from "../../components/styled/formWrapper";
-import { OverflowHidden } from "../../components/styled/typography";
 import { useParty } from "../../hooks/useParty";
 import { Transport } from "../../services/transport";
+import { UserFormLayout } from "../../components/UserFormLayout";
+import "./UserPartyForm.scss";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -98,8 +96,8 @@ export const UserPartyForm: FC<{
       ) : (
         <form noValidate={true}>
           <Columns containerProps={{ className: "is-flex-wrap-wrap" }}>
-            <FormWrapper>
-              <StyledUserForm className="box mt-4">
+            <div className="is-translated">
+              <div className="box with-scroll-horizontal mt-4">
                 {userItems.length ? (
                   <>
                     <p className="is-size-5-touch is-size-4-desktop">
@@ -112,14 +110,16 @@ export const UserPartyForm: FC<{
                       <span className="is-size-6">Item name</span>
                       <span className="is-size-6">Amount</span>
                       <span className="is-size-6">Price</span>
-                      {partySettings.isDiscountVisible && (
-                        <span className="is-size-6">
-                          Discount
-                          <span className="is-size-7 has-text-grey ml-1">
-                            (%)
-                          </span>
+                      <span
+                        className={`is-size-6${
+                          partySettings.isDiscountVisible ? "" : " is-invisible"
+                        }`}
+                      >
+                        Discount
+                        <span className="is-size-7 has-text-grey ml-1">
+                          (%)
                         </span>
-                      )}
+                      </span>
                     </UserFormLayout>
 
                     {userItems.map((item, i) => {
@@ -227,38 +227,42 @@ export const UserPartyForm: FC<{
                                 }}
                               />
                             </span>
-                            {partySettings.isDiscountVisible && (
-                              <span className="is-size-5-touch is-size-4-desktop">
-                                <Field
-                                  error={errors.items?.[i]?.discount}
-                                  inputProps={{
-                                    type: "number",
-                                    step: 5,
-                                    min: 0,
-                                    max: 100,
-                                    ...register(
-                                      `items.${item.originalIndex}.discount`
-                                    ),
-                                    onBlur: ({ target }) => {
-                                      if (
-                                        +target.value === item.discount ||
-                                        !isValid
-                                      ) {
-                                        return new Promise(() => {});
-                                      }
+                            <span
+                              className={`is-size-5-touch is-size-4-desktop${
+                                partySettings.isDiscountVisible
+                                  ? ""
+                                  : " is-invisible"
+                              }`}
+                            >
+                              <Field
+                                error={errors.items?.[i]?.discount}
+                                inputProps={{
+                                  type: "number",
+                                  step: 5,
+                                  min: 0,
+                                  max: 100,
+                                  ...register(
+                                    `items.${item.originalIndex}.discount`
+                                  ),
+                                  onBlur: ({ target }) => {
+                                    if (
+                                      +target.value === item.discount ||
+                                      !isValid
+                                    ) {
+                                      return new Promise(() => {});
+                                    }
 
-                                      return handleChangeItem({
-                                        itemId: item.id,
-                                        discount: +target.value,
-                                      });
-                                    },
-                                  }}
-                                />
-                              </span>
-                            )}
-                            <PricePerRow className="is-size-6 has-text-primary-dark">
+                                    return handleChangeItem({
+                                      itemId: item.id,
+                                      discount: +target.value,
+                                    });
+                                  },
+                                }}
+                              />
+                            </span>
+                            <span className="price-per-row is-size-6 has-text-primary-dark">
                               {item.total.toFixed(2)}
-                            </PricePerRow>
+                            </span>
                           </UserFormLayout>
                           {partySettings.isEquallyVisible && (
                             <Field
@@ -301,11 +305,11 @@ export const UserPartyForm: FC<{
                 ) : (
                   <EmptyPartyLayout />
                 )}
-              </StyledUserForm>
-            </FormWrapper>
-            <FormWrapper>
+              </div>
+            </div>
+            <div className="is-translated">
               {restItems.length > 0 && (
-                <StyledUserForm className="box mt-4">
+                <div className="box with-scroll-horizontal mt-4">
                   <p className="is-size-4">More items from party</p>
                   <UserFormLayout
                     isDiscountVisible={false}
@@ -336,17 +340,17 @@ export const UserPartyForm: FC<{
                         isEquallyVisible={false}
                         key={item.id}
                       >
-                        <OverflowHidden className="is-size-5">
+                        <span className="text-overflow-hidden is-size-5">
                           {item.name}
-                        </OverflowHidden>
+                        </span>
                         <span className="is-size-5">{item.amount}</span>
                         <span className="is-size-5">{item.price}</span>
                       </UserFormLayout>
                     </div>
                   ))}
-                </StyledUserForm>
+                </div>
               )}
-            </FormWrapper>
+            </div>
           </Columns>
         </form>
       )}

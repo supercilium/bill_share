@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
-import { Block, PartyFormLayout } from "../../components";
-import { RotatedText } from "../../components/styled/typography";
+import { Block } from "../../components";
+import { PartyFormLayout } from "../../components/PartyFormLayout";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyInterface } from "../../types/party";
 import {
@@ -44,16 +44,23 @@ export const PartyTotals: FC<{
         <span className="is-size-6 has-text-right">Base total</span>
         <span className="is-size-6" />
         <span className={sumClassName}>{baseTotal}</span>
-        {partySettings.isDiscountVisible && <span className="is-size-6" />}
-        {partySettings.isEquallyVisible && <span className="is-size-6" />}
+        <span
+          className={`is-size-6${
+            partySettings.isDiscountVisible ? "" : " is-invisible"
+          }`}
+        />
+        <span
+          className={`is-size-6${
+            partySettings.isEquallyVisible ? "" : " is-invisible"
+          }`}
+        />
         {party.users?.length > 0 ? (
           party.users.map((user) => (
-            <RotatedText
+            <span
               key={user.id}
-              isRotated={shouldRotate}
               className={`${sumClassName} is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
-              }`}
+              }${shouldRotate ? " rotated-text" : ""}`}
               title={`Open detailed view for ${user.name}`}
               onClick={() => {
                 setValue("user", user);
@@ -61,7 +68,7 @@ export const PartyTotals: FC<{
               }}
             >
               {getPartyUserBaseTotal(party.items, user.id).toFixed(2)}
-            </RotatedText>
+            </span>
           ))
         ) : (
           <div />
@@ -75,18 +82,26 @@ export const PartyTotals: FC<{
         <span className="is-size-6 has-text-right">Discount</span>
         <span className={sumClassName} />
         <span className={sumClassName}>{Number(discount || 0).toFixed(2)}</span>
-        {partySettings.isDiscountVisible && (
-          <span className={sumClassName}>{totalDiscount.toFixed(2)}</span>
-        )}
-        {partySettings.isEquallyVisible && <span className={sumClassName} />}
+
+        <span
+          className={`${sumClassName}${
+            partySettings.isDiscountVisible ? "" : " is-invisible"
+          }`}
+        >
+          {totalDiscount.toFixed(2)}
+        </span>
+        <span
+          className={`${sumClassName}${
+            partySettings.isEquallyVisible ? "" : " is-invisible"
+          }`}
+        />
         {party.users?.length > 0 ? (
           party.users.map((user) => (
-            <RotatedText
+            <span
               key={user.id}
-              isRotated={shouldRotate}
               className={`${sumClassName} is-clickable${
                 user.id === currentUser.id ? " has-text-info" : ""
-              }`}
+              }${shouldRotate ? " rotated-text" : ""}`}
               title={`Open detailed view for ${user.name}`}
               onClick={() => {
                 setValue("user", user);
@@ -99,7 +114,7 @@ export const PartyTotals: FC<{
                   (partySettings.discountPercent || 0) *
                   0.01
               ).toFixed(2)}
-            </RotatedText>
+            </span>
           ))
         ) : (
           <div />
@@ -116,12 +131,19 @@ export const PartyTotals: FC<{
         <span className={sumClassName}>
           {Number(getPartyTotal(party.items) - (discount || 0)).toFixed(2)}
         </span>
-        {partySettings.isDiscountVisible && (
-          <span className={sumClassName}>
-            {Number(totalDiscount + (discount || 0)).toFixed(2)}
-          </span>
-        )}
-        {partySettings.isEquallyVisible && <span className={sumClassName} />}
+
+        <span
+          className={`${sumClassName}${
+            partySettings.isDiscountVisible ? "" : " is-invisible"
+          }`}
+        >
+          {Number(totalDiscount + (discount || 0)).toFixed(2)}
+        </span>
+        <span
+          className={`${sumClassName}${
+            partySettings.isEquallyVisible ? "" : " is-invisible"
+          }`}
+        />
         {party.users?.length > 0 ? (
           party.users.map((user) => {
             const baseTotal = getPartyUserBaseTotal(party.items, user.id);
@@ -129,12 +151,11 @@ export const PartyTotals: FC<{
               getPartyUserDiscount(party.items, user.id) +
               baseTotal * (partySettings.discountPercent || 0) * 0.01;
             return (
-              <RotatedText
+              <span
                 key={user.id}
-                isRotated={shouldRotate}
                 className={`${sumClassName} is-clickable${
                   user.id === currentUser.id ? " has-text-info" : ""
-                }`}
+                }${shouldRotate ? " rotated-text" : ""}`}
                 title={`Open detailed view for ${user.name}`}
                 onClick={() => {
                   setValue("user", user);
@@ -142,7 +163,7 @@ export const PartyTotals: FC<{
                 }}
               >
                 {(baseTotal - discount).toFixed(2)}
-              </RotatedText>
+              </span>
             );
           })
         ) : (

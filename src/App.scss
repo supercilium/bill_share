@@ -1,34 +1,95 @@
 @charset "utf-8";
-@import "../node_modules/bulma/sass/base/_all.sass";
+
+$button-ghost-decoration: none;
+$button-ghost-hover-decoration: none;
+
+@import "../node_modules/bulma/sass/utilities/_all";
+@import "../node_modules/bulma/sass/base/_all";
+
+@import "../node_modules/bulma/sass/elements/box.sass";
+@import "../node_modules/bulma/sass/elements/button.sass";
+@import "../node_modules/bulma/sass/elements/container.sass";
+@import "../node_modules/bulma/sass/elements/icon.sass";
+@import "../node_modules/bulma/sass/elements/image.sass";
+@import "../node_modules/bulma/sass/elements/other.sass";
+@import "../node_modules/bulma/sass/elements/title.sass";
+
+@import "../node_modules/bulma/sass/form/_all";
 
 @import "../node_modules/bulma/sass/components/navbar.sass";
 @import "../node_modules/bulma/sass/components/dropdown.sass";
 @import "../node_modules/bulma/sass/components/message.sass";
 @import "../node_modules/bulma/sass/components/modal.sass";
 @import "../node_modules/bulma/sass/components/pagination.sass";
-@import "../node_modules/bulma/sass/components/panel.sass";
 @import "../node_modules/bulma/sass/components/tabs.sass";
-
-@import "../node_modules/bulma/sass/elements/box.sass";
-@import "../node_modules/bulma/sass/elements/button.sass";
-@import "../node_modules/bulma/sass/elements/container.sass";
-@import "../node_modules/bulma/sass/elements/form.sass";
-@import "../node_modules/bulma/sass/elements/icon.sass";
-@import "../node_modules/bulma/sass/elements/image.sass";
-@import "../node_modules/bulma/sass/elements/other.sass";
-@import "../node_modules/bulma/sass/elements/notification.sass";
-@import "../node_modules/bulma/sass/elements/title.sass";
-
-@import "../node_modules/bulma/sass/form/_all.sass";
-
-@import "../node_modules/bulma/sass/helpers/_all.sass";
 
 @import "../node_modules/bulma/sass/grid/_all.sass";
 
-@import "../node_modules/bulma/sass/layout/_all.sass";
+@import "../node_modules/bulma/sass/helpers/_all.sass";
 
-@import "../node_modules/bulma/sass/utilities/_all.sass";
+@import "../node_modules/bulma/sass/layout/section.sass";
+@import "../node_modules/bulma/sass/layout/hero.sass";
 
 body {
   min-height: 100vh;
+}
+
+.with-scroll-horizontal {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+}
+
+.text-overflow-hidden {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.rotated-text {
+  transform: rotate(-42deg);
+}
+
+.button {
+  @extend .button;
+  &.is-plain {
+    background-color: transparent;
+    border: none;
+    color: $button-text-color;
+    white-space: normal;
+    min-height: $control-height;
+    height: auto;
+
+    &:hover,
+    &.is-hovered,
+    &:focus,
+    &.is-focused,
+    &:focus-visible {
+      color: $button-text-hover-color;
+      border: none;
+      box-shadow: none;
+      outline: none;
+    }
+    &:active,
+    &.is-active {
+      color: $button-text-hover-color;
+      border: none;
+      box-shadow: none;
+    }
+    &[disabled],
+    fieldset[disabled] & {
+      background-color: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+}
+
+.is-translated {
+  transform: translateX(0);
 }

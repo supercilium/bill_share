@@ -5,17 +5,12 @@ import { Block, Field } from "../../components";
 import { Item } from "../../types/item";
 import { PartyInterface } from "../../types/party";
 import { FormSettings } from "../../contexts/PartySettingsContext";
-import { PartyFormLayout } from "../../components";
 import { EmptyPartyLayout } from "../../layouts/emptyParty";
 import { Transport } from "../../services/transport";
-import { OverflowHidden } from "../../components/styled/typography";
-import {
-  CheckboxWrapper,
-  DeleteButton,
-  UserColumnTitle,
-} from "./PartyForm.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParty } from "../../hooks/useParty";
+import { PartyFormLayout } from "../../components/PartyFormLayout";
+import "./PartyForm.scss";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -76,7 +71,10 @@ export const PartyForm: FC<{
     });
   };
 
-  const partyLayoutProps: React.ComponentProps<typeof PartyFormLayout> = {
+  const partyLayoutProps: Omit<
+    React.ComponentProps<typeof PartyFormLayout>,
+    "children"
+  > = {
     amountOfUsers: users.length,
     isDiscountVisible: partySettings.isDiscountVisible,
     isEquallyVisible: partySettings.isEquallyVisible,
@@ -88,24 +86,27 @@ export const PartyForm: FC<{
         <span className="is-size-6">Item name</span>
         <span className="is-size-6">Amount</span>
         <span className="is-size-6">Price</span>
-        {partySettings.isDiscountVisible && (
-          <span className="is-size-6">
-            Discount<span className="is-size-7 has-text-grey ml-1">(%)</span>
-          </span>
-        )}
-        {partySettings.isEquallyVisible && (
-          <span className="is-size-6">Is shared</span>
-        )}
+        <span
+          className={`is-size-6${
+            partySettings.isDiscountVisible ? "" : " is-invisible"
+          }`}
+        >
+          Discount<span className="is-size-7 has-text-grey ml-1">(%)</span>
+        </span>
+        <span
+          className={`is-size-6${
+            partySettings.isEquallyVisible ? "" : " is-invisible"
+          }`}
+        >
+          Is shared
+        </span>
         {users?.length > 0 ? (
           users.map((user) => {
             const isCurrentUser = user.id === currentUser.id;
             return (
-              <UserColumnTitle
-                key={user.id}
-                hasIcon={user.id === party.owner.id}
-              >
-                <OverflowHidden
-                  className={`is-clickable is-size-6${
+              <div className="user-column-title" key={user.id}>
+                <span
+                  className={`text-overflow-hidden is-clickable is-size-6${
                     isCurrentUser ? " has-text-info" : ""
                   }`}
                   title={`Open detailed view for ${user.name}`}
@@ -115,7 +116,7 @@ export const PartyForm: FC<{
                   }}
                 >
                   {user.name}
-                </OverflowHidden>
+                </span>
                 {user.id === party.owner.id && (
                   <i>
                     <FontAwesomeIcon
@@ -126,7 +127,7 @@ export const PartyForm: FC<{
                     />
                   </i>
                 )}
-              </UserColumnTitle>
+              </div>
             );
           })
         ) : (
@@ -144,14 +145,14 @@ export const PartyForm: FC<{
               key={item.id}
             >
               <div className="is-size-4 is-flex ">
-                <DeleteButton>
+                <div className="delete-root">
                   <button
                     type="button"
                     className="delete mr-2"
                     title="Remove item"
                     onClick={() => handleRemoveItem(item.id)}
                   />
-                </DeleteButton>
+                </div>
 
                 <Field
                   error={errors.items?.[i]?.name}
@@ -210,49 +211,53 @@ export const PartyForm: FC<{
                   }}
                 />
               </span>
-              {partySettings.isDiscountVisible && (
-                <span className="is-size-4">
-                  <Field
-                    error={errors.items?.[i]?.discount}
-                    inputProps={{
-                      type: "number",
-                      step: 5,
-                      min: 0,
-                      max: 100,
-                      ...register(`items.${i}.discount`),
-                      onBlur: ({ target }) => {
-                        if (+target.value === item.discount || !isValid) {
-                          return new Promise(() => {});
-                        }
+              <span
+                className={`is-size-4${
+                  partySettings.isDiscountVisible ? "" : " is-invisible"
+                }`}
+              >
+                <Field
+                  error={errors.items?.[i]?.discount}
+                  inputProps={{
+                    type: "number",
+                    step: 5,
+                    min: 0,
+                    max: 100,
+                    ...register(`items.${i}.discount`),
+                    onBlur: ({ target }) => {
+                      if (+target.value === item.discount || !isValid) {
+                        return new Promise(() => {});
+                      }
 
-                        return handleChangeItem({
-                          id: item.id,
-                          discount: +target.value,
-                        });
-                      },
-                    }}
-                  />
-                </span>
-              )}
-              {partySettings.isEquallyVisible && (
-                <CheckboxWrapper>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    {...register(`items.${i}.equally`)}
-                    onChange={({ target }) =>
-                      handleChangeItem({
+                      return handleChangeItem({
                         id: item.id,
-                        equally: target.checked,
-                      })
-                    }
-                  />
-                </CheckboxWrapper>
-              )}
+                        discount: +target.value,
+                      });
+                    },
+                  }}
+                />
+              </span>
+              <div
+                className={`checkbox-wrapper${
+                  partySettings.isEquallyVisible ? "" : " is-invisible"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  {...register(`items.${i}.equally`)}
+                  onChange={({ target }) =>
+                    handleChangeItem({
+                      id: item.id,
+                      equally: target.checked,
+                    })
+                  }
+                />
+              </div>
               {users.map(({ id }) => {
                 if (item.equally) {
                   return (
-                    <CheckboxWrapper key={id}>
+                    <div className="checkbox-wrapper" key={id}>
                       <input
                         type="checkbox"
                         className="is-size-4 checkbox"
@@ -261,7 +266,7 @@ export const PartyForm: FC<{
                           handleChangeUserInItem(target.checked, id, item.id)
                         }
                       />
-                    </CheckboxWrapper>
+                    </div>
                   );
                 }
                 const userIndex = itemUsers.findIndex((user) => user.id === id);

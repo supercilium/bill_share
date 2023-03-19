@@ -1,0 +1,19 @@
+$partyFormGridTemplate: 200px 60px 90px;
+
+:root {
+  --discount-column: 85px;
+  --shared-column: 70px;
+  --amount-of-users: 1;
+}
+
+$usersColumns: repeat(var(--amount-of-users), 60px);
+
+.party-form-layout {
+  display: grid;
+  grid-template-columns:
+    $partyFormGridTemplate var(--discount-column) var(--shared-column)
+    $usersColumns;
+  gap: 16px;
+  width: fit-content;
+  padding-right: 60px;
+}
