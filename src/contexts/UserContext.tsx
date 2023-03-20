@@ -24,15 +24,15 @@ export const UserProvider: FC<{
       : null
   );
 
-  // useQuery(["csrf-token"], fetchToken, {
-  // onSuccess: (data) => {
-  //   window.requestAnimationFrame(() => {
-  //     document
-  //       .querySelector("meta[name='_csrf_header']")
-  //       ?.setAttribute("content", data.token);
-  //   });
-  // },
-  // });
+  useQuery(["csrf-token"], fetchToken, {
+    onSuccess: (data) => {
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector("meta[name='_csrf_header']")
+          ?.setAttribute("content", data.token);
+      });
+    },
+  });
 
   useEffect(() => {
     if (user) {
