@@ -1,7 +1,5 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { User } from "../types/user";
-import { fetchToken } from "../__api__/auth";
 
 export const USER_KEY = "user";
 
@@ -23,16 +21,6 @@ export const UserProvider: FC<{
       ? (JSON.parse(localStorage.getItem(USER_KEY) || "{}") as User)
       : null
   );
-
-  useQuery(["csrf-token"], fetchToken, {
-    onSuccess: (data) => {
-      window.requestAnimationFrame(() => {
-        document
-          .querySelector("meta[name='_csrf_header']")
-          ?.setAttribute("content", data.token);
-      });
-    },
-  });
 
   useEffect(() => {
     if (user) {

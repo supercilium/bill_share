@@ -22,5 +22,3 @@ export const fetchLogout = async () => {
   await fetchAPI("/auth/local/logout");
   return true;
 };
-
-export const fetchToken = async () => fetchAPI<CSRF_TOKEN>("/auth/csrf");

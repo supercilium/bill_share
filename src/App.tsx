@@ -74,6 +74,15 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: false,
+      onSuccess: () => {
+        const csrfToken = document.cookie.replace(
+          /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
+          "$1"
+        );
+        document
+          .querySelector("meta[name='_csrf_header']")
+          ?.setAttribute("content", csrfToken);
+      },
     },
   },
 });
