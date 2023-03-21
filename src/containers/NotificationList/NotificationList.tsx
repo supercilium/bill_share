@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Notification } from "../../components/Notification";
 import { useNotifications } from "../../contexts/NotificationContext";
-import { Container } from "./NotificationList.styles";
+import "./NotificationList.scss";
 
 interface NotificationListProps {}
 
@@ -9,10 +9,10 @@ export const NotificationList: FC<NotificationListProps> = (props) => {
   const { alerts, removeAlert } = useNotifications();
 
   return (
-    <Container>
+    <div className="notifications-container">
       {alerts ? (
         <Notification {...alerts} onClose={() => removeAlert()} />
       ) : null}
-    </Container>
+    </div>
   );
 };

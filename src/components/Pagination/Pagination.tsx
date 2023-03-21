@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { getPageTitle } from "./utils";
+import "./Pagination.scss";
 
 interface PaginationProps {
   onChangePage: (page: number) => void;

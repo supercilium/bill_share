@@ -1,0 +1,13 @@
+.styled-tab {
+  min-height: 100%;
+}
+
+.styled-tabs {
+  flex-grow: 0;
+  overflow-x: auto;
+}
+
+.status-dot {
+  position: absolute;
+  right: 0.05rem;
+}

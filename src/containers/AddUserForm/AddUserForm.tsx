@@ -4,7 +4,7 @@ import { Block, Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Transport } from "../../services/transport";
 import { addUserSchema } from "../../services/validation";
-import { AddUserLayout } from "../../components/styled/addUserLayout";
+import "./AddUserForm.scss";
 
 export const AddUserForm = () => {
   const { partyId } = useParams();
@@ -43,7 +43,8 @@ export const AddUserForm = () => {
           ...formHandlers.register("isUserRegistered"),
         }}
       /> */}
-      <AddUserLayout
+      <form
+        className="add-user-layout"
         noValidate={true}
         onSubmit={formHandlers.handleSubmit(handleAddUser)}
       >
@@ -63,7 +64,7 @@ export const AddUserForm = () => {
         >
           Add user
         </button>
-      </AddUserLayout>
+      </form>
     </Block>
   );
 };

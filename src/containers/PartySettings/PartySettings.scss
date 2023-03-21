@@ -1,0 +1,11 @@
+@import "../../../node_modules/bulma/sass/utilities/mixins.sass";
+
+.settings-root {
+  padding-bottom: 10rem;
+  max-height: 100vh;
+  overflow-y: auto;
+
+  @include from($tablet) {
+    padding-bottom: 5rem;
+  }
+}

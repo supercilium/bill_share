@@ -1,6 +1,6 @@
 import { FC, ReactNode } from "react";
 import { Columns } from "../Columns";
-import { VersionTag } from "./Footer.styles";
+import "./Footer.scss";
 
 export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -37,14 +37,14 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
           </p>
         </div>
       </Columns>
-      <VersionTag className="px-5 has-text-grey">
+      <div className="version-tag px-5 has-text-grey">
         <a className="is-size-6 has-text-grey" href="/service-agreement">
           Service agreement
         </a>
         <span className="is-pulled-right is-size-7">
           V. {process.env.REACT_APP_VERSION}
         </span>
-      </VersionTag>
+      </div>
     </footer>
   );
 };

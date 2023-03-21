@@ -1,15 +1,14 @@
-import styled from "styled-components";
-import { device } from "./constants";
+@import "../../../node_modules/bulma/sass/utilities/mixins.sass";
 
-export const AddUserLayout = styled.form`
+.add-user-layout {
   & button {
     margin-top: calc(24px + 0.5em);
   }
 
-  @media ${device.tablet} {
+  @include from($tablet) {
     display: grid;
     grid-template-columns: 200px 100px;
     gap: 16px;
     align-items: flex-start;
   }
-`;
+}

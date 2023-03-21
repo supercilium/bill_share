@@ -1,0 +1,7 @@
+@import "../../../node_modules/bulma/sass/utilities/_all";
+@import "../../../node_modules/bulma/sass/elements/notification.sass";
+
+.notification {
+  @extend .notification;
+  max-width: 30rem;
+}
