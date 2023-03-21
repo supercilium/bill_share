@@ -324,7 +324,7 @@ export const Home = () => {
               <div className="total-item">
                 <Card
                   image={{
-                    imageUrl: "/total.jpg",
+                    imageUrl: "/static/media/total.jpg",
                     className: "is-5by3",
                   }}
                 />
