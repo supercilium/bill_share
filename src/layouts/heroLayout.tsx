@@ -1,12 +1,15 @@
 import { FC, ReactNode } from "react";
 import { Footer } from "../components";
 import { Navbar } from "../containers/Navbar";
+import { useScrollTop } from "../hooks/useScrollTop";
 
 interface PlainLayoutInterface {
   children: ReactNode;
 }
 
 export const HeroLayout: FC<PlainLayoutInterface> = ({ children }) => {
+  useScrollTop();
+
   return (
     <div>
       <Navbar navbarProps={{ hasShadow: true }} />

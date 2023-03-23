@@ -1,5 +1,6 @@
 import { FC, ReactNode } from "react";
 import { Navbar } from "../containers/Navbar";
+import { useScrollTop } from "../hooks/useScrollTop";
 
 interface LandingLayoutProps {
   sections: ReactNode;
@@ -15,6 +16,8 @@ export const LandingLayout: FC<LandingLayoutProps> = ({
   sections,
   footer,
 }) => {
+  useScrollTop();
+
   return (
     <>
       <div className="hero is-dark hero-with-background is-fullheight">

@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 import { Footer as FooterComponent } from "../components";
 import { Navbar } from "../containers/Navbar";
+import { useScrollTop } from "../hooks/useScrollTop";
 
 interface PlainLayoutInterface {
   Header?: ReactNode;
@@ -17,6 +18,8 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
   Main,
   Navbar: NavbarComponent,
 }) => {
+  useScrollTop();
+
   return (
     <div
       style={{ minHeight: "100vh" }}
