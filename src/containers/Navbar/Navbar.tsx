@@ -47,7 +47,7 @@ export const Navbar: FC<NavbarProps> = ({
 
   const handleSuccess = () => {
     setOpenedPopup(null);
-    navigate("/profile");
+    navigate("/dashboard");
   };
 
   const renderUserMenu = useCallback(
@@ -62,12 +62,12 @@ export const Navbar: FC<NavbarProps> = ({
           }`}
         >
           <Link
-            to="/profile"
+            to="/dashboard"
             className={`navbar-item${
-              pathname === "/profile" ? " is-active" : ""
+              pathname === "/dashboard" ? " is-active" : ""
             }`}
           >
-            Profile
+            Dashboard
           </Link>
           {/* <a className="navbar-item">Stats</a> */}
           <hr className="navbar-divider" />

@@ -369,11 +369,11 @@ export const Home = () => {
                           </ul>
                         </div>
                         {activeTab === "login" && (
-                          <LoginForm onLogin={() => navigate("/profile")} />
+                          <LoginForm onLogin={() => navigate("/dashboard")} />
                         )}
                         {activeTab === "register" && (
                           <RegisterForm
-                            onRegister={() => navigate("/profile")}
+                            onRegister={() => navigate("/dashboard")}
                           />
                         )}
                       </>

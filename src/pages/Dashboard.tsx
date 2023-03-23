@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { CreatePartyForm } from "../containers/CreatePartyForm";
 
-export const Profile = () => {
+export const Dashboard = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -27,25 +27,22 @@ export const Profile = () => {
       }
       Main={
         <Main>
-          <Columns>
-            <div>
-              {user && (
-                <>
-                  <div className="box mb-4">
-                    <CreatePartyForm />
-                  </div>
-                  <PartiesList />
-                </>
-              )}
-            </div>
-            <div />
-          </Columns>
+          {user && (
+            <Columns>
+              <div className="box">
+                <CreatePartyForm />
+              </div>
+              <div>
+                <PartiesList />
+              </div>
+            </Columns>
+          )}
         </Main>
       }
     />
   );
 };
 
-Profile.whyDidYouRender = true;
+Dashboard.whyDidYouRender = true;
 
-export default Profile;
+export default Dashboard;

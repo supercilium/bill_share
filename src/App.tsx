@@ -26,7 +26,7 @@ import { HeroLayout } from "./layouts/heroLayout";
 import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
 
-const Profile = React.lazy(() => import("./pages/Profile"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Home = React.lazy(() => import("./pages/Home"));
 const Party = React.lazy(() => import("./pages/Party"));
 const Login = React.lazy(() => import("./pages/Login"));
@@ -73,8 +73,8 @@ const router = createBrowserRouter([
     element: withSuspense(<Login />),
   },
   {
-    path: "/profile",
-    element: withSuspense(<Profile />),
+    path: "/dashboard",
+    element: withSuspense(<Dashboard />),
   },
   {
     path: "/service-agreement",
