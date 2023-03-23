@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
 import { useUser } from "../../contexts/UserContext";
 import { Navbar as NavbarUI } from "../../components/Navbar";
 import { fetchLogout } from "../../__api__/auth";
@@ -24,17 +25,15 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const handleLogout = useCallback(async () => {
-    try {
-      await fetchLogout();
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
-    }
-    Transport.terminate();
-    setUser(null);
-    navigate("/");
-  }, [navigate, setUser]);
+  const { refetch } = useQuery(["logout"], () => fetchLogout, {
+    retry: false,
+    enabled: false,
+    onSettled: () => {
+      Transport.terminate();
+      setUser(null);
+      navigate("/");
+    },
+  });
 
   const ref = useClickOutside<HTMLDivElement>(() => setOpenedPopup(null));
 
@@ -77,10 +76,7 @@ export const Navbar: FC<NavbarProps> = ({ shouldShowAuthButtons = true }) => {
             <>
               {renderUserMenu(user)}
               <div className="buttons is-justify-content-flex-end">
-                <button
-                  onClick={() => handleLogout()}
-                  className="button is-light"
-                >
+                <button onClick={() => refetch()} className="button is-light">
                   <FontAwesomeIcon
                     className="mr-3"
                     icon="arrow-right-from-bracket"
