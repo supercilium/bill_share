@@ -1,8 +1,6 @@
+import React, { ReactNode, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.scss";
-import { Party } from "./pages/Party";
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -24,8 +22,14 @@ import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { NotificationList } from "./containers/NotificationList";
 import { ErrorPage } from "./pages/Error";
-import { Profile } from "./pages/Profile";
+import { HeroLayout } from "./layouts/heroLayout";
+import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
+
+const Profile = React.lazy(() => import("./pages/Profile"));
+const Home = React.lazy(() => import("./pages/Home"));
+const Party = React.lazy(() => import("./pages/Party"));
+const Login = React.lazy(() => import("./pages/Login"));
 
 library.add(
   faCrown,
@@ -41,22 +45,36 @@ library.add(
   faClone
 );
 
+const withSuspense = (component: ReactNode) => (
+  <Suspense
+    fallback={
+      <HeroLayout>
+        <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
+          <Loader />
+        </div>
+      </HeroLayout>
+    }
+  >
+    {component}
+  </Suspense>
+);
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: withSuspense(<Home />),
   },
   {
     path: "/party/:partyId",
-    element: <Party />,
+    element: withSuspense(<Party />),
   },
   {
     path: "/login",
-    element: <Login />,
+    element: withSuspense(<Login />),
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: withSuspense(<Profile />),
   },
   {
     path: "/service-agreement",

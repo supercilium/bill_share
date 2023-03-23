@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 import { Footer as FooterComponent } from "../components";
 import { Navbar } from "../containers/Navbar";
+import { useScrollTop } from "../hooks/useScrollTop";
 
 interface PlainLayoutInterface {
   Header?: ReactNode;
@@ -17,12 +18,16 @@ export const PlainLayout: FC<PlainLayoutInterface> = ({
   Main,
   Navbar: NavbarComponent,
 }) => {
+  useScrollTop();
+
   return (
     <div
       style={{ minHeight: "100vh" }}
       className="is-flex is-flex-direction-column is-justify-content-space-between"
     >
-      {NavbarComponent || <Navbar />}
+      {NavbarComponent || (
+        <Navbar navbarProps={{ isFixed: true, hasShadow: true }} />
+      )}
       {Header}
       <main className="is-flex-grow-5">{Main}</main>
       {Aside}

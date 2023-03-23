@@ -5,6 +5,7 @@ import { Navbar } from "../containers/Navbar";
 import { PartiesList } from "../containers/PartiesList";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { CreatePartyForm } from "../containers/CreatePartyForm";
 
 export const Profile = () => {
   const { user } = useUser();
@@ -27,7 +28,16 @@ export const Profile = () => {
       Main={
         <Main>
           <Columns>
-            <div>{user && <PartiesList />}</div>
+            <div>
+              {user && (
+                <>
+                  <div className="box mb-4">
+                    <CreatePartyForm />
+                  </div>
+                  <PartiesList />
+                </>
+              )}
+            </div>
             <div />
           </Columns>
         </Main>
@@ -37,3 +47,5 @@ export const Profile = () => {
 };
 
 Profile.whyDidYouRender = true;
+
+export default Profile;

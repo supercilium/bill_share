@@ -20,7 +20,6 @@ $button-ghost-hover-decoration: none;
 @import "../node_modules/bulma/sass/components/dropdown.sass";
 @import "../node_modules/bulma/sass/components/message.sass";
 @import "../node_modules/bulma/sass/components/modal.sass";
-@import "../node_modules/bulma/sass/components/pagination.sass";
 @import "../node_modules/bulma/sass/components/tabs.sass";
 
 @import "../node_modules/bulma/sass/grid/_all.sass";
@@ -92,4 +91,14 @@ body {
 
 .is-translated {
   transform: translateX(0);
+}
+
+.user-column-title {
+  position: relative;
+
+  & > i {
+    position: absolute;
+    top: -45%;
+    left: 0;
+  }
 }

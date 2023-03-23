@@ -81,7 +81,11 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
         <Field
           label="Enter your party name"
           error={errors.partyName}
-          inputProps={{ type: "text", ...register("partyName") }}
+          inputProps={{
+            type: "text",
+            autoComplete: "party name",
+            ...register("partyName"),
+          }}
         />
         <button
           type="submit"

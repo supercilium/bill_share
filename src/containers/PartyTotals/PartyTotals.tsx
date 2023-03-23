@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useFormContext } from "react-hook-form";
 import { Block } from "../../components";
 import { PartyFormLayout } from "../../components/PartyFormLayout";
 import { FormSettings } from "../../contexts/PartySettingsContext";
@@ -15,13 +14,11 @@ import {
 export const PartyTotals: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
-}> = ({ party, currentUser }) => {
-  const { watch, setValue } = useFormContext<FormSettings>();
-
+  partySettings: FormSettings;
+}> = ({ party, currentUser, partySettings }) => {
   if (!party.items.length) {
     return null;
   }
-  const partySettings = watch();
 
   const totalDiscount = getTotalDiscount(party.items);
   const hasPartial = party.items.some(({ equally }) => !equally);
@@ -58,14 +55,14 @@ export const PartyTotals: FC<{
           party.users.map((user) => (
             <span
               key={user.id}
-              className={`${sumClassName} is-clickable${
+              className={`${sumClassName} ${
                 user.id === currentUser.id ? " has-text-info" : ""
               }${shouldRotate ? " rotated-text" : ""}`}
-              title={`Open detailed view for ${user.name}`}
-              onClick={() => {
-                setValue("user", user);
-                setValue("view", "user");
-              }}
+              // title={`Open detailed view for ${user.name}`}
+              // onClick={() => {
+              //   setValue("user", user);
+              //   setValue("view", "user");
+              // }}
             >
               {getPartyUserBaseTotal(party.items, user.id).toFixed(2)}
             </span>
@@ -99,14 +96,14 @@ export const PartyTotals: FC<{
           party.users.map((user) => (
             <span
               key={user.id}
-              className={`${sumClassName} is-clickable${
+              className={`${sumClassName} ${
                 user.id === currentUser.id ? " has-text-info" : ""
               }${shouldRotate ? " rotated-text" : ""}`}
-              title={`Open detailed view for ${user.name}`}
-              onClick={() => {
-                setValue("user", user);
-                setValue("view", "user");
-              }}
+              // title={`Open detailed view for ${user.name}`}
+              // onClick={() => {
+              //   setValue("user", user);
+              //   setValue("view", "user");
+              // }}
             >
               {(
                 getPartyUserDiscount(party.items, user.id) +
@@ -153,14 +150,14 @@ export const PartyTotals: FC<{
             return (
               <span
                 key={user.id}
-                className={`${sumClassName} is-clickable${
+                className={`${sumClassName} ${
                   user.id === currentUser.id ? " has-text-info" : ""
                 }${shouldRotate ? " rotated-text" : ""}`}
-                title={`Open detailed view for ${user.name}`}
-                onClick={() => {
-                  setValue("user", user);
-                  setValue("view", "user");
-                }}
+                // title={`Open detailed view for ${user.name}`}
+                // onClick={() => {
+                //   setValue("user", user);
+                //   setValue("view", "user");
+                // }}
               >
                 {(baseTotal - discount).toFixed(2)}
               </span>
