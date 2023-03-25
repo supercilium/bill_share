@@ -91,7 +91,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                 <article className="message">
                   <div className="message-body">
                     We hid unimportant columns, because the form already has a
-                    lot of staff and we do not have a designer to make it fits
+                    lot of stuff and we do not have a designer to make it fits
                     the screen (at least for now). So you can choose to show
                     discount and is shared columns here.
                   </div>

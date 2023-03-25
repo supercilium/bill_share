@@ -5,12 +5,12 @@ export const HOW_DOES_IT_WORK = [
     imageUrl: "/static/media/create-party.gif",
   },
   {
-    title: "Start adding your staff",
+    title: "Start adding your stuff",
     imageUrl: "/static/media/add-staff.gif",
   },
   {
     title:
-      "Change staff names, amounts, price using full party view or more detailed user's. To switch view use tabs, click on user's name or press U to open you items list, P - to return to full party",
+      "Change stuff names, amounts, price using full party view or more detailed user's. To switch view use tabs, click on user's name or press U to open you items list, P - to return to full party",
     imageUrl: "/static/media/switch-view.gif",
   },
   {
