@@ -58,7 +58,7 @@ export const Party = () => {
     status,
     refetch,
   } = useQuery<PartyInterface, Response, PartyInterface>(
-    ["party", partyId],
+    ["party", partyId, user],
     () =>
       getPartyById(partyId as string).then((result) => {
         setSocketState(SOCKET_STATE.connecting);
@@ -122,13 +122,13 @@ export const Party = () => {
             });
           }
         }
-        queryClient.setQueryData(["party", partyId], data.party);
+        queryClient.setQueryData(["party", partyId, user], data.party);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
       }
     },
-    [addAlert, party?.name, partyId, queryClient, refetch]
+    [addAlert, party?.name, partyId, queryClient, refetch, user]
   );
 
   useEffect(() => {
@@ -137,7 +137,7 @@ export const Party = () => {
     }
   }, [navigate, pathname, user]);
 
-  useLogout({ queryKey: ["party", partyId] });
+  useLogout({ queryKey: ["party", partyId, user] });
 
   if (status === "loading" || socketState === SOCKET_STATE.connecting) {
     return (
