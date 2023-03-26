@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Block, Columns, Field } from "../../components";
 import { PartyInterface } from "../../types/party";
@@ -18,6 +18,8 @@ import { Transport } from "../../services/transport";
 import { UserFormLayout } from "../../components/UserFormLayout";
 import "./UserPartyForm.scss";
 
+const DISCOUNT_COL_WIDTH = "85px";
+
 export const UserPartyForm: FC<{
   party: PartyInterface;
   user: User;
@@ -28,6 +30,15 @@ export const UserPartyForm: FC<{
   const { isValid, errors } = formState;
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      (document.querySelector(":root") as HTMLElement)?.style?.setProperty(
+        "--discount-column-user",
+        partySettings.isDiscountVisible ? DISCOUNT_COL_WIDTH : "0"
+      );
+    });
+  }, [partySettings.isDiscountVisible]);
 
   if (!partyId) {
     return <EmptyPartyLayout />;
@@ -103,10 +114,7 @@ export const UserPartyForm: FC<{
                     <p className="is-size-5-touch is-size-4-desktop">
                       In your bill
                     </p>
-                    <UserFormLayout
-                      isDiscountVisible={partySettings.isDiscountVisible}
-                      isEquallyVisible={partySettings.isEquallyVisible}
-                    >
+                    <UserFormLayout>
                       <span className="is-size-6">Item name</span>
                       <span className="is-size-6">Amount</span>
                       <span className="is-size-6">Price</span>
@@ -120,16 +128,14 @@ export const UserPartyForm: FC<{
                           (%)
                         </span>
                       </span>
+
+                      <span />
                     </UserFormLayout>
 
                     {userItems.map((item, i) => {
                       return (
                         <React.Fragment key={item.id}>
-                          <UserFormLayout
-                            className="my-3"
-                            isDiscountVisible={partySettings.isDiscountVisible}
-                            isEquallyVisible={partySettings.isEquallyVisible}
-                          >
+                          <UserFormLayout className="my-3">
                             <span className="is-size-5-touch is-size-4-desktop is-flex is-align-items-center">
                               <button
                                 type="button"
@@ -311,10 +317,7 @@ export const UserPartyForm: FC<{
               {restItems.length > 0 && (
                 <div className="box with-scroll-horizontal mt-4">
                   <p className="is-size-4">More items from party</p>
-                  <UserFormLayout
-                    isDiscountVisible={false}
-                    isEquallyVisible={false}
-                  >
+                  <UserFormLayout>
                     <span className="is-size-6">Item name</span>
                     <span className="is-size-6">Amount</span>
                     <span className="is-size-6">Price</span>
@@ -334,12 +337,7 @@ export const UserPartyForm: FC<{
                           : `Add ${item.name} to my bill`
                       }
                     >
-                      <UserFormLayout
-                        className="my-3"
-                        isDiscountVisible={false}
-                        isEquallyVisible={false}
-                        key={item.id}
-                      >
+                      <UserFormLayout className="my-3" key={item.id}>
                         <span className="text-overflow-hidden is-size-5">
                           {item.name}
                         </span>

@@ -1,15 +1,12 @@
-$partyFormGridTemplate: 200px 60px 90px;
+$userFormGridTemplate: 200px 60px 90px;
 
 :root {
-  --discount-column: 85px;
-  --shared-column: 3rem;
+  --discount-column-user: 85px;
 }
 
 .user-form-layout {
   display: grid;
-  grid-template-columns: $partyFormGridTemplate var(--discount-column) var(
-      --shared-column
-    );
+  grid-template-columns: $userFormGridTemplate var(--discount-column-user) 3rem;
   gap: 16px;
   width: fit-content;
   padding-right: 60px;
