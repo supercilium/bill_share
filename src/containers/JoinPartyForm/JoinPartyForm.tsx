@@ -15,8 +15,8 @@ interface JoinPartyFormInterface {
 }
 
 export const JoinPartyForm: FC<{
-  setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
-}> = ({ setCurrentUser }) => {
+  onSuccess: (user: User) => void;
+}> = ({ onSuccess }) => {
   const { partyId } = useParams();
   const { user, setUser } = useUser();
   const {
@@ -38,7 +38,7 @@ export const JoinPartyForm: FC<{
     unknown
   >(createUser, {
     onSuccess: (data) => {
-      setCurrentUser(data);
+      onSuccess(data);
     },
     onError: async (error) => {
       if (error.status === 401) {

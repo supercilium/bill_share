@@ -57,6 +57,7 @@ export const Party = () => {
     data: party,
     status,
     refetch,
+    error,
   } = useQuery<PartyInterface, Response, PartyInterface>(
     ["party", partyId, user],
     () =>
@@ -81,6 +82,7 @@ export const Party = () => {
       },
     }
   );
+  const isNoUser = error?.status === 403;
 
   const eventHandler = useCallback(
     (data: EventResponseDTO) => {
@@ -149,6 +151,19 @@ export const Party = () => {
     );
   }
 
+  const onJoiningParty = (user: User) => {
+    setCurrentUser(user);
+    refetch();
+  };
+
+  if (isNoUser) {
+    return (
+      <HeroLayout>
+        <JoinPartyForm onSuccess={onJoiningParty} />
+      </HeroLayout>
+    );
+  }
+
   if (!party || !partyId || status === "error") {
     return (
       <HeroLayout>
@@ -184,14 +199,7 @@ export const Party = () => {
     );
   }
 
-  const isNoUser =
-    !currentUser.id ||
-    ![...party.users, party.owner].find((user) => user.id === currentUser.id);
-
   const renderMain = () => {
-    if (isNoUser) {
-      return <JoinPartyForm setCurrentUser={setCurrentUser} />;
-    }
     return (
       <>
         <MainFormView
