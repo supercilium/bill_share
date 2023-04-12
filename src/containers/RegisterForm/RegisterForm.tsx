@@ -11,6 +11,7 @@ import {
 } from "../../services/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 interface RegisterFormProps {
   onRegister?: () => void;
@@ -27,6 +28,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     mode: "all",
   });
   const { setUser } = useUser();
+  const { addAlert } = useNotifications();
   const { mutate, isLoading, error } = useMutation<
     User,
     ErrorRequest,
@@ -46,6 +48,12 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       });
 
       setUser && setUser(data);
+      addAlert({
+        mode: "success",
+        text: `Confirm that this is your email address to keep your account secure. We've just sent you an email.`,
+        // TODO: need to create profile first
+        // You can resend confirmation email from your profile
+      });
     },
     onError: async (error) => {
       if (error.status === 401) {
