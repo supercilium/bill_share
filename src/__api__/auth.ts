@@ -24,4 +24,6 @@ export const fetchLogout = async () => {
 };
 
 export const fetchConfirm = async (token: string) =>
-  fetchAPI<User>(`/auth/local/registration/confirm?token=${token}`);
+  fetchAPI<User>(`/auth/local/registration/confirm?token=${token}`, {
+    method: "POST",
+  });
