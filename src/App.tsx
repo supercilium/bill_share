@@ -25,6 +25,7 @@ import { ErrorPage } from "./pages/Error";
 import { HeroLayout } from "./layouts/heroLayout";
 import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
+import { Confirmation } from "./pages/Confirmation";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Home = React.lazy(() => import("./pages/Home"));
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: withSuspense(<Dashboard />),
+  },
+  {
+    path: "/confirm/:token",
+    element: <Confirmation />,
   },
   {
     path: "/service-agreement",
