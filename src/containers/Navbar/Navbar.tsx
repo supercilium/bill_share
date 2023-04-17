@@ -127,7 +127,7 @@ export const Navbar: FC<NavbarProps> = ({
         <div className={`modal${openedPopup ? " is-active" : ""}`}>
           <div className="modal-background"></div>
           <div ref={ref} className="modal-content">
-            <div className="box">
+            <div className="box has-background-white">
               <div className="tabs is-large">
                 <ul>
                   <li className={openedPopup === "login" ? "is-active" : ""}>
@@ -150,11 +150,11 @@ export const Navbar: FC<NavbarProps> = ({
               </div>
 
               {openedPopup === "login" ? (
-                <Block title="Log in">
+                <Block>
                   <LoginForm onLogin={handleSuccess} />
                 </Block>
               ) : (
-                <Block title="Registration">
+                <Block>
                   <RegisterForm onRegister={handleSuccess} />
                 </Block>
               )}

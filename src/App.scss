@@ -102,3 +102,9 @@ body {
     left: 0;
   }
 }
+
+.hero.is-dark .has-background-white {
+  .title {
+    color: $black;
+  }
+}

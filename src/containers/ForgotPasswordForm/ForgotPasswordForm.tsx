@@ -1,42 +1,41 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginInterface, User } from "../../types/user";
-import { fetchLogin } from "../../__api__/auth";
-import { useUser } from "../../contexts/UserContext";
+import { ForgotPasswordInterface } from "../../types/user";
+import { forgotPassword } from "../../__api__/auth";
 import {
+  forgotPasswordSchema,
   getValidationErrorsFromREsponse,
-  loginSchema,
 } from "../../services/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
-import { ForgotPasswordForm } from "../ForgotPasswordForm";
+import { useNavigate } from "react-router";
 
-interface LoginFormProps {
-  onLogin?: () => void;
+interface ForgotPasswordFormProps {
+  onReturn: () => void;
 }
 
-export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
+export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
+  onReturn,
+}) => {
+  const navigate = useNavigate();
   const {
     setError,
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
-  } = useForm<LoginInterface>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<ForgotPasswordInterface>({
+    resolver: yupResolver(forgotPasswordSchema),
     mode: "all",
   });
-  const { setUser } = useUser();
-  const [hasForgotPassword, setHasForgotPassword] = useState(false);
   const { mutate, isLoading, error } = useMutation<
-    User,
+    void,
     ErrorRequest,
-    LoginInterface,
+    ForgotPasswordInterface,
     unknown
-  >(fetchLogin, {
-    onSuccess: (data) => {
-      onLogin?.();
+  >(forgotPassword, {
+    onSuccess: () => {
       const token = document.cookie.replace(
         /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
         "$1"
@@ -46,48 +45,41 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
           .querySelector("meta[name='_csrf_header']")
           ?.setAttribute("content", token);
       });
-      setUser && setUser(data);
+
+      navigate("/reset-password");
     },
     onError: async (error) => {
-      if (error.status === 401) {
-        setUser(null);
-      }
       if (error) {
-        getValidationErrorsFromREsponse<LoginInterface>({ error, setError });
+        getValidationErrorsFromREsponse<ForgotPasswordInterface>({
+          error,
+          setError,
+        });
       }
     },
   });
-  const onSubmit: SubmitHandler<LoginInterface> = async (data) => {
+  const onSubmit: SubmitHandler<ForgotPasswordInterface> = async (data) => {
     if (!isValid) {
       return;
     }
     mutate(data);
   };
 
-  if (hasForgotPassword) {
-    return <ForgotPasswordForm onReturn={() => setHasForgotPassword(false)} />;
-  }
-
   return (
-    <form noValidate={true} id="login-form" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      noValidate={true}
+      id="forgot-password-form"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <p className="title is-4">Password resetting</p>
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
-          label="Enter your email"
+          label="Enter your email address to reset a password"
           error={errors.email}
           inputProps={{
             type: "email",
             autoComplete: "email",
             ...register("email"),
-          }}
-        />
-        <Field
-          label="Enter your password"
-          error={errors.password}
-          inputProps={{
-            type: "password",
-            autoComplete: "current-password",
-            ...register("password"),
           }}
         />
         <div>
@@ -96,14 +88,14 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
             className={isLoading ? "button is-loading" : "button"}
             disabled={!isValid || !isDirty || isLoading}
           >
-            Log in
+            Submit
           </button>
           <button
-            onClick={() => setHasForgotPassword(true)}
+            onClick={onReturn}
             type="button"
             className="button is-ghost ml-4"
           >
-            Forgot password?
+            Back to Log in
           </button>
         </div>
       </div>

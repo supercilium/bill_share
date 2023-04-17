@@ -67,6 +67,15 @@ export const addUserSchema = object({
   identifier: email,
 }).required();
 
+export const forgotPasswordSchema = object({
+  email: email,
+}).required();
+
+export const resetPasswordSchema = object({
+  password: password,
+  passwordConfirmation: password,
+}).required();
+
 export const addItemSchema = object({
   name,
   price,
