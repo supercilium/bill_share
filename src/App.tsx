@@ -26,6 +26,7 @@ import { HeroLayout } from "./layouts/heroLayout";
 import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
 import { Confirmation } from "./pages/Confirmation";
+import { ResetPassword } from "./pages/ResetPassword";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Home = React.lazy(() => import("./pages/Home"));
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
   {
     path: "/service-agreement",
     element: <ServiceAgreement />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "*",

@@ -1,5 +1,5 @@
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
-import { array, object, string, number } from "yup";
+import { array, object, string, number, ref } from "yup";
 import { ErrorRequest } from "../__api__/helpers";
 
 const name = string()
@@ -65,6 +65,18 @@ export const itemsSchema = object({
 
 export const addUserSchema = object({
   identifier: email,
+}).required();
+
+export const forgotPasswordSchema = object({
+  email: email,
+}).required();
+
+export const resetPasswordSchema = object({
+  password: password,
+  passwordConfirmation: string().oneOf(
+    [ref("password"), null],
+    "Passwords must match"
+  ),
 }).required();
 
 export const addItemSchema = object({
