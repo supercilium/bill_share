@@ -30,6 +30,7 @@ export const UserPartyForm: FC<{
   const { isValid, errors } = formState;
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
   useEffect(() => {
     window.requestAnimationFrame(() => {
@@ -52,6 +53,7 @@ export const UserPartyForm: FC<{
       userId,
       partyId,
       itemId: id,
+      currentUser: currentUser.id,
     });
   };
 
@@ -62,6 +64,7 @@ export const UserPartyForm: FC<{
         userId,
         partyId,
         itemId: item.id,
+        currentUser: currentUser.id,
       });
     } else {
       Transport.sendEvent({
@@ -70,6 +73,7 @@ export const UserPartyForm: FC<{
         partyId,
         value: 1,
         itemId: item.id,
+        currentUser: currentUser.id,
       });
     }
   };
@@ -81,6 +85,7 @@ export const UserPartyForm: FC<{
       type: "update item",
       userId,
       partyId,
+      currentUser: currentUser.id,
       ...data,
     });
   };
@@ -92,6 +97,7 @@ export const UserPartyForm: FC<{
       type: "update user item",
       userId,
       partyId,
+      currentUser: currentUser.id,
       ...data,
     });
   };

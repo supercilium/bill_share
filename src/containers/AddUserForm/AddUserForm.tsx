@@ -8,6 +8,7 @@ import "./AddUserForm.scss";
 
 export const AddUserForm = () => {
   const { partyId } = useParams();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
   const formHandlers = useForm<{
     identifier: string;
@@ -26,6 +27,7 @@ export const AddUserForm = () => {
   const handleAddUser = ({ identifier }: { identifier: string }) => {
     Transport.sendEvent({
       type: "add user",
+      currentUser: currentUser.id,
       userName: isUserRegistered ? undefined : identifier,
       email: isUserRegistered ? identifier : undefined,
       partyId: partyId as string,

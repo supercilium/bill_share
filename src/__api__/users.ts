@@ -4,6 +4,10 @@ import { ErrorRequest, fetchAPI, getURL } from "./helpers";
 
 export const fetchUser = async () => fetchAPI<User>("/users/me");
 
+export type CreateUserDTO = Omit<UserEventData, "currentUser">;
+
+export const createUser = async (input: CreateUserDTO) =>
+  fetchAPI<User>(`/users`, { method: "POST", body: JSON.stringify(input) });
 export const sendCode = async () => fetchAPI<void>("/users/confirm");
 
 export const changePassword = async (input: ChangePasswordDTO) =>
@@ -38,6 +42,3 @@ export const changeUser = async (input: FormData) => {
     return Promise.reject<ErrorRequest>(err);
   }
 };
-
-export const createUser = async (input: UserEventData) =>
-  fetchAPI<User>(`/users`, { method: "POST", body: JSON.stringify(input) });

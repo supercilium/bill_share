@@ -21,30 +21,29 @@ export type PartyEvents =
   | DiscountEvents
   | WorkerActions;
 
-export interface DiscountEventData {
+export interface EventDataWithUser {
+  currentUser: string;
   userId?: string;
   partyId: string;
+}
+export interface DiscountEventData extends EventDataWithUser {
   discount: number;
   isPercentage: boolean;
 }
 
-export interface UserEventData {
+export interface UserEventData extends EventDataWithUser {
   id?: string;
-  userId?: string;
   userName?: string;
-  partyId: string;
   email?: string;
 }
 
-export interface ItemEventData extends Partial<Omit<Item, "id" | "users">> {
-  userId: string;
-  partyId: string;
+export interface ItemEventData
+  extends Partial<Omit<Item, "id" | "users">>,
+    EventDataWithUser {
   itemId?: string;
 }
 
-export interface ItemUserEventData {
-  userId: string;
-  partyId: string;
+export interface ItemUserEventData extends EventDataWithUser {
   itemId: string;
   value?: number;
 }
