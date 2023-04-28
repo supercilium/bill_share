@@ -95,9 +95,9 @@ export const UserPartyForm: FC<{
       ...data,
     });
   };
-  const total = getPartyUserBaseTotal(userItems, user.id);
+  const total = getPartyUserBaseTotal(userItems, userId);
   const discount =
-    getPartyUserDiscount(userItems, user.id) +
+    getPartyUserDiscount(userItems, userId) +
     total * (partySettings.discountPercent || 0) * 0.01;
 
   return (
@@ -105,7 +105,7 @@ export const UserPartyForm: FC<{
       {!party.items?.length ? (
         <EmptyPartyLayout />
       ) : (
-        <form noValidate={true}>
+        <form key={userId} noValidate={true}>
           <Columns containerProps={{ className: "is-flex-wrap-wrap" }}>
             <div className="is-translated">
               <div className="box with-scroll-horizontal mt-4">
@@ -172,20 +172,19 @@ export const UserPartyForm: FC<{
                                 <Field
                                   error={
                                     errors.items?.[item.originalIndex]?.users?.[
-                                      item.originalUserIndex
+                                      userId
                                     ]?.value
                                   }
                                   inputProps={{
                                     type: "number",
                                     min: 0,
                                     ...register(
-                                      `items.${item.originalIndex}.users.${item.originalUserIndex}.value`
+                                      `items.${item.originalIndex}.users.${userId}.value`
                                     ),
                                     onBlur: ({ target }) => {
                                       if (
                                         +target.value ===
-                                          item.users[item.originalUserIndex]
-                                            .value ||
+                                          item.users[userId].value ||
                                         !isValid
                                       ) {
                                         return new Promise(() => {});

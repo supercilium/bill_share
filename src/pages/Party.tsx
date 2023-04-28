@@ -23,6 +23,7 @@ import { useNotifications } from "../contexts/NotificationContext";
 import { CopyButton } from "../containers/CopyButton";
 import { Transport } from "../services/transport";
 import { SOCKET_STATE } from "../services/constants";
+import { sortPartyUsers } from "../utils/sort";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -70,7 +71,8 @@ export const Party = () => {
             partyId as string
           );
         }
-        return Promise.resolve(result);
+        const party = sortPartyUsers(result, user?.id || "");
+        return Promise.resolve(party as PartyInterface);
       }),
     {
       retry: false,
@@ -124,7 +126,8 @@ export const Party = () => {
             });
           }
         }
-        queryClient.setQueryData(["party", partyId, user], data.party);
+        const processedData = sortPartyUsers(data.party, user?.id || "");
+        queryClient.setQueryData(["party", partyId, user], processedData);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

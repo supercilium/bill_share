@@ -17,16 +17,16 @@ export const HARD_PARTY: PartyInterface = {
       amount: 10,
       equally: true,
       discount: 10.0,
-      users: [
-        {
+      users: {
+        "horsefish-id": {
           id: "horsefish-id",
           value: 1,
         },
-        {
+        "herring-id": {
           id: "herring-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Rum",
@@ -35,16 +35,16 @@ export const HARD_PARTY: PartyInterface = {
       amount: 3,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "herring-id": {
           id: "herring-id",
           value: 2,
         },
-      ],
+      },
     },
     {
       name: "Vodka",
@@ -53,12 +53,12 @@ export const HARD_PARTY: PartyInterface = {
       amount: 1,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Cola",
@@ -67,34 +67,34 @@ export const HARD_PARTY: PartyInterface = {
       amount: 5,
       equally: false,
       discount: 5.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "horsefish-id": {
           id: "horsefish-id",
           value: 2,
         },
-        {
+        "herring-id": {
           id: "herring-id",
           value: 2,
         },
-      ],
+      },
     },
   ],
-  users: [
-    {
+  users: {
+    "your-id": {
       id: "your-id",
       name: "You",
     },
-    {
+    "horsefish-id": {
       id: "horsefish-id",
       name: "Horsefish",
     },
-    {
+    "herring-id": {
       id: "herring-id",
       name: "Herring",
     },
-  ],
+  },
 };

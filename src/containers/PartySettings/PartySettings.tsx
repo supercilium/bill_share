@@ -151,12 +151,12 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             <Block>
               <AddUserForm />
             </Block>
-            {party.users.length > 0 ? (
+            {party.users ? (
               <Block>
                 <p className="has-text-grey-dark is-size-5 mb-3">
                   Already in da club
                 </p>
-                {party.users.map((user) => (
+                {Object.values(party.users).map((user) => (
                   <p
                     key={user.id}
                     className="is-size-4 is-flex is-align-items-center"

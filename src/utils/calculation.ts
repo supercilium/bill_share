@@ -2,8 +2,8 @@ import { Item } from "../types/item";
 
 export const getItemParticipants = (item: Item) =>
   item.equally
-    ? item.users.filter((user) => user.value >= 0)
-    : item.users.filter((user) => user.value > 0);
+    ? Object.values(item.users).filter((user) => user.value >= 0)
+    : Object.values(item.users).filter((user) => user.value > 0);
 
 export const getItemBaseTotal = (item: Item, amount: number) =>
   item.price * (amount || 0);
@@ -30,13 +30,12 @@ export const getPartyTotal = (items: Item[]) =>
 export const getPartyUserBaseTotal = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    const userIndex = participants.findIndex((user) => user.id === id);
-    if (userIndex >= 0) {
+    if (item.users[id]?.value >= 0) {
       return (
         acc +
         (item.equally
           ? getItemBaseTotal(item, item.amount) / participants.length
-          : getItemBaseTotal(item, item.users[userIndex].value))
+          : getItemBaseTotal(item, item.users[id]?.value))
       );
     }
     return acc;
@@ -45,13 +44,12 @@ export const getPartyUserBaseTotal = (items: Item[], id: string) =>
 export const getPartyUserDiscount = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    const userIndex = participants.findIndex((user) => user.id === id);
-    if (userIndex >= 0) {
+    if (item.users[id]?.value >= 0) {
       return (
         acc +
         (item.equally
           ? getItemDiscount(item, item.amount) / participants.length
-          : getItemDiscount(item, item.users[userIndex].value))
+          : getItemDiscount(item, item.users[id].value))
       );
     }
     return acc;
@@ -67,7 +65,6 @@ export const splitItems = (
   Array<
     Item & {
       originalIndex: number;
-      originalUserIndex: number;
       total: number;
       participants: number;
     }
@@ -77,7 +74,6 @@ export const splitItems = (
   const userItems: Array<
     Item & {
       originalIndex: number;
-      originalUserIndex: number;
       total: number;
       participants: number;
     }
@@ -86,19 +82,17 @@ export const splitItems = (
     [];
 
   items.forEach((item, i) => {
-    const userIndex = item.users.findIndex(({ id }) => userId === id);
-    if (userIndex >= 0 && (item.equally || item.users[userIndex].value)) {
+    if (item.users[userId] && (item.equally || item.users[userId].value > 0)) {
       const participants = getItemParticipants(item);
       userItems.push({
         ...item,
         participants: participants.length,
         originalIndex: i,
-        originalUserIndex: userIndex,
         total: item.equally
           ? getItemTotal(item, item.amount) / participants.length
-          : getItemTotal(item, item.users[userIndex].value),
+          : getItemTotal(item, item.users[userId].value),
       });
-      if (!item.equally && item.users[userIndex].value < item.amount) {
+      if (!item.equally && item.users[userId].value < item.amount) {
         restItems.push({ ...item, originalIndex: i, isMuted: true });
       }
     } else {

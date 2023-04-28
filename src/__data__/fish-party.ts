@@ -17,20 +17,20 @@ export const FISH_PARTY: PartyInterface = {
       amount: 4,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "salmon-id": {
           id: "salmon-id",
           value: 1,
         },
-        {
+        "your-id": {
           id: "your-id",
           value: 0,
         },
-        {
+        "bonito-id": {
           id: "bonito-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Chips",
@@ -39,20 +39,20 @@ export const FISH_PARTY: PartyInterface = {
       amount: 3,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "salmon-id": {
           id: "salmon-id",
           value: 1,
         },
-        {
+        "your-id": {
           id: "your-id",
           value: 0,
         },
-        {
+        "bonito-id": {
           id: "bonito-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Fish",
@@ -61,26 +61,26 @@ export const FISH_PARTY: PartyInterface = {
       amount: 2,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-      ],
+      },
     },
   ],
-  users: [
-    {
+  users: {
+    "your-id": {
       id: "your-id",
       name: "You",
     },
-    {
+    "bonito-id": {
       id: "bonito-id",
       name: "Bonito",
     },
-    {
+    "salmon-id": {
       id: "salmon-id",
       name: "Salmon",
     },
-  ],
+  },
 };
