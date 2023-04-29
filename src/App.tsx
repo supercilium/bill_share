@@ -27,6 +27,7 @@ import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
 import { Confirmation } from "./pages/Confirmation";
 import { ResetPassword } from "./pages/ResetPassword";
+import { setXSRF } from "./utils/cookie";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Home = React.lazy(() => import("./pages/Home"));
@@ -102,13 +103,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: false,
       onSuccess: () => {
-        const csrfToken = document.cookie.replace(
-          /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
-          "$1"
-        );
-        document
-          .querySelector("meta[name='_csrf_header']")
-          ?.setAttribute("content", csrfToken);
+        setXSRF();
       },
     },
   },

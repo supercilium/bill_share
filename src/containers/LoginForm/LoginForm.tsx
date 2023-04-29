@@ -12,6 +12,7 @@ import {
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 import { ForgotPasswordForm } from "../ForgotPasswordForm";
+import { setXSRF } from "../../utils/cookie";
 
 interface LoginFormProps {
   onLogin?: () => void;
@@ -37,15 +38,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   >(fetchLogin, {
     onSuccess: (data) => {
       onLogin?.();
-      const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
-        "$1"
-      );
-      window.requestAnimationFrame(() => {
-        document
-          .querySelector("meta[name='_csrf_header']")
-          ?.setAttribute("content", token);
-      });
+      setXSRF();
       setUser && setUser(data);
     },
     onError: async (error) => {

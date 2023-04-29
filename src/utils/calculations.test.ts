@@ -42,7 +42,7 @@ const PARTY = {
           name: "Mary",
           id: "3d17f607-5e69-4794-9c20-9a65a09c4c4b",
           value: 1,
-          email: "marusel.12@gmail.com",
+          email: "mail@mail.com",
         },
       },
     },
