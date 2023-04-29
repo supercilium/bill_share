@@ -16,6 +16,7 @@ import {
   faArrowRightFromBracket,
   faCheck,
   faClone,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
@@ -27,9 +28,11 @@ import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
 import { Confirmation } from "./pages/Confirmation";
 import { ResetPassword } from "./pages/ResetPassword";
+import { ChangePassword } from "./pages/ChangePassword";
 import { setXSRF } from "./utils/cookie";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Profile = React.lazy(() => import("./pages/Profile"));
 const Home = React.lazy(() => import("./pages/Home"));
 const Party = React.lazy(() => import("./pages/Party"));
 const Login = React.lazy(() => import("./pages/Login"));
@@ -45,7 +48,8 @@ library.add(
   faSliders,
   faArrowRightFromBracket,
   faCheck,
-  faClone
+  faClone,
+  faEnvelope
 );
 
 const withSuspense = (component: ReactNode) => (
@@ -78,6 +82,14 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: withSuspense(<Dashboard />),
+  },
+  {
+    path: "/profile",
+    element: withSuspense(<Profile />),
+  },
+  {
+    path: "/change-password",
+    element: <ChangePassword />,
   },
   {
     path: "/confirm/:token",
