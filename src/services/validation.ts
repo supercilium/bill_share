@@ -79,6 +79,15 @@ export const resetPasswordSchema = object({
   ),
 }).required();
 
+export const changePasswordSchema = object({
+  oldPassword: password,
+  newPassword: password,
+  passwordConfirmation: string().oneOf(
+    [ref("newPassword"), null],
+    "Passwords must match"
+  ),
+}).required();
+
 export const addItemSchema = object({
   name,
   price,

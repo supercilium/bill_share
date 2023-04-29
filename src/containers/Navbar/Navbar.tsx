@@ -69,6 +69,14 @@ export const Navbar: FC<NavbarProps> = ({
           >
             Dashboard
           </Link>
+          <Link
+            to="/profile"
+            className={`navbar-item${
+              pathname === "/profile" ? " is-active" : ""
+            }`}
+          >
+            My account
+          </Link>
           {/* <a className="navbar-item">Stats</a> */}
           <hr className="navbar-divider" />
           <a
