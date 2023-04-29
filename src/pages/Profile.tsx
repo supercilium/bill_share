@@ -9,7 +9,7 @@ import { useQuery } from "react-query";
 import { fetchLogout } from "../__api__/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { sendCode } from "../__api__/users";
+import { fetchUser, sendCode } from "../__api__/users";
 import { useNotifications } from "../contexts/NotificationContext";
 
 const LABELS = {
@@ -30,6 +30,11 @@ export const Profile = () => {
     onSettled: () => {
       setUser(null);
       navigate("/");
+    },
+  });
+  useQuery(["user"], fetchUser, {
+    onSuccess: (data) => {
+      setUser(data);
     },
   });
   const { refetch: sendConfirmationCode } = useQuery(
