@@ -14,7 +14,7 @@ export const MainFormView: FC<Props> = ({ UserView, PartyView }) => {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.target as Node).nodeName !== "BODY") {
+      if ((e.target as Node).nodeName !== "BODY" || e.ctrlKey || e.altKey) {
         return;
       }
       if (e.code === "KeyU") {
