@@ -75,7 +75,7 @@ export const PartyForm: FC<{
     React.ComponentProps<typeof PartyFormLayout>,
     "children"
   > = {
-    amountOfUsers: users.length,
+    amountOfUsers: Object.keys(users).length,
     isDiscountVisible: partySettings.isDiscountVisible,
     isEquallyVisible: partySettings.isEquallyVisible,
   };
@@ -100,8 +100,8 @@ export const PartyForm: FC<{
         >
           Is shared
         </span>
-        {users?.length > 0 ? (
-          users.map((user) => {
+        {users ? (
+          Object.values(users).map((user) => {
             const isCurrentUser = user.id === currentUser.id;
             return (
               <div className="user-column-title" key={user.id}>
@@ -254,14 +254,14 @@ export const PartyForm: FC<{
                   }
                 />
               </div>
-              {users.map(({ id }) => {
+              {Object.keys(users).map((id) => {
                 if (item.equally) {
                   return (
                     <div className="checkbox-wrapper" key={id}>
                       <input
                         type="checkbox"
                         className="is-size-4 checkbox"
-                        checked={!!itemUsers?.find((user) => user.id === id)}
+                        checked={!!itemUsers?.[id]}
                         onChange={({ target }) =>
                           handleChangeUserInItem(target.checked, id, item.id)
                         }
@@ -269,20 +269,19 @@ export const PartyForm: FC<{
                     </div>
                   );
                 }
-                const userIndex = itemUsers.findIndex((user) => user.id === id);
 
                 return (
                   <div key={id}>
                     <Field
-                      error={errors.items?.[i]?.users?.[userIndex]?.value}
+                      error={errors.items?.[i]?.users?.[id]?.value}
                       inputProps={{
                         type: "number",
                         placeholder: "0",
                         min: 0,
-                        ...register(`items.${i}.users.${userIndex}.value`),
+                        ...register(`items.${i}.users.${id}.value`),
                         onBlur: ({ target }) => {
                           if (
-                            +target.value === itemUsers[userIndex]?.value ||
+                            +target.value === itemUsers[id]?.value ||
                             !isValid
                           ) {
                             return new Promise(() => {});

@@ -14,6 +14,7 @@ import { Loader } from "../../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { setXSRF } from "../../utils/cookie";
 
 interface RegisterFormProps {
   code?: string;
@@ -43,15 +44,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
     unknown
   >(resetPassword, {
     onSuccess: (data) => {
-      const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
-        "$1"
-      );
-      window.requestAnimationFrame(() => {
-        document
-          .querySelector("meta[name='_csrf_header']")
-          ?.setAttribute("content", token);
-      });
+      setXSRF();
       setUser(data);
       addAlert({
         mode: "success",

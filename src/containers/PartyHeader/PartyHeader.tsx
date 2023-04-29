@@ -16,7 +16,7 @@ export const PartyHeader: FC<{
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
   const sortedUsers = [
     currentUser,
-    ...users.filter((user) => user.id !== currentUser.id),
+    ...Object.values(users).filter((user) => user.id !== currentUser.id),
   ];
 
   return (

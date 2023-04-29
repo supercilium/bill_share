@@ -17,16 +17,16 @@ export const MEAT_PARTY: PartyInterface = {
       amount: 2,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "devil-ray-id": {
           id: "devil-ray-id",
           value: 1,
         },
-        {
+        "firefish-id": {
           id: "firefish-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Chicken wings",
@@ -35,20 +35,20 @@ export const MEAT_PARTY: PartyInterface = {
       amount: 1,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "devil-ray-id": {
           id: "devil-ray-id",
           value: 2,
         },
-        {
+        "firefish-id": {
           id: "firefish-id",
           value: 2,
         },
-      ],
+      },
     },
     {
       name: "Hamburger",
@@ -57,12 +57,12 @@ export const MEAT_PARTY: PartyInterface = {
       amount: 1,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Sparkling water",
@@ -71,34 +71,34 @@ export const MEAT_PARTY: PartyInterface = {
       amount: 5,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "devil-ray-id": {
           id: "devil-ray-id",
           value: 2,
         },
-        {
+        "firefish-id": {
           id: "firefish-id",
           value: 2,
         },
-      ],
+      },
     },
   ],
-  users: [
-    {
+  users: {
+    "your-id": {
       id: "your-id",
       name: "You",
     },
-    {
+    "devil-ray-id": {
       id: "devil-ray-id",
       name: "Devil ray",
     },
-    {
+    "firefish-id": {
       id: "firefish-id",
       name: "Firefish",
     },
-  ],
+  },
 };

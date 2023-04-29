@@ -17,16 +17,16 @@ export const SALAD_PARTY: PartyInterface = {
       amount: 2,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "dory-id": {
           id: "dory-id",
           value: 1,
         },
-        {
+        "dogfish-id": {
           id: "dogfish-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Crunchy Asian salad",
@@ -35,12 +35,12 @@ export const SALAD_PARTY: PartyInterface = {
       amount: 1,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "dory-id": {
           id: "dory-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Green salad",
@@ -49,12 +49,12 @@ export const SALAD_PARTY: PartyInterface = {
       amount: 1,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Green tea",
@@ -63,34 +63,34 @@ export const SALAD_PARTY: PartyInterface = {
       amount: 5,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "dory-id": {
           id: "dory-id",
           value: 2,
         },
-        {
+        "dogfish-id": {
           id: "dogfish-id",
           value: 2,
         },
-      ],
+      },
     },
   ],
-  users: [
-    {
+  users: {
+    "your-id": {
       id: "your-id",
       name: "You",
     },
-    {
+    "dory-id": {
       id: "dory-id",
       name: "Dory",
     },
-    {
+    "dogfish-id": {
       id: "dogfish-id",
       name: "Dogfish",
     },
-  ],
+  },
 };

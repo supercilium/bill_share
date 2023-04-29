@@ -17,16 +17,16 @@ export const COCKTAIL_PARTY: PartyInterface = {
       amount: 10,
       equally: true,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "frogfish-id": {
           id: "frogfish-id",
           value: 1,
         },
-        {
+        "goatfish-id": {
           id: "goatfish-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Long Island Ice Tea",
@@ -35,16 +35,16 @@ export const COCKTAIL_PARTY: PartyInterface = {
       amount: 3,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "goatfish-id": {
           id: "goatfish-id",
           value: 2,
         },
-      ],
+      },
     },
     {
       name: "Bloody mary",
@@ -53,12 +53,12 @@ export const COCKTAIL_PARTY: PartyInterface = {
       amount: 1,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-      ],
+      },
     },
     {
       name: "Sparkling water",
@@ -67,34 +67,34 @@ export const COCKTAIL_PARTY: PartyInterface = {
       amount: 5,
       equally: false,
       discount: 0.0,
-      users: [
-        {
+      users: {
+        "your-id": {
           id: "your-id",
           value: 1,
         },
-        {
+        "frogfish-id": {
           id: "frogfish-id",
           value: 2,
         },
-        {
+        "goatfish-id": {
           id: "goatfish-id",
           value: 2,
         },
-      ],
+      },
     },
   ],
-  users: [
-    {
+  users: {
+    "your-id": {
       id: "your-id",
       name: "You",
     },
-    {
+    "frogfish-id": {
       id: "frogfish-id",
       name: "Frogfish",
     },
-    {
+    "goatfish-id": {
       id: "goatfish-id",
       name: "Goatfish",
     },
-  ],
+  },
 };

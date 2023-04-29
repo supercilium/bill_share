@@ -1,4 +1,4 @@
-import { Item } from "./item";
+import { Item, ItemDTO } from "./item";
 import { User } from "./user";
 
 export interface PartyInterface {
@@ -7,8 +7,17 @@ export interface PartyInterface {
   id: string;
   discount?: number;
   isPercentage: boolean;
-  users: Array<User>;
+  users: Record<string, User>;
   items: Array<Item>;
+}
+export interface PartyInterfaceDTO {
+  name: string;
+  owner: User;
+  id: string;
+  discount?: number;
+  isPercentage: boolean;
+  users: Array<User>;
+  items: Array<ItemDTO>;
 }
 
 export interface CreatePartyInterface {

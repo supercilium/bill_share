@@ -36,7 +36,7 @@ export const PartyTotals: FC<{
       <PartyFormLayout
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
-        amountOfUsers={party.users.length}
+        amountOfUsers={Object.keys(party.users).length}
       >
         <span className="is-size-6 has-text-right">Base total</span>
         <span className="is-size-6" />
@@ -51,12 +51,12 @@ export const PartyTotals: FC<{
             partySettings.isEquallyVisible ? "" : " is-invisible"
           }`}
         />
-        {party.users?.length > 0 ? (
-          party.users.map((user) => (
+        {party.users ? (
+          Object.keys(party.users).map((id) => (
             <span
-              key={user.id}
+              key={id}
               className={`${sumClassName} ${
-                user.id === currentUser.id ? " has-text-info" : ""
+                id === currentUser.id ? " has-text-info" : ""
               }${shouldRotate ? " rotated-text" : ""}`}
               // title={`Open detailed view for ${user.name}`}
               // onClick={() => {
@@ -64,7 +64,7 @@ export const PartyTotals: FC<{
               //   setValue("view", "user");
               // }}
             >
-              {getPartyUserBaseTotal(party.items, user.id).toFixed(2)}
+              {getPartyUserBaseTotal(party.items, id).toFixed(2)}
             </span>
           ))
         ) : (
@@ -74,7 +74,7 @@ export const PartyTotals: FC<{
       <PartyFormLayout
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
-        amountOfUsers={party.users.length}
+        amountOfUsers={Object.keys(party.users).length}
       >
         <span className="is-size-6 has-text-right">Discount</span>
         <span className={sumClassName} />
@@ -92,12 +92,12 @@ export const PartyTotals: FC<{
             partySettings.isEquallyVisible ? "" : " is-invisible"
           }`}
         />
-        {party.users?.length > 0 ? (
-          party.users.map((user) => (
+        {party.users ? (
+          Object.keys(party.users).map((id) => (
             <span
-              key={user.id}
+              key={id}
               className={`${sumClassName} ${
-                user.id === currentUser.id ? " has-text-info" : ""
+                id === currentUser.id ? " has-text-info" : ""
               }${shouldRotate ? " rotated-text" : ""}`}
               // title={`Open detailed view for ${user.name}`}
               // onClick={() => {
@@ -106,8 +106,8 @@ export const PartyTotals: FC<{
               // }}
             >
               {(
-                getPartyUserDiscount(party.items, user.id) +
-                getPartyUserBaseTotal(party.items, user.id) *
+                getPartyUserDiscount(party.items, id) +
+                getPartyUserBaseTotal(party.items, id) *
                   (partySettings.discountPercent || 0) *
                   0.01
               ).toFixed(2)}
@@ -121,7 +121,7 @@ export const PartyTotals: FC<{
       <PartyFormLayout
         isDiscountVisible={partySettings.isDiscountVisible}
         isEquallyVisible={partySettings.isEquallyVisible}
-        amountOfUsers={party.users.length}
+        amountOfUsers={Object.keys(party.users).length}
       >
         <span className="is-size-6 has-text-right">Total</span>
         <span className={sumClassName} />
@@ -141,17 +141,17 @@ export const PartyTotals: FC<{
             partySettings.isEquallyVisible ? "" : " is-invisible"
           }`}
         />
-        {party.users?.length > 0 ? (
-          party.users.map((user) => {
-            const baseTotal = getPartyUserBaseTotal(party.items, user.id);
+        {party.users ? (
+          Object.keys(party.users).map((id) => {
+            const baseTotal = getPartyUserBaseTotal(party.items, id);
             const discount =
-              getPartyUserDiscount(party.items, user.id) +
+              getPartyUserDiscount(party.items, id) +
               baseTotal * (partySettings.discountPercent || 0) * 0.01;
             return (
               <span
-                key={user.id}
+                key={id}
                 className={`${sumClassName} ${
-                  user.id === currentUser.id ? " has-text-info" : ""
+                  id === currentUser.id ? " has-text-info" : ""
                 }${shouldRotate ? " rotated-text" : ""}`}
                 // title={`Open detailed view for ${user.name}`}
                 // onClick={() => {

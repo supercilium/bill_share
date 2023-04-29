@@ -11,6 +11,7 @@ import {
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useNavigate } from "react-router";
+import { setXSRF } from "../../utils/cookie";
 
 interface ForgotPasswordFormProps {
   onReturn: () => void;
@@ -36,15 +37,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
     unknown
   >(forgotPassword, {
     onSuccess: () => {
-      const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/,
-        "$1"
-      );
-      window.requestAnimationFrame(() => {
-        document
-          .querySelector("meta[name='_csrf_header']")
-          ?.setAttribute("content", token);
-      });
+      setXSRF();
 
       navigate("/reset-password");
     },

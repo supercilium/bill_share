@@ -12,6 +12,7 @@ import {
 } from "../../services/validation";
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
+import { sortPartyUsers } from "../../utils/sort";
 
 interface CreatePartyFormProps {}
 
@@ -37,22 +38,29 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     ErrorRequest,
     CreatePartyInterface,
     unknown
-  >(createParty, {
-    onSuccess: (data) => {
-      navigate(`/party/${data?.id}`);
-    },
-    onError: async (error) => {
-      if (error.status === 401) {
-        setUser(null);
-      }
-      if (error) {
-        getValidationErrorsFromREsponse<CreatePartyInterface>({
-          error,
-          setError,
-        });
-      }
-    },
-  });
+  >(
+    (data) =>
+      createParty(data).then((result) => {
+        const party = sortPartyUsers(result, user?.id || "");
+        return Promise.resolve(party as PartyInterface);
+      }),
+    {
+      onSuccess: (data) => {
+        navigate(`/party/${data?.id}`);
+      },
+      onError: async (error) => {
+        if (error.status === 401) {
+          setUser(null);
+        }
+        if (error) {
+          getValidationErrorsFromREsponse<CreatePartyInterface>({
+            error,
+            setError,
+          });
+        }
+      },
+    }
+  );
 
   const onSubmit: SubmitHandler<CreatePartyInterface> = async (data) => {
     if (!isValid) {

@@ -31,7 +31,7 @@ export const Home = () => {
   const party = DATA_MOCKS[activeCase];
   const total = getBaseTotal(party.items);
   const partyLayoutProps = {
-    amountOfUsers: party.users.length,
+    amountOfUsers: Object.keys(party.users).length,
     isDiscountVisible: activeCase === "discount-items",
     isEquallyVisible: true,
   };
@@ -168,8 +168,8 @@ export const Home = () => {
                       >
                         Is shared
                       </span>
-                      {party.users?.length > 0 ? (
-                        party.users.map((user) => {
+                      {party.users ? (
+                        Object.values(party.users).map((user) => {
                           const isCurrentUser = user.id === party.owner.id;
                           return (
                             <div key={user.id} className="user-column-title">
@@ -235,30 +235,25 @@ export const Home = () => {
                           >
                             {item.equally ? "✅" : "❌"}
                           </span>
-                          {party.users.map(({ id }) => {
+                          {Object.keys(party.users).map((id) => {
                             if (item.equally) {
                               return (
                                 <span key={id} className="is-size-6">
-                                  {!!itemUsers?.find((user) => user.id === id)
-                                    ? "✅"
-                                    : "❌"}
+                                  {!!itemUsers?.[id] ? "✅" : "❌"}
                                 </span>
                               );
                             }
-                            const userIndex = itemUsers.findIndex(
-                              (user) => user.id === id
-                            );
 
                             return (
                               <div key={id}>
                                 <span
                                   className={`is-size-6${
-                                    itemUsers[userIndex]?.value
+                                    itemUsers[id]?.value
                                       ? ""
                                       : " has-text-grey-light"
                                   }`}
                                 >
-                                  {itemUsers[userIndex]?.value || 0}
+                                  {itemUsers[id]?.value || 0}
                                 </span>
                               </div>
                             );

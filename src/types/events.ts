@@ -1,5 +1,5 @@
 import { Item } from "./item";
-import { PartyInterface } from "./party";
+import { PartyInterfaceDTO } from "./party";
 
 export type WorkerActions = "connect" | "close" | "change state";
 
@@ -70,7 +70,7 @@ export type EventData =
   | DiscountDTO;
 
 export interface EventResponseDTO {
-  party: PartyInterface;
+  party: PartyInterfaceDTO;
   type: PartyEvents | "error";
   message?: string;
   eventData?: {
