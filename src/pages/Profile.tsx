@@ -24,7 +24,7 @@ export const Profile = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const { addAlert } = useNotifications();
-  const { refetch } = useQuery(["logout"], fetchLogout, {
+  const { refetch } = useQuery("logout", fetchLogout, {
     retry: false,
     enabled: false,
     onSettled: () => {
@@ -32,31 +32,27 @@ export const Profile = () => {
       navigate("/");
     },
   });
-  useQuery(["user"], fetchUser, {
+  useQuery("user", fetchUser, {
     onSuccess: (data) => {
       setUser(data);
     },
   });
-  const { refetch: sendConfirmationCode } = useQuery(
-    ["confirmation"],
-    sendCode,
-    {
-      retry: false,
-      enabled: false,
-      onSuccess: () => {
-        addAlert({
-          mode: "success",
-          text: "Confirmation code was sent",
-        });
-      },
-      onError: () => {
-        addAlert({
-          mode: "danger",
-          text: "Something went wrong, please try later",
-        });
-      },
-    }
-  );
+  const { refetch: sendConfirmationCode } = useQuery("confirmation", sendCode, {
+    retry: false,
+    enabled: false,
+    onSuccess: () => {
+      addAlert({
+        mode: "success",
+        text: "Confirmation code was sent",
+      });
+    },
+    onError: () => {
+      addAlert({
+        mode: "danger",
+        text: "Something went wrong, please try later",
+      });
+    },
+  });
 
   useEffect(() => {
     if (!user) {
@@ -75,7 +71,7 @@ export const Profile = () => {
     },
     {
       label: LABELS.isConfirmed,
-      value: (
+      value: user?.isConfirmed ? null : (
         <>
           To secure your account please confirm your email address
           <button
