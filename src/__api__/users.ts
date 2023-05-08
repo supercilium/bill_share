@@ -1,6 +1,6 @@
 import { UserEventData } from "../types/events";
 import { ChangePasswordDTO, User } from "../types/user";
-import { ErrorRequest, fetchAPI } from "./helpers";
+import { ErrorRequest, fetchAPI, getURL } from "./helpers";
 
 export const fetchUser = async () => fetchAPI<User>("/users/me");
 
@@ -13,7 +13,7 @@ export const changePassword = async (input: ChangePasswordDTO) =>
   });
 
 export const changeUser = async (input: FormData) => {
-  const response = await fetch("/users", {
+  const response = await fetch(getURL("/users"), {
     credentials: "include",
     method: "PUT",
     body: input,
