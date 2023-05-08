@@ -1,6 +1,6 @@
 import { UserEventData } from "../types/events";
 import { ChangePasswordDTO, User } from "../types/user";
-import { fetchAPI } from "./helpers";
+import { ErrorRequest, fetchAPI } from "./helpers";
 
 export const fetchUser = async () => fetchAPI<User>("/users/me");
 
@@ -12,14 +12,32 @@ export const changePassword = async (input: ChangePasswordDTO) =>
     body: JSON.stringify(input),
   });
 
-export const changeUser = async (input: FormData) =>
-  fetchAPI<User>("/users", {
+export const changeUser = async (input: FormData) => {
+  const response = await fetch("/users", {
+    credentials: "include",
     method: "PUT",
     body: input,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
   });
+  try {
+    if (response.ok) {
+      if (response.status === 204) {
+        return;
+      }
+      const data = await response.json();
+      return data;
+    } else {
+      if (response.status === 401) {
+        return Promise.reject<ErrorRequest>({
+          status: 401,
+        });
+      }
+      const error = await response.json();
+      return Promise.reject<ErrorRequest>(error);
+    }
+  } catch (err) {
+    return Promise.reject<ErrorRequest>(err);
+  }
+};
 
 export const createUser = async (input: UserEventData) =>
   fetchAPI<User>(`/users`, { method: "POST", body: JSON.stringify(input) });
