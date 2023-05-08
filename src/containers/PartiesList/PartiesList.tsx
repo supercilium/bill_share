@@ -29,7 +29,6 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
     ["parties", userId, page],
     () =>
       getParties({
-        userId: userId as string,
         start: "" + page * PAGE_SIZE,
         size: "" + PAGE_SIZE,
       }),

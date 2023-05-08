@@ -12,5 +12,14 @@ export const changePassword = async (input: ChangePasswordDTO) =>
     body: JSON.stringify(input),
   });
 
+export const changeUser = async (input: FormData) =>
+  fetchAPI<User>("/users", {
+    method: "PUT",
+    body: input,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
 export const createUser = async (input: UserEventData) =>
   fetchAPI<User>(`/users`, { method: "POST", body: JSON.stringify(input) });

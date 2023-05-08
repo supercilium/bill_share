@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { fetchUser, sendCode } from "../__api__/users";
 import { useNotifications } from "../contexts/NotificationContext";
+import { ChangeAvatarForm } from "../containers/ChangeAvatarForm";
 
 const LABELS = {
   email: "Email address",
@@ -32,10 +33,8 @@ export const Profile = () => {
       navigate("/");
     },
   });
-  useQuery("user", fetchUser, {
-    onSuccess: (data) => {
-      setUser(data);
-    },
+  const { data: profile } = useQuery("user", fetchUser, {
+    placeholderData: user,
   });
   const { refetch: sendConfirmationCode } = useQuery("confirmation", sendCode, {
     retry: false,
@@ -55,23 +54,23 @@ export const Profile = () => {
   });
 
   useEffect(() => {
-    if (!user) {
+    if (!profile) {
       navigate("/");
     }
-  }, [navigate, user]);
+  }, [navigate, profile]);
 
   const items: React.ComponentProps<typeof DefinitionList>["items"] = [
     {
       label: LABELS.email,
-      value: user?.email,
+      value: profile?.email,
     },
     {
       label: LABELS.name,
-      value: user?.name,
+      value: profile?.name,
     },
     {
       label: LABELS.isConfirmed,
-      value: user?.isConfirmed ? null : (
+      value: profile?.isConfirmed ? null : (
         <>
           To secure your account please confirm your email address
           <button
@@ -108,10 +107,17 @@ export const Profile = () => {
       Navbar={<Navbar shouldShowAuthButtons={false} />}
       Main={
         <Main>
-          {user && (
+          {profile && (
             <div className="box mt-6">
               <h1 className="title is-3">Account</h1>{" "}
-              <DefinitionList items={items} />
+              <div className="columns">
+                <div className="column is-narrow">
+                  <ChangeAvatarForm />
+                </div>
+                <div className="column">
+                  <DefinitionList items={items} />
+                </div>
+              </div>
             </div>
           )}
         </Main>

@@ -4,6 +4,7 @@ export interface User {
   token?: string | null;
   email?: string;
   isConfirmed?: boolean;
+  avatar?: string;
 }
 
 export interface LoginInterface {
