@@ -4,8 +4,8 @@ import { User } from "../types/user";
 export const USER_KEY = "user";
 
 interface UserContextInterface {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: User | null | undefined;
+  setUser: React.Dispatch<React.SetStateAction<User | null | undefined>>;
 }
 
 const UserContext = React.createContext<UserContextInterface>({
@@ -16,7 +16,7 @@ const UserContext = React.createContext<UserContextInterface>({
 export const UserProvider: FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(
+  const [user, setUser] = useState<User | null | undefined>(
     localStorage.getItem(USER_KEY)
       ? (JSON.parse(localStorage.getItem(USER_KEY) || "{}") as User)
       : null

@@ -2,27 +2,31 @@ import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Block } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { User } from "../../types/user";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
-import { Loader } from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { setXSRF } from "../../utils/cookie";
-import { changeUser } from "../../__api__/users";
+import { changeUser, fetchUser } from "../../__api__/users";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EditableImage } from "../../components/EditableImage";
+import {
+  getValidationErrorsFromREsponse,
+  imageSchema,
+} from "../../services/validation";
 
-interface RegisterFormProps {
-  code?: string;
-}
+interface ChangeAvatarFormProps {}
 
 interface UserProfile {
-  avatar: File;
+  avatar?: File;
 }
 
-export const ChangeAvatarForm: FC<RegisterFormProps> = ({ code }) => {
+export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
   const { user, setUser } = useUser();
+  const { refetch, data } = useQuery("user", fetchUser, {
+    placeholderData: user,
+  });
+
   const [isEditing, setIsEditing] = useState(false);
 
   const { addAlert } = useNotifications();
@@ -33,23 +37,27 @@ export const ChangeAvatarForm: FC<RegisterFormProps> = ({ code }) => {
     setValue,
     watch,
     formState: { errors, isValid, isDirty },
-  } = useForm<Partial<UserProfile>>({
+  } = useForm<UserProfile>({
     defaultValues: {
       avatar: undefined,
     },
-    // resolver: yupResolver(resetPasswordSchema),
+    resolver: yupResolver(imageSchema),
     mode: "all",
   });
   const avatar = watch("avatar");
 
-  const { status, mutate, isLoading, error } = useMutation<
-    User,
+  const { mutate, isLoading, error } = useMutation<
+    {
+      avatar?: string;
+    },
     ErrorRequest,
     FormData,
     unknown
   >(changeUser, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       setXSRF();
+      setIsEditing(false);
+      refetch();
       setUser(data);
       addAlert({
         mode: "success",
@@ -58,15 +66,15 @@ export const ChangeAvatarForm: FC<RegisterFormProps> = ({ code }) => {
     },
     onError: async (error) => {
       if (error) {
-        // getValidationErrorsFromREsponse<ResetPasswordInterface>({
-        //   error,
-        //   setError,
-        // });
+        getValidationErrorsFromREsponse<UserProfile>({
+          error,
+          setError,
+        });
       }
     },
   });
 
-  const onSubmit: SubmitHandler<Partial<UserProfile>> = async (data) => {
+  const onSubmit: SubmitHandler<UserProfile> = async (data) => {
     if (!isValid) {
       return;
     }
@@ -93,13 +101,20 @@ export const ChangeAvatarForm: FC<RegisterFormProps> = ({ code }) => {
               <Block title="Upload your photo">
                 <div className="is-flex is-justify-content-center my-5">
                   {avatar ? (
-                    <figure className="image is-128x128 image-preview">
-                      <img
-                        className="is-rounded has-background-grey"
-                        src={URL.createObjectURL(avatar)}
-                        alt="Avatar"
-                      />
-                    </figure>
+                    <div>
+                      <figure className="image is-128x128 image-preview">
+                        <img
+                          className="is-rounded has-background-grey"
+                          src={URL.createObjectURL(avatar)}
+                          alt="Avatar"
+                        />
+                      </figure>
+                      {(errors?.avatar?.message || error?.message) && (
+                        <p className="help is-danger">
+                          {errors?.avatar?.message || error?.message}
+                        </p>
+                      )}
+                    </div>
                   ) : (
                     <div className="file is-boxed">
                       <Controller
@@ -148,7 +163,9 @@ export const ChangeAvatarForm: FC<RegisterFormProps> = ({ code }) => {
                   {avatar && (
                     <button
                       type="button"
-                      className="button ml-3"
+                      className={
+                        isLoading ? "button ml-3 is-loading" : "ml-3 button"
+                      }
                       onClick={() => setValue("avatar", undefined)}
                     >
                       Choose another file
