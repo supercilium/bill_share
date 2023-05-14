@@ -99,8 +99,9 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
           <EditableImage
             setIsEditing={() => setIsEditing(true)}
             src={
-              `data:image/png;base64,${user?.avatar}` ||
-              "/static/media/avatar.svg"
+              user?.avatar
+                ? `data:image/png;base64,${user?.avatar}`
+                : "/static/media/avatar.svg"
             }
           />
         </div>

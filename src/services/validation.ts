@@ -46,7 +46,7 @@ export const imageSchema = object().shape({
     )
     .test(
       "is-valid-size",
-      "Max allowed size is 100KB",
+      "Max allowed size is 500KB",
       (value) => value && value.size <= MAX_FILE_SIZE
     ),
 });
