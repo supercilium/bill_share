@@ -1,5 +1,6 @@
+@import "../../../node_modules/bulma/sass/utilities/mixins.sass";
+
 .list-label {
-  min-width: 10rem;
   display: flex;
   align-items: center;
 }
@@ -11,8 +12,11 @@
 
 .list {
   display: grid;
-  grid-template-columns: 1fr 3fr;
   align-items: center;
   gap: 12px;
   margin-bottom: 14px;
+
+  @include from($tablet) {
+    grid-template-columns: 1fr 3fr;
+  }
 }
