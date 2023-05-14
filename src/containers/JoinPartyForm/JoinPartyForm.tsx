@@ -4,11 +4,10 @@ import { useMutation } from "react-query";
 import { useParams } from "react-router";
 import { Columns, Field } from "../../components";
 import { useUser } from "../../contexts/UserContext";
-import { UserEventData } from "../../types/events";
 import { User } from "../../types/user";
 import { getValidationErrorsFromREsponse } from "../../services/validation";
 import { ErrorRequest } from "../../__api__/helpers";
-import { createUser } from "../../__api__/users";
+import { CreateUserDTO, createUser } from "../../__api__/users";
 
 interface JoinPartyFormInterface {
   userName: string;
@@ -34,7 +33,7 @@ export const JoinPartyForm: FC<{
   const { mutate, isLoading, error } = useMutation<
     User,
     ErrorRequest,
-    UserEventData,
+    CreateUserDTO,
     unknown
   >(createUser, {
     onSuccess: (data) => {

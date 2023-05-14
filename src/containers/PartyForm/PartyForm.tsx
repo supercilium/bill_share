@@ -34,6 +34,7 @@ export const PartyForm: FC<{
     Transport.sendEvent({
       type: "update item",
       userId: currentUser.id,
+      currentUser: currentUser.id,
       partyId,
       itemId: id as string,
       ...data,
@@ -46,6 +47,7 @@ export const PartyForm: FC<{
   ) => {
     Transport.sendEvent({
       type: shouldAddUser ? "add user item" : "remove user item",
+      currentUser: currentUser.id,
       userId,
       partyId,
       itemId,
@@ -55,6 +57,7 @@ export const PartyForm: FC<{
     Transport.sendEvent({
       type: "remove item",
       userId: currentUser.id,
+      currentUser: currentUser.id,
       partyId,
       itemId: id,
     });
@@ -66,6 +69,7 @@ export const PartyForm: FC<{
   }) => {
     Transport.sendEvent({
       type: "update user item",
+      currentUser: currentUser.id,
       partyId,
       ...data,
     });

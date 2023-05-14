@@ -38,6 +38,7 @@ export const AddItemForm = () => {
     Transport.sendEvent({
       type: "add item",
       userId: currentUser.id,
+      currentUser: currentUser.id,
       partyId: partyId as string,
       ...data,
       price: priceType === "full" ? data.price / data.amount : data.price,

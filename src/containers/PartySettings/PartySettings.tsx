@@ -16,6 +16,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const handlers = useFormContext<FormSettings>();
   const { areHintsVisible, setHintsVisibility, setAsideVisibility } =
     useUISettings();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
 
   const total = handlers.watch("total");
   const isPercentage = handlers.watch("isPercentage");
@@ -41,10 +42,16 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
       partyId: party.id,
       discount: handlers.getValues("discount") || 0,
       isPercentage: handlers.getValues("isPercentage"),
+      currentUser: currentUser.id,
     });
   };
   const handleRemoveUser = (userId: string) => {
-    Transport.sendEvent({ type: "remove user", userId, partyId: party.id });
+    Transport.sendEvent({
+      type: "remove user",
+      userId,
+      partyId: party.id,
+      currentUser: currentUser.id,
+    });
   };
 
   const header = (
