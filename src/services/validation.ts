@@ -1,5 +1,5 @@
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
-import { array, object, string, number, ref } from "yup";
+import { array, object, string, number, ref, mixed } from "yup";
 import { ErrorRequest } from "../__api__/helpers";
 
 const name = string()
@@ -31,6 +31,25 @@ const amount = number()
   .min(0, "Amount should be positive!")
   .integer()
   .required();
+
+const MAX_FILE_SIZE = 500 * 1024;
+
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+
+export const imageSchema = object().shape({
+  avatar: mixed()
+    .required("Required")
+    .test(
+      "is-valid-type",
+      "Not a valid image type",
+      (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+    )
+    .test(
+      "is-valid-size",
+      "Max allowed size is 500KB",
+      (value) => value && value.size <= MAX_FILE_SIZE
+    ),
+});
 
 export const createPartySchema = object({
   // userName: yup.string().required(),

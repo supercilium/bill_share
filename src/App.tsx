@@ -17,6 +17,8 @@ import {
   faCheck,
   faClone,
   faEnvelope,
+  faPencil,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
@@ -49,7 +51,9 @@ library.add(
   faArrowRightFromBracket,
   faCheck,
   faClone,
-  faEnvelope
+  faEnvelope,
+  faPencil,
+  faUpload
 );
 
 const withSuspense = (component: ReactNode) => (

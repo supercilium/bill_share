@@ -32,12 +32,14 @@ export const fetchAPI: FetchType = async (input, init) => {
       ? getURL(input)
       : { ...input, url: getURL(input.url) };
 
-  // TODO figure out that to do with input headers
   const { headers: inputHeaders, ...rest } = init || {};
-  const headers: [string, string][] = [["Content-Type", "application/json"]];
+  const headers: HeadersInit = new Headers({
+    ...{ "Content-Type": "application/json" },
+    ...inputHeaders,
+  });
   const token = getCSRFToken();
   if (token && CSRF_TOKEN_HEADERS.includes(init?.method || "")) {
-    headers.push(["X-XSRF-TOKEN", token]);
+    headers.set("X-XSRF-TOKEN", token);
   }
   const response = await fetch(requestInfo, {
     credentials: "include",
