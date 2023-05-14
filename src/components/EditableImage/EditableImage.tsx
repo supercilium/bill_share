@@ -13,7 +13,7 @@ export const EditableImage: FC<EditableImageProps> = ({
 }) => {
   return (
     <div className="root">
-      <figure className="image is-128x128">
+      <figure className="image is-128x128 image-preview">
         <img
           className="is-rounded has-background-grey"
           src={src}

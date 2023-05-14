@@ -23,7 +23,10 @@ interface UserProfile {
 
 export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
   const { user, setUser } = useUser();
-  const { refetch, data } = useQuery("user", fetchUser, {
+  const { refetch } = useQuery("user", fetchUser, {
+    onSuccess: (data) => {
+      setUser(data);
+    },
     placeholderData: user,
   });
 
@@ -36,6 +39,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
     control,
     setValue,
     watch,
+    reset,
     formState: { errors, isValid, isDirty },
   } = useForm<UserProfile>({
     defaultValues: {
@@ -45,6 +49,10 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
     mode: "all",
   });
   const avatar = watch("avatar");
+  const onClose = () => {
+    reset({ avatar: undefined });
+    setIsEditing(false);
+  };
 
   const { mutate, isLoading, error } = useMutation<
     {
@@ -58,7 +66,6 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
       setXSRF();
       setIsEditing(false);
       refetch();
-      setUser(data);
       addAlert({
         mode: "success",
         text: "Your avatar was updated",
@@ -88,10 +95,15 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
   return (
     <form noValidate={true} onSubmit={handleSubmit(onSubmit)}>
       <div className="block">
-        <EditableImage
-          setIsEditing={() => setIsEditing(true)}
-          src={user?.avatar || "/static/media/avatar.svg"}
-        />
+        <div className="is-flex is-justify-content-center">
+          <EditableImage
+            setIsEditing={() => setIsEditing(true)}
+            src={
+              `data:image/png;base64,${user?.avatar}` ||
+              "/static/media/avatar.svg"
+            }
+          />
+        </div>
       </div>
       {isEditing && (
         <div className={`modal${isEditing ? " is-active" : ""}`}>
@@ -178,9 +190,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
           <button
             className="modal-close is-large"
             aria-label="close"
-            onClick={() => {
-              setIsEditing(false);
-            }}
+            onClick={onClose}
           ></button>
         </div>
       )}
