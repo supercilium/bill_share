@@ -5,7 +5,7 @@ export type WorkerActions = "connect" | "close" | "change state";
 
 export type DiscountEvents = "update discount";
 
-export type UserEvents = "add user" | "remove user";
+export type UserEvents = "add user" | "remove user" | "add pseudo user";
 
 export type ItemEvents = "add item" | "remove item" | "update item";
 
