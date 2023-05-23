@@ -26,7 +26,7 @@ export const AddUserForm = () => {
   const isUserRegistered = formHandlers.watch("isUserRegistered");
   const handleAddUser = ({ identifier }: { identifier: string }) => {
     Transport.sendEvent({
-      type: "add user",
+      type: isUserRegistered ? "add user" : "add pseudo user",
       currentUser: currentUser.id,
       userName: isUserRegistered ? undefined : identifier,
       email: isUserRegistered ? identifier : undefined,
@@ -38,13 +38,13 @@ export const AddUserForm = () => {
   return (
     <Block>
       <p className="has-text-grey-dark is-size-5 mb-3">Add participant</p>
-      {/* <Field
+      <Field
         label=" User is registered"
         inputProps={{
           type: "checkbox",
           ...formHandlers.register("isUserRegistered"),
         }}
-      /> */}
+      />
       <form
         className="add-user-layout"
         noValidate={true}

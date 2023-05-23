@@ -1,5 +1,5 @@
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
-import { array, object, string, number, ref, mixed } from "yup";
+import { array, object, string, number, ref, mixed, boolean } from "yup";
 import { ErrorRequest } from "../__api__/helpers";
 
 const name = string()
@@ -83,8 +83,14 @@ export const itemsSchema = object({
 }).required();
 
 export const addUserSchema = object({
-  identifier: email,
-}).required();
+  isUserRegistered: boolean(),
+  identifier: string()
+    .required("Field should not be empty")
+    .when("isUserRegistered", {
+      is: true,
+      then: email,
+    }),
+});
 
 export const forgotPasswordSchema = object({
   email: email,
