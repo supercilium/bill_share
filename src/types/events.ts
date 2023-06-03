@@ -9,6 +9,8 @@ export type UserEvents = "add user" | "remove user" | "add pseudo user";
 
 export type ItemEvents = "add item" | "remove item" | "update item";
 
+export type GuestEvents = "confirm guest addition";
+
 export type ItemUserEvents =
   | "add user item"
   | "remove user item"
@@ -19,7 +21,8 @@ export type PartyEvents =
   | ItemEvents
   | ItemUserEvents
   | DiscountEvents
-  | WorkerActions;
+  | WorkerActions
+  | GuestEvents;
 
 export interface EventDataWithUser {
   currentUser: string;
@@ -52,7 +55,7 @@ export type EventDTO<Type extends PartyEvents, DTO> = DTO & {
   type: Type;
 };
 
-export type UserDTO = EventDTO<UserEvents, UserEventData>;
+export type UserDTO = EventDTO<UserEvents | GuestEvents, UserEventData>;
 export type ItemDTO = EventDTO<ItemEvents, ItemEventData>;
 export type ItemUserDTO = EventDTO<ItemUserEvents, ItemUserEventData>;
 export type DiscountDTO = EventDTO<DiscountEvents, DiscountEventData>;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { Aside, Header, Main } from "../components";
+import { Aside, Columns, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
 import { getPartyById } from "../__api__/parties";
@@ -30,6 +30,7 @@ const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "remove user",
   "add item",
   "remove item",
+  "confirm guest addition",
 ];
 
 const mapEventToText: Partial<
@@ -39,6 +40,7 @@ const mapEventToText: Partial<
   "remove user": "User left",
   "add item": "added",
   "remove item": "removed",
+  "confirm guest addition": "Allow this user to join your party: ",
 };
 
 export const Party = () => {
@@ -162,7 +164,13 @@ export const Party = () => {
   if (isNoUser) {
     return (
       <HeroLayout>
-        <JoinPartyForm onSuccess={onJoiningParty} />
+        <h2 className="title is-2 my-5">Joining the party</h2>
+        <Columns>
+          <div>
+            <JoinPartyForm onSuccess={onJoiningParty} />
+          </div>
+          <div />
+        </Columns>
       </HeroLayout>
     );
   }

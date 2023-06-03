@@ -6,22 +6,24 @@ import { useEffect, useState } from "react";
 import { RegisterForm } from "../containers/RegisterForm";
 import { useUser } from "../contexts/UserContext";
 import { useLocation, useNavigate } from "react-router";
+import { JoinPartyForm } from "../containers/JoinPartyForm";
 
 export const Login = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const { user } = useUser();
   const { search } = useLocation();
   const navigate = useNavigate();
+  const returnPath = new URLSearchParams(search).get("returnPath");
 
   useEffect(() => {
     if (user) {
       if (search) {
-        const returnPath = new URLSearchParams(search).get("returnPath");
         returnPath && navigate(returnPath);
       } else {
         navigate("/");
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, search, navigate]);
 
   return (
@@ -52,7 +54,7 @@ export const Login = () => {
           >
             <div>
               <div className="box">
-                {search && (
+                {returnPath && (
                   <p className="has-text-grey-dark is-size-5 mb-3">
                     Log in to proceed
                   </p>
@@ -61,6 +63,16 @@ export const Login = () => {
                 {activeTab === "register" && <RegisterForm />}
               </div>
             </div>
+            {returnPath && (
+              <div>
+                <div className="box">
+                  <p className="has-text-grey-dark is-size-5 mb-3">
+                    Join as a guest
+                  </p>
+                  <JoinPartyForm onSuccess={() => navigate(returnPath)} />
+                </div>
+              </div>
+            )}
           </Columns>
         </Main>
       }
