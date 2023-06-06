@@ -13,7 +13,7 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({ userId, partyId }) => {
     ["confirm-quest", userId, partyId],
     () =>
       checkPartyConfirmed({
-        userId: userId as string,
+        id: userId as string,
         partyId: partyId as string,
       }),
     {
