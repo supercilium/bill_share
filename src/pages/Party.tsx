@@ -40,7 +40,7 @@ const mapEventToText: Partial<
   "remove user": "User left",
   "add item": "added",
   "remove item": "removed",
-  "confirm guest addition": "Allow this user to join your party: ",
+  "confirm guest addition": "Allow this user to join your party",
 };
 
 export const Party = () => {

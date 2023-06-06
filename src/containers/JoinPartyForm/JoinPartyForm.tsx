@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import cx from "classnames";
 import { useMutation } from "react-query";
@@ -10,6 +10,7 @@ import { getValidationErrorsFromREsponse } from "../../services/validation";
 import { ErrorRequest } from "../../__api__/helpers";
 import { CreateUserDTO, createUser } from "../../__api__/users";
 import { CreateGuestDTO, createGuest } from "../../__api__/guests";
+import { WaitingRoom } from "../WaitingRoom";
 
 interface JoinPartyFormInterface {
   userName: string;
@@ -20,7 +21,11 @@ export const JoinPartyForm: FC<{
 }> = ({ onSuccess }) => {
   const { partyId } = useParams();
   const { search } = useLocation();
+  const returnPath = new URLSearchParams(search).get("returnPath");
+  const partyFromSearch = returnPath?.replace("/party/", "");
+
   const { user, setUser } = useUser();
+  const [isInWaitingRoom, goToWaitingRoom] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -54,14 +59,13 @@ export const JoinPartyForm: FC<{
     },
   });
 
-  const { mutate: mutateGuest, status } = useMutation<
-    User,
-    ErrorRequest,
-    CreateGuestDTO,
-    unknown
-  >(createGuest, {
+  const {
+    mutate: mutateGuest,
+    data: guest,
+    isLoading: isGuestLoading,
+  } = useMutation<User, ErrorRequest, CreateGuestDTO, unknown>(createGuest, {
     onSuccess: (data) => {
-      onSuccess(data);
+      goToWaitingRoom(true);
     },
     onError: async (error) => {
       if (error.status === 401) {
@@ -86,14 +90,16 @@ export const JoinPartyForm: FC<{
         partyId: partyId as string,
       });
     } else {
-      const returnPath = new URLSearchParams(search).get("returnPath");
-      const party = returnPath?.replace("/party/", "");
       mutateGuest({
         userName: values.userName,
-        partyId: party as string,
+        partyId: partyFromSearch as string,
       });
     }
   };
+
+  if (isInWaitingRoom && guest?.id && partyFromSearch) {
+    return <WaitingRoom userId={guest.id} partyId={partyFromSearch} />;
+  }
 
   return (
     <form
@@ -115,7 +121,7 @@ export const JoinPartyForm: FC<{
       <button
         type="submit"
         className={cx("button", { "is-loading": isLoading })}
-        disabled={isLoading || !isValid}
+        disabled={isLoading || !isValid || isGuestLoading}
       >
         Join party
       </button>
