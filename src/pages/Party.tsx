@@ -14,7 +14,7 @@ import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
 import { Navbar } from "../containers/Navbar";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useUser } from "../contexts/UserContext";
 import { PartyInterface } from "../types/party";
 import { useLogout } from "../hooks/useLogout";
@@ -24,13 +24,15 @@ import { CopyButton } from "../containers/CopyButton";
 import { Transport } from "../services/transport";
 import { SOCKET_STATE } from "../services/constants";
 import { sortPartyUsers } from "../utils/sort";
+import { usePrompts } from "../contexts/PromptContext";
+import { CreateUserDTO, createUser } from "../__api__/users";
+import { ErrorRequest } from "../__api__/helpers";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
   "remove user",
   "add item",
   "remove item",
-  "confirm guest addition",
 ];
 
 const mapEventToText: Partial<
@@ -40,7 +42,6 @@ const mapEventToText: Partial<
   "remove user": "User left",
   "add item": "added",
   "remove item": "removed",
-  "confirm guest addition": "Allow this user to join your party",
 };
 
 export const Party = () => {
@@ -49,6 +50,7 @@ export const Party = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const { addAlert } = useNotifications();
+  const { addPrompt, removePrompt } = usePrompts();
 
   const [socketState, setSocketState] = useState<number>();
   const [currentUser, setCurrentUser] = useState<User>(
@@ -87,6 +89,24 @@ export const Party = () => {
     }
   );
   const isNoUser = error?.status === 403;
+  const { mutate: mutateUser } = useMutation<
+    User,
+    ErrorRequest,
+    CreateUserDTO,
+    unknown
+  >(createUser, {
+    onSuccess: () => {
+      removePrompt();
+    },
+    onError: async (error) => {
+      if (error.status === 401) {
+        setUser(null);
+      }
+      if (error) {
+        addAlert({ mode: "danger", text: "Ooops..." });
+      }
+    },
+  });
 
   const eventHandler = useCallback(
     (data: EventResponseDTO) => {
@@ -113,6 +133,20 @@ export const Party = () => {
           }
           return;
         }
+        if (data.type === "confirm guest addition") {
+          addPrompt({
+            title: `${data.eventData?.userName} wants to join your party.`,
+            text: "Please confirm",
+            confirmLabel: "Ok, allow",
+            onConfirm: () => {
+              data.eventData?.userId &&
+                mutateUser({
+                  userId: data.eventData.userId,
+                  partyId: partyId as string,
+                });
+            },
+          });
+        }
         if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
           if (!data.eventData?.itemName) {
             addAlert({
@@ -135,7 +169,16 @@ export const Party = () => {
         console.error(err);
       }
     },
-    [addAlert, party?.name, partyId, queryClient, refetch, user]
+    [
+      addAlert,
+      addPrompt,
+      mutateUser,
+      party?.name,
+      partyId,
+      queryClient,
+      refetch,
+      user,
+    ]
   );
 
   useEffect(() => {

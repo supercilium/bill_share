@@ -78,5 +78,6 @@ export interface EventResponseDTO {
   eventData?: {
     itemName: string;
     userName: string;
+    userId?: string;
   };
 }

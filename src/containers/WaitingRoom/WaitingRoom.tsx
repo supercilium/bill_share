@@ -2,6 +2,7 @@ import { FC } from "react";
 import { useQuery } from "react-query";
 import { checkPartyConfirmed } from "../../__api__/parties";
 import { Loader } from "../../components/Loader";
+import { ErrorRequest } from "../../__api__/helpers";
 
 interface WaitingRoomProps {
   userId: string;
@@ -9,7 +10,7 @@ interface WaitingRoomProps {
 }
 
 export const WaitingRoom: FC<WaitingRoomProps> = ({ userId, partyId }) => {
-  const query = useQuery<Response, Response, Response>(
+  const query = useQuery<{ success: boolean }, ErrorRequest>(
     ["confirm-quest", userId, partyId],
     () =>
       checkPartyConfirmed({
@@ -17,19 +18,21 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({ userId, partyId }) => {
         partyId: partyId as string,
       }),
     {
-      refetchInterval: (data?: Response) =>
-        !data || data.status !== 200 ? 5000 : false,
+      refetchInterval: (data) => {
+        return !data || !data?.success ? 10000 : false;
+      },
       enabled: Boolean(partyId && userId),
     }
   );
+
   return (
     <div>
-      {query.status === "loading" && (
+      <p>Wait until someone confirm your joining</p>
+      {query.status !== "success" && (
         <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
           <Loader />
         </div>
       )}
-      {query.error && <p>error</p>}
     </div>
   );
 };

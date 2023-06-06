@@ -32,6 +32,8 @@ import { Confirmation } from "./pages/Confirmation";
 import { ResetPassword } from "./pages/ResetPassword";
 import { ChangePassword } from "./pages/ChangePassword";
 import { setXSRF } from "./utils/cookie";
+import { PromptProvider } from "./contexts/PromptContext";
+import { PromptList } from "./containers/PromptList";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Profile = React.lazy(() => import("./pages/Profile"));
@@ -129,12 +131,15 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NotificationProvider>
-        <UserProvider>
-          <UISettingsProvider>
-            <RouterProvider router={router} />
-            <NotificationList />
-          </UISettingsProvider>
-        </UserProvider>
+        <PromptProvider>
+          <UserProvider>
+            <UISettingsProvider>
+              <RouterProvider router={router} />
+              <NotificationList />
+              <PromptList />
+            </UISettingsProvider>
+          </UserProvider>
+        </PromptProvider>
       </NotificationProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
