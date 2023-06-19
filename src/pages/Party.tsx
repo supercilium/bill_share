@@ -76,7 +76,7 @@ export const Party = () => {
           );
         }
         const party = sortPartyUsers(result, user?.id || "");
-        return Promise.resolve(party as PartyInterface);
+        return Promise.resolve(party);
       }),
     {
       retry: false,
@@ -116,11 +116,14 @@ export const Party = () => {
           return;
         }
         if (data.type === "connect") {
-          refetch();
-          addAlert({
-            mode: "success",
-            text: `Connected to ${party?.name}`,
-          });
+          refetch().then(
+            () =>
+              addAlert({
+                mode: "success",
+                text: `Connected to ${party?.name}`,
+              }),
+            () => addAlert({ mode: "danger", text: "Unable to connect" })
+          );
           return;
         }
         if (data.type === "change state") {

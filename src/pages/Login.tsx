@@ -7,6 +7,7 @@ import { RegisterForm } from "../containers/RegisterForm";
 import { useUser } from "../contexts/UserContext";
 import { useLocation, useNavigate } from "react-router";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
+import "./Login.scss";
 
 export const Login = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -64,8 +65,8 @@ export const Login = () => {
               </div>
             </div>
             {returnPath && (
-              <div>
-                <div className="box">
+              <div className="full-height">
+                <div className="box full-height">
                   <p className="has-text-grey-dark is-size-5 mb-3">
                     Join as a guest
                   </p>
