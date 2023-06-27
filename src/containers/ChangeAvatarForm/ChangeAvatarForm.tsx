@@ -2,13 +2,13 @@ import { FC, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Block } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import cx from "classnames";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useUser } from "../../contexts/UserContext";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { setXSRF } from "../../utils/cookie";
-import { changeUser, fetchUser } from "../../__api__/users";
+import { changeUser } from "../../__api__/users";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EditableImage } from "../../components/EditableImage";
 import {
@@ -23,14 +23,7 @@ interface UserProfile {
 }
 
 export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
-  const { user, setUser } = useUser();
-  const { refetch } = useQuery("user", fetchUser, {
-    onSuccess: (data) => {
-      setUser(data);
-    },
-    placeholderData: user,
-  });
-
+  const { user, refetch } = useUser();
   const [isEditing, setIsEditing] = useState(false);
 
   const { addAlert } = useNotifications();
