@@ -6,6 +6,8 @@ export interface PromptProps {
   text: ReactNode;
   onConfirm: () => void;
   confirmLabel: string;
+  onCancel?: () => void;
+  cancelLabel?: string;
 }
 
 export const Prompt: FC<PromptProps> = (props) => {
@@ -15,11 +17,16 @@ export const Prompt: FC<PromptProps> = (props) => {
       {props.text && <p className="is-5 mb-5">{props.text}</p>}
       <button
         type="button"
-        className="button is-primary"
+        className="button is-primary mr-2"
         onClick={props.onConfirm}
       >
         {props.confirmLabel}
       </button>
+      {props.onCancel && (
+        <button type="button" className="button" onClick={props.onCancel}>
+          {props.cancelLabel ?? "Cancel"}
+        </button>
+      )}
     </div>
   );
 };

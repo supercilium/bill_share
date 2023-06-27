@@ -19,7 +19,10 @@ import { useUser } from "../contexts/UserContext";
 import { PartyInterface } from "../types/party";
 import { useLogout } from "../hooks/useLogout";
 import { EventResponseDTO, PartyEvents } from "../types/events";
-import { useNotifications } from "../contexts/NotificationContext";
+import {
+  useNotifications,
+  Notification,
+} from "../contexts/NotificationContext";
 import { CopyButton } from "../containers/CopyButton";
 import { Transport } from "../services/transport";
 import { SOCKET_STATE } from "../services/constants";
@@ -27,6 +30,7 @@ import { sortPartyUsers } from "../utils/sort";
 import { usePrompts } from "../contexts/PromptContext";
 import { CreateUserDTO, createUser } from "../__api__/users";
 import { ErrorRequest } from "../__api__/helpers";
+import { GUEST_KEY } from "../containers/JoinPartyForm/JoinPartyForm";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -44,6 +48,28 @@ const mapEventToText: Partial<
   "remove item": "removed",
 };
 
+const getAlertData = (event: EventResponseDTO): Notification | null => {
+  if (event.type === "error") {
+    return { text: event.message, mode: "danger" };
+  }
+  if (EVENTS_SHOULD_NOTIFY.includes(event.type)) {
+    if (!event.eventData?.itemName) {
+      return {
+        mode: "info",
+        text: `${mapEventToText[event.type]}: ${event.eventData?.userName}`,
+      };
+    } else {
+      return {
+        mode: "info",
+        text: `${event.eventData?.userName} ${mapEventToText[event.type]} ${
+          event.eventData?.itemName
+        }`,
+      };
+    }
+  }
+  return null;
+};
+
 export const Party = () => {
   const { partyId } = useParams();
   const { pathname } = useLocation();
@@ -54,7 +80,7 @@ export const Party = () => {
 
   const [socketState, setSocketState] = useState<number>();
   const [currentUser, setCurrentUser] = useState<User>(
-    JSON.parse(localStorage.getItem("user") || "{}") || {}
+    JSON.parse(localStorage.getItem("user") ?? "{}") || {}
   );
 
   const queryClient = useQueryClient();
@@ -74,6 +100,9 @@ export const Party = () => {
             setSocketState,
             partyId as string
           );
+        }
+        if (window.localStorage.getItem(GUEST_KEY)) {
+          window.localStorage.removeItem(GUEST_KEY);
         }
         const party = sortPartyUsers(result, user?.id || "");
         return Promise.resolve(party);
@@ -111,10 +140,6 @@ export const Party = () => {
   const eventHandler = useCallback(
     (data: EventResponseDTO) => {
       try {
-        if (data.type === "error") {
-          addAlert({ mode: "danger", text: data.message });
-          return;
-        }
         if (data.type === "connect") {
           refetch().then(
             () =>
@@ -148,22 +173,21 @@ export const Party = () => {
                   partyId: partyId as string,
                 });
             },
+            onCancel: () => {
+              data.eventData?.userId &&
+                Transport.sendEvent({
+                  type: "reject guest addition",
+                  currentUser: user?.id as string,
+                  partyId: partyId as string,
+                  userId: data.eventData?.userId,
+                });
+            },
+            cancelLabel: "No, reject",
           });
         }
-        if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
-          if (!data.eventData?.itemName) {
-            addAlert({
-              mode: "info",
-              text: `${mapEventToText[data.type]}: ${data.eventData?.userName}`,
-            });
-          } else {
-            addAlert({
-              mode: "info",
-              text: `${data.eventData?.userName} ${mapEventToText[data.type]} ${
-                data.eventData?.itemName
-              }`,
-            });
-          }
+        const alertData = getAlertData(data);
+        if (alertData) {
+          addAlert(alertData);
         }
         const processedData = sortPartyUsers(data.party, user?.id || "");
         queryClient.setQueryData(["party", partyId, user], processedData);
@@ -245,7 +269,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() => Transport.connect(partyId as string)}
+              onClick={() => Transport.connect(partyId)}
               className="button ml-2"
             >
               re-connect

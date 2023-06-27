@@ -16,6 +16,8 @@ interface JoinPartyFormInterface {
   userName: string;
 }
 
+export const GUEST_KEY = "guest";
+
 export const JoinPartyForm: FC<{
   onSuccess: (user: User) => void;
 }> = ({ onSuccess }) => {
@@ -23,9 +25,12 @@ export const JoinPartyForm: FC<{
   const { search } = useLocation();
   const returnPath = new URLSearchParams(search).get("returnPath");
   const partyFromSearch = returnPath?.replace("/party/", "");
+  const [guest, setGuest] = useState<User | null>(
+    JSON.parse(window.localStorage.getItem(GUEST_KEY) ?? "{}")
+  );
 
   const { user, setUser } = useUser();
-  const [isInWaitingRoom, goToWaitingRoom] = useState<boolean>(false);
+  const [isInWaitingRoom, goToWaitingRoom] = useState<boolean>(guest !== null);
   const {
     register,
     handleSubmit,
@@ -33,7 +38,7 @@ export const JoinPartyForm: FC<{
     formState: { errors, isValid },
   } = useForm<JoinPartyFormInterface>({
     defaultValues: {
-      userName: user?.name,
+      userName: user?.name ?? guest?.name ?? "",
     },
     mode: "onBlur",
   });
@@ -59,13 +64,16 @@ export const JoinPartyForm: FC<{
     },
   });
 
-  const {
-    mutate: mutateGuest,
-    data: guest,
-    isLoading: isGuestLoading,
-  } = useMutation<User, ErrorRequest, CreateGuestDTO, unknown>(createGuest, {
+  const { mutate: mutateGuest, isLoading: isGuestLoading } = useMutation<
+    User,
+    ErrorRequest,
+    CreateGuestDTO,
+    unknown
+  >(createGuest, {
     onSuccess: (data) => {
       goToWaitingRoom(true);
+      setGuest(data);
+      window.localStorage.setItem(GUEST_KEY, JSON.stringify(data));
     },
     onError: async (error) => {
       if (error.status === 401) {

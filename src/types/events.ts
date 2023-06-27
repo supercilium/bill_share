@@ -9,7 +9,7 @@ export type UserEvents = "add user" | "remove user" | "add pseudo user";
 
 export type ItemEvents = "add item" | "remove item" | "update item";
 
-export type GuestEvents = "confirm guest addition";
+export type GuestEvents = "confirm guest addition" | "reject guest addition";
 
 export type ItemUserEvents =
   | "add user item"

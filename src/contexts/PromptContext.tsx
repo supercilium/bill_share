@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useMemo, useState } from "react";
 import { PromptProps } from "../components/Prompt/Prompt";
 
 interface PromptContextInterface {
@@ -18,16 +18,16 @@ export const PromptProvider: FC<{
 }> = ({ children }) => {
   const [prompts, setPrompt] = useState<PromptProps>();
 
+  const value = useMemo(
+    () => ({
+      prompts,
+      addPrompt: setPrompt,
+      removePrompt: () => setPrompt(undefined),
+    }),
+    [prompts, setPrompt]
+  );
   return (
-    <PromptContext.Provider
-      value={{
-        prompts,
-        addPrompt: setPrompt,
-        removePrompt: () => setPrompt(undefined),
-      }}
-    >
-      {children}
-    </PromptContext.Provider>
+    <PromptContext.Provider value={value}>{children}</PromptContext.Provider>
   );
 };
 

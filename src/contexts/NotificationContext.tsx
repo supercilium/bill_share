@@ -1,7 +1,14 @@
-import React, { FC, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { NotificationProps } from "../components/Notification/Notification";
 
-type Notification = Omit<NotificationProps, "onClose">;
+export type Notification = Omit<NotificationProps, "onClose">;
 
 interface NotificationContextInterface {
   alerts?: Notification;
@@ -33,14 +40,17 @@ export const NotificationProvider: FC<{
     };
   }, [alerts]);
 
+  const value = useMemo(
+    () => ({
+      alerts,
+      addAlert: setAlert,
+      removeAlert: () => setAlert(undefined),
+    }),
+    [alerts, setAlert]
+  );
+
   return (
-    <NotificationContext.Provider
-      value={{
-        alerts,
-        addAlert: setAlert,
-        removeAlert: () => setAlert(undefined),
-      }}
-    >
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   );
