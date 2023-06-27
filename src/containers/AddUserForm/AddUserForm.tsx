@@ -53,6 +53,7 @@ export const AddUserForm = () => {
         <Field
           error={errors.identifier}
           label={isUserRegistered ? "Email" : "Name"}
+          onEnter={formHandlers.handleSubmit(handleAddUser)}
           inputProps={{
             type: isUserRegistered ? "email" : "text",
             placeholder: isUserRegistered ? "Enter email" : "Enter name",

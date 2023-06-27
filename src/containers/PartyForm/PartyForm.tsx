@@ -20,7 +20,7 @@ export const PartyForm: FC<{
   const { users } = party;
   const { partyId } = useParams();
   const handlers = useParty({ party });
-  const { register, formState } = handlers;
+  const { register, formState, watch: watchParty } = handlers;
   const { isValid, errors } = formState;
   const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
@@ -32,6 +32,9 @@ export const PartyForm: FC<{
     id,
     ...data
   }: Partial<Omit<Item, "users">>) => {
+    if (!isValid) {
+      return;
+    }
     Transport.sendEvent({
       type: "update item",
       userId: currentUser.id,
@@ -161,11 +164,21 @@ export const PartyForm: FC<{
 
                 <Field
                   error={errors.items?.[i]?.name}
+                  onEnter={() => {
+                    const name = watchParty(`items.${i}.name`);
+                    if (name === item.name) {
+                      return;
+                    }
+                    handleChangeItem({
+                      id: item.id,
+                      name,
+                    });
+                  }}
                   inputProps={{
                     type: "text",
                     ...register(`items.${i}.name`),
                     onBlur: ({ target }) => {
-                      if (target.value === item.name || !isValid) {
+                      if (target.value === item.name) {
                         return new Promise(() => {});
                       }
                       return handleChangeItem({
@@ -179,12 +192,22 @@ export const PartyForm: FC<{
               <span className="is-size-4">
                 <Field
                   error={errors.items?.[i]?.amount}
+                  onEnter={() => {
+                    const amount = watchParty(`items.${i}.amount`);
+                    if (amount === item.amount) {
+                      return;
+                    }
+                    handleChangeItem({
+                      id: item.id,
+                      amount,
+                    });
+                  }}
                   inputProps={{
                     type: "number",
                     min: 1,
                     ...register(`items.${i}.amount`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.amount || !isValid) {
+                      if (+target.value === item.amount) {
                         return new Promise(() => {});
                       }
 
@@ -199,12 +222,22 @@ export const PartyForm: FC<{
               <span className="is-size-4">
                 <Field
                   error={errors.items?.[i]?.price}
+                  onEnter={() => {
+                    const price = watchParty(`items.${i}.price`);
+                    if (price === item.price) {
+                      return;
+                    }
+                    handleChangeItem({
+                      id: item.id,
+                      price,
+                    });
+                  }}
                   inputProps={{
                     type: "number",
                     min: 0,
                     ...register(`items.${i}.price`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.price || !isValid) {
+                      if (+target.value === item.price) {
                         return new Promise(() => {});
                       }
 
@@ -223,6 +256,16 @@ export const PartyForm: FC<{
               >
                 <Field
                   error={errors.items?.[i]?.discount}
+                  onEnter={() => {
+                    const discount = watchParty(`items.${i}.discount`);
+                    if (discount === item.discount) {
+                      return;
+                    }
+                    handleChangeItem({
+                      id: item.id,
+                      discount,
+                    });
+                  }}
                   inputProps={{
                     type: "number",
                     step: 5,
@@ -230,7 +273,7 @@ export const PartyForm: FC<{
                     max: 100,
                     ...register(`items.${i}.discount`),
                     onBlur: ({ target }) => {
-                      if (+target.value === item.discount || !isValid) {
+                      if (+target.value === item.discount) {
                         return new Promise(() => {});
                       }
 
@@ -279,16 +322,26 @@ export const PartyForm: FC<{
                   <div key={id}>
                     <Field
                       error={errors.items?.[i]?.users?.[id]?.value}
+                      onEnter={() => {
+                        const value = watchParty(
+                          `items.${i}.users.${id}.value`
+                        );
+                        if (value === itemUsers[id]?.value) {
+                          return;
+                        }
+                        handleUpdateUserItem({
+                          itemId: item.id,
+                          value,
+                          userId: id,
+                        });
+                      }}
                       inputProps={{
                         type: "number",
                         placeholder: "0",
                         min: 0,
                         ...register(`items.${i}.users.${id}.value`),
                         onBlur: ({ target }) => {
-                          if (
-                            +target.value === itemUsers[id]?.value ||
-                            !isValid
-                          ) {
+                          if (+target.value === itemUsers[id]?.value) {
                             return new Promise(() => {});
                           }
 

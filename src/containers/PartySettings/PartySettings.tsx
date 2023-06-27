@@ -53,6 +53,18 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
       currentUser: currentUser.id,
     });
   };
+  const handleSubmitDiscount = () => {
+    const values = handlers.getValues();
+    let { discountPercent, discount, isPercentage } = values;
+    if (total && !handlers.formState.errors.discount) {
+      discountPercent = isPercentage
+        ? discount
+        : Number((((discount || 0) * 100) / +total).toFixed(13));
+      handlers.setValue("discountPercent", discountPercent);
+    }
+
+    return handleUpdateDiscount();
+  };
 
   const header = (
     <div className="is-flex is-justify-content-space-between">
@@ -228,26 +240,18 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                   placeholder="0"
                   min={0}
                   max={total}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSubmitDiscount();
+                    }
+                  }}
                   {...discountHandlers}
                 />
               </div>
               <div className="control">
                 <button
                   disabled={!!handlers.formState.errors.discount}
-                  onClick={() => {
-                    const values = handlers.getValues();
-                    let { discountPercent, discount, isPercentage } = values;
-                    if (total && !handlers.formState.errors.discount) {
-                      discountPercent = isPercentage
-                        ? discount
-                        : Number(
-                            (((discount || 0) * 100) / +total).toFixed(13)
-                          );
-                      handlers.setValue("discountPercent", discountPercent);
-                    }
-
-                    return handleUpdateDiscount();
-                  }}
+                  onClick={handleSubmitDiscount}
                   className="button is-info"
                 >
                   <FontAwesomeIcon icon="check" />

@@ -26,7 +26,7 @@ export const useParty = ({ party }: Params) => {
       "discountPercent",
       party.isPercentage
         ? party.discount
-        : Number((((party.discount || 0) * 100) / +total).toFixed(2))
+        : Number((((party.discount ?? 0) * 100) / +total).toFixed(2))
     );
     setValue("discount", party.discount);
     setValue("isPercentage", party.isPercentage);
