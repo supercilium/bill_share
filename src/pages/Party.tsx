@@ -181,6 +181,7 @@ export const Party = () => {
                   partyId: partyId as string,
                   userId: data.eventData?.userId,
                 });
+              removePrompt();
             },
             cancelLabel: "No, reject",
           });
@@ -204,6 +205,7 @@ export const Party = () => {
       partyId,
       queryClient,
       refetch,
+      removePrompt,
       user,
     ]
   );
