@@ -36,9 +36,10 @@ export const Field: FC<{
   label?: string;
   labels?: string[];
   error?: FieldError;
+  onEnter?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   inputProps: React.InputHTMLAttributes<HTMLInputElement> &
     Partial<UseFormRegisterReturn>;
-}> = ({ label, labels, inputProps, error }) => {
+}> = ({ label, labels, inputProps, error, onEnter }) => {
   const { type } = inputProps;
   const classNameInput = getBulmaInputClassName(type);
   const classNameLabel = getBulmaLabelClassName(type);
@@ -72,6 +73,7 @@ export const Field: FC<{
         {(!label || type !== "checkbox") && (
           <input
             className={cx(classNameInput, { "is-danger": error })}
+            onKeyUp={(e) => e.key === "Enter" && onEnter && onEnter(e)}
             {...inputProps}
           />
         )}

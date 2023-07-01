@@ -27,7 +27,7 @@ export const UserPartyForm: FC<{
 }> = ({ party, user }) => {
   const { partyId } = useParams();
   const handlers = useParty({ party });
-  const { register, formState } = handlers;
+  const { register, formState, watch: watchParty } = handlers;
   const { isValid, errors } = formState;
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
@@ -82,6 +82,9 @@ export const UserPartyForm: FC<{
   const handleChangeItem = async (
     data: Partial<Omit<Item, "id" | "users">> & { itemId: string }
   ) => {
+    if (!isValid) {
+      return;
+    }
     Transport.sendEvent({
       type: "update item",
       userId,
@@ -105,7 +108,7 @@ export const UserPartyForm: FC<{
   const total = getPartyUserBaseTotal(userItems, userId);
   const discount =
     getPartyUserDiscount(userItems, userId) +
-    total * (partySettings.discountPercent || 0) * 0.01;
+    total * (partySettings.discountPercent ?? 0) * 0.01;
 
   return (
     <Block title={<PartyHeader users={party.users} master={party.owner} />}>
@@ -154,16 +157,25 @@ export const UserPartyForm: FC<{
                               />
                               <Field
                                 error={errors.items?.[i]?.name}
+                                onEnter={() => {
+                                  const value = watchParty(
+                                    `items.${item.originalIndex}.name`
+                                  );
+                                  if (value === item.name) {
+                                    return;
+                                  }
+                                  handleChangeItem({
+                                    itemId: item.id,
+                                    name: value,
+                                  });
+                                }}
                                 inputProps={{
                                   type: "text",
                                   ...register(
                                     `items.${item.originalIndex}.name`
                                   ),
                                   onBlur: ({ target }) => {
-                                    if (
-                                      target.value === item.name ||
-                                      !isValid
-                                    ) {
+                                    if (target.value === item.name) {
                                       return new Promise(() => {});
                                     }
                                     return handleChangeItem({
@@ -182,6 +194,18 @@ export const UserPartyForm: FC<{
                                       userId
                                     ]?.value
                                   }
+                                  onEnter={() => {
+                                    const value = +watchParty(
+                                      `items.${item.originalIndex}.users.${userId}.value`
+                                    );
+                                    if (item.users[userId].value === value) {
+                                      return;
+                                    }
+                                    handleUpdateUserItem({
+                                      itemId: item.id,
+                                      value: value,
+                                    });
+                                  }}
                                   inputProps={{
                                     type: "number",
                                     min: 0,
@@ -191,8 +215,7 @@ export const UserPartyForm: FC<{
                                     onBlur: ({ target }) => {
                                       if (
                                         +target.value ===
-                                          item.users[userId].value ||
-                                        !isValid
+                                        item.users[userId].value
                                       ) {
                                         return new Promise(() => {});
                                       }
@@ -217,6 +240,18 @@ export const UserPartyForm: FC<{
                             <span className="is-size-5-touch is-size-4-desktop">
                               <Field
                                 error={errors.items?.[i]?.price}
+                                onEnter={() => {
+                                  const value = +watchParty(
+                                    `items.${item.originalIndex}.price`
+                                  );
+                                  if (value === item.price) {
+                                    return;
+                                  }
+                                  handleChangeItem({
+                                    itemId: item.id,
+                                    price: value,
+                                  });
+                                }}
                                 inputProps={{
                                   type: "number",
                                   min: 0,
@@ -224,10 +259,7 @@ export const UserPartyForm: FC<{
                                     `items.${item.originalIndex}.price`
                                   ),
                                   onBlur: ({ target }) => {
-                                    if (
-                                      +target.value === item.price ||
-                                      !isValid
-                                    ) {
+                                    if (+target.value === item.price) {
                                       return new Promise(() => {});
                                     }
 
@@ -250,6 +282,20 @@ export const UserPartyForm: FC<{
                             >
                               <Field
                                 error={errors.items?.[i]?.discount}
+                                onEnter={() => {
+                                  const value = +(
+                                    watchParty(
+                                      `items.${item.originalIndex}.discount`
+                                    ) || 0
+                                  );
+                                  if (value === item.discount) {
+                                    return;
+                                  }
+                                  handleChangeItem({
+                                    itemId: item.id,
+                                    discount: value,
+                                  });
+                                }}
                                 inputProps={{
                                   type: "number",
                                   step: 5,
@@ -259,10 +305,7 @@ export const UserPartyForm: FC<{
                                     `items.${item.originalIndex}.discount`
                                   ),
                                   onBlur: ({ target }) => {
-                                    if (
-                                      +target.value === item.discount ||
-                                      !isValid
-                                    ) {
+                                    if (+target.value === item.discount) {
                                       return new Promise(() => {});
                                     }
 
