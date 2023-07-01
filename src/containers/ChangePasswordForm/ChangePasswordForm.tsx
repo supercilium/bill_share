@@ -2,6 +2,7 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
+import cx from "classnames";
 import { ChangePasswordDTO } from "../../types/user";
 import { useUser } from "../../contexts/UserContext";
 import {
@@ -96,7 +97,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
         <div>
           <button
             type="submit"
-            className={isLoading ? "button is-loading" : "button"}
+            className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
             Change password

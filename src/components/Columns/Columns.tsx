@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+import cx from "classnames";
 
 interface Props {
   children?: ReactNode[] | ReactNode;
@@ -14,14 +15,14 @@ export const Columns: FC<Props> = ({
   return children ? (
     <div
       {...(containerProps || {})}
-      className={`columns ${containerProps?.className || ""}`}
+      className={cx("columns", containerProps?.className)}
     >
       {Array.isArray(children) ? (
         children.map((elem, i) => (
           <div
             key={i}
             {...(columnProps || {})}
-            className={`column ${columnProps?.className || ""}`}
+            className={cx("column", columnProps?.className || "")}
           >
             {elem}
           </div>
@@ -29,7 +30,7 @@ export const Columns: FC<Props> = ({
       ) : (
         <div
           {...(columnProps || {})}
-          className={`column ${columnProps?.className || ""}`}
+          className={cx("column", columnProps?.className || "")}
         >
           {children}
         </div>

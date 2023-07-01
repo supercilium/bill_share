@@ -1,4 +1,5 @@
 import { FC } from "react";
+import cx from "classnames";
 import { Block } from "../../components";
 import { PartyFormLayout } from "../../components/PartyFormLayout";
 import { FormSettings } from "../../contexts/PartySettingsContext";
@@ -42,22 +43,23 @@ export const PartyTotals: FC<{
         <span className="is-size-6" />
         <span className={sumClassName}>{baseTotal}</span>
         <span
-          className={`is-size-6${
-            partySettings.isDiscountVisible ? "" : " is-invisible"
-          }`}
+          className={cx("is-size-6", {
+            "is-invisible": !partySettings.isDiscountVisible,
+          })}
         />
         <span
-          className={`is-size-6${
-            partySettings.isEquallyVisible ? "" : " is-invisible"
-          }`}
+          className={cx("is-size-6", {
+            "is-invisible": !partySettings.isEquallyVisible,
+          })}
         />
         {party.users ? (
           Object.keys(party.users).map((id) => (
             <span
               key={id}
-              className={`${sumClassName} ${
-                id === currentUser.id ? " has-text-info" : ""
-              }${shouldRotate ? " rotated-text" : ""}`}
+              className={cx(sumClassName, {
+                "has-text-info": id === currentUser.id,
+                "rotated-text": shouldRotate,
+              })}
               // title={`Open detailed view for ${user.name}`}
               // onClick={() => {
               //   setValue("user", user);
@@ -81,24 +83,25 @@ export const PartyTotals: FC<{
         <span className={sumClassName}>{Number(discount || 0).toFixed(2)}</span>
 
         <span
-          className={`${sumClassName}${
-            partySettings.isDiscountVisible ? "" : " is-invisible"
-          }`}
+          className={cx(sumClassName, {
+            "is-invisible": !partySettings.isDiscountVisible,
+          })}
         >
           {totalDiscount.toFixed(2)}
         </span>
         <span
-          className={`${sumClassName}${
-            partySettings.isEquallyVisible ? "" : " is-invisible"
-          }`}
+          className={cx(sumClassName, {
+            "is-invisible": !partySettings.isEquallyVisible,
+          })}
         />
         {party.users ? (
           Object.keys(party.users).map((id) => (
             <span
               key={id}
-              className={`${sumClassName} ${
-                id === currentUser.id ? " has-text-info" : ""
-              }${shouldRotate ? " rotated-text" : ""}`}
+              className={cx(sumClassName, {
+                "has-text-info": id === currentUser.id,
+                "rotated-text": shouldRotate,
+              })}
               // title={`Open detailed view for ${user.name}`}
               // onClick={() => {
               //   setValue("user", user);
@@ -130,16 +133,16 @@ export const PartyTotals: FC<{
         </span>
 
         <span
-          className={`${sumClassName}${
-            partySettings.isDiscountVisible ? "" : " is-invisible"
-          }`}
+          className={cx(sumClassName, {
+            "is-invisible": !partySettings.isDiscountVisible,
+          })}
         >
           {Number(totalDiscount + (discount || 0)).toFixed(2)}
         </span>
         <span
-          className={`${sumClassName}${
-            partySettings.isEquallyVisible ? "" : " is-invisible"
-          }`}
+          className={cx(sumClassName, {
+            "is-invisible": !partySettings.isEquallyVisible,
+          })}
         />
         {party.users ? (
           Object.keys(party.users).map((id) => {
@@ -150,9 +153,10 @@ export const PartyTotals: FC<{
             return (
               <span
                 key={id}
-                className={`${sumClassName} ${
-                  id === currentUser.id ? " has-text-info" : ""
-                }${shouldRotate ? " rotated-text" : ""}`}
+                className={cx(sumClassName, {
+                  "has-text-info": id === currentUser.id,
+                  "rotated-text": shouldRotate,
+                })}
                 // title={`Open detailed view for ${user.name}`}
                 // onClick={() => {
                 //   setValue("user", user);

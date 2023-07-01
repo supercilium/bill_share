@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+import cx from "classnames";
 import "./Notification.scss";
 
 export interface NotificationProps {
@@ -9,7 +10,9 @@ export interface NotificationProps {
 }
 
 export const Notification: FC<NotificationProps> = (props) => {
-  const className = `notification box${props.mode ? ` is-${props.mode}` : ""}`;
+  const className = cx("notification box", {
+    [`is-${props.mode}`]: props.mode,
+  });
   return (
     <div className={className}>
       <button className="delete" onClick={() => props.onClose()}></button>

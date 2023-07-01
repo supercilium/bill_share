@@ -3,6 +3,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Block } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQuery } from "react-query";
+import cx from "classnames";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useUser } from "../../contexts/UserContext";
 import { useNotifications } from "../../contexts/NotificationContext";
@@ -164,11 +165,9 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
                 <div>
                   <button
                     type="submit"
-                    className={
-                      isLoading
-                        ? "button is-primary is-loading"
-                        : "is-primary button"
-                    }
+                    className={cx("is-primary button", {
+                      "is-loading": isLoading,
+                    })}
                     disabled={!isValid || !isDirty || isLoading}
                   >
                     Submit
@@ -176,9 +175,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
                   {avatar && (
                     <button
                       type="button"
-                      className={
-                        isLoading ? "button ml-3 is-loading" : "ml-3 button"
-                      }
+                      className={cx("ml-3 button", { "is-loading": isLoading })}
                       onClick={() => setValue("avatar", undefined)}
                     >
                       Choose another file

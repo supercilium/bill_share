@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+import cx from "classnames";
 import "./Card.scss";
 
 interface CardProps {
@@ -13,12 +14,13 @@ interface CardProps {
   content?: ReactNode;
 }
 
+// write function Card that doing the same as CardA but with using cx from classnames
 export const Card: FC<CardProps> = ({ image, content, card }) => {
   return (
-    <div className={`card${card?.isFullHeight ? " card-fullheight" : ""}`}>
+    <div className={cx("card", { "card-fullheight": card?.isFullHeight })}>
       {image?.imageUrl && (
         <div className="card-image">
-          <figure className={`image ${image.className || "is-4by3"}`}>
+          <figure className={cx("image", image.className || "is-4by3")}>
             <img src={image.imageUrl} alt={image.imageAlt || "It's an image"} />
           </figure>
         </div>

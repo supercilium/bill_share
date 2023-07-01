@@ -1,5 +1,6 @@
 import React, { FC, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
+import cx from "classnames";
 import { Block, Columns, Field } from "../../components";
 import { PartyInterface } from "../../types/party";
 import { useParams } from "react-router";
@@ -125,9 +126,9 @@ export const UserPartyForm: FC<{
                       <span className="is-size-6">Amount</span>
                       <span className="is-size-6">Price</span>
                       <span
-                        className={`is-size-6${
-                          partySettings.isDiscountVisible ? "" : " is-invisible"
-                        }`}
+                        className={cx("is-size-6", {
+                          "is-invisible": !partySettings.isDiscountVisible,
+                        })}
                       >
                         Discount
                         <span className="is-size-7 has-text-grey ml-1">
@@ -239,11 +240,13 @@ export const UserPartyForm: FC<{
                               />
                             </span>
                             <span
-                              className={`is-size-5-touch is-size-4-desktop${
-                                partySettings.isDiscountVisible
-                                  ? ""
-                                  : " is-invisible"
-                              }`}
+                              className={cx(
+                                "is-size-5-touch is-size-4-desktop",
+                                {
+                                  "is-invisible":
+                                    !partySettings.isDiscountVisible,
+                                }
+                              )}
                             >
                               <Field
                                 error={errors.items?.[i]?.discount}
@@ -330,9 +333,10 @@ export const UserPartyForm: FC<{
                   {restItems.map((item) => (
                     <div
                       key={item.id}
-                      className={
-                        item.isMuted ? "has-text-grey" : "is-clickable"
-                      }
+                      className={cx({
+                        "has-text-grey": item.isMuted,
+                        "is-clickable": !item.isMuted,
+                      })}
                       onClick={() =>
                         !item.isMuted && handleChangeUserInItem(item)
                       }

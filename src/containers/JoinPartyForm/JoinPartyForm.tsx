@@ -1,5 +1,6 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import cx from "classnames";
 import { useMutation } from "react-query";
 import { useParams } from "react-router";
 import { Columns, Field } from "../../components";
@@ -84,7 +85,7 @@ export const JoinPartyForm: FC<{
           )}
           <button
             type="submit"
-            className={isLoading ? "button is-loading" : "button"}
+            className={cx("button", { "is-loading": isLoading })}
             disabled={isLoading || !isValid}
           >
             Join party

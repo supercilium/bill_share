@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import cx from "classnames";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterInterface, User } from "../../types/user";
@@ -99,7 +100,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
         />
         <button
           type="submit"
-          className={isLoading ? "button is-loading" : "button"}
+          className={cx("button", { "is-loading": isLoading })}
           disabled={!isValid || !isDirty || isLoading}
         >
           Register

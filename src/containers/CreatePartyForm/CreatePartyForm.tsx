@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { createParty } from "../../__api__/parties";
 import { yupResolver } from "@hookform/resolvers/yup";
+import cx from "classnames";
 import { CreatePartyInterface, PartyInterface } from "../../types/party";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -97,7 +98,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
         />
         <button
           type="submit"
-          className={isLoading ? "button is-loading" : "button"}
+          className={cx("button", { "is-loading": isLoading })}
           disabled={!isValid || !isDirty || isLoading}
         >
           Start party
