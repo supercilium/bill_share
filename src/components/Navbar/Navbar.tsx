@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import cx from "classnames";
 import "./Navbar.scss";
+import { Link } from "react-router-dom";
 
 interface NavbarProps {
   NavbarStartItems?: React.ReactNode;
@@ -32,7 +33,7 @@ export const Navbar: FC<NavbarProps> = ({
         aria-label="main navigation"
       >
         <div className="navbar-brand is-justify-content-space-between">
-          <a href="/" title="Home page" className="navbar-item">
+          <Link to="/" title="Home page" className="navbar-item">
             <span className="is-size-5 has-text-weight-semibold">
               <FontAwesomeIcon
                 className="mr-3"
@@ -45,7 +46,7 @@ export const Navbar: FC<NavbarProps> = ({
               />
               Party Bill Share
             </span>
-          </a>
+          </Link>
           {(NavbarEndItems || NavbarStartItems) && (
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <a

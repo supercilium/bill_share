@@ -9,7 +9,7 @@ import { useQuery } from "react-query";
 import { fetchLogout } from "../__api__/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { fetchUser, sendCode } from "../__api__/users";
+import { sendCode } from "../__api__/users";
 import { useNotifications } from "../contexts/NotificationContext";
 import { ChangeAvatarForm } from "../containers/ChangeAvatarForm";
 
@@ -33,9 +33,6 @@ export const Profile = () => {
       navigate("/");
     },
   });
-  const { data: profile } = useQuery("user", fetchUser, {
-    placeholderData: user,
-  });
   const { refetch: sendConfirmationCode } = useQuery("confirmation", sendCode, {
     retry: false,
     enabled: false,
@@ -54,23 +51,23 @@ export const Profile = () => {
   });
 
   useEffect(() => {
-    if (!profile) {
+    if (!user) {
       navigate("/");
     }
-  }, [navigate, profile]);
+  }, [navigate, user]);
 
   const items: React.ComponentProps<typeof DefinitionList>["items"] = [
     {
       label: LABELS.email,
-      value: profile?.email,
+      value: user?.email,
     },
     {
       label: LABELS.name,
-      value: profile?.name,
+      value: user?.name,
     },
     {
       label: LABELS.isConfirmed,
-      value: profile?.isConfirmed ? null : (
+      value: user?.isConfirmed ? null : (
         <>
           To secure your account please confirm your email address
           <button
@@ -107,7 +104,7 @@ export const Profile = () => {
       Navbar={<Navbar shouldShowAuthButtons={false} />}
       Main={
         <Main>
-          {profile && (
+          {user && (
             <div className="box mt-6">
               <h1 className="title is-3">Account</h1>{" "}
               <div className="columns">

@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 import { Columns } from "../Columns";
 import "./Footer.scss";
+import { Link } from "react-router-dom";
 
 export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -38,9 +39,9 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
         </div>
       </Columns>
       <div className="version-tag px-5 has-text-grey">
-        <a className="is-size-6 has-text-grey" href="/service-agreement">
+        <Link className="is-size-6 has-text-grey" to="/service-agreement">
           Service agreement
-        </a>
+        </Link>
         <span className="is-pulled-right is-size-7">
           V. {process.env.REACT_APP_VERSION}
         </span>

@@ -43,7 +43,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     (data) =>
       createParty(data).then((result) => {
         const party = sortPartyUsers(result, user?.id || "");
-        return Promise.resolve(party as PartyInterface);
+        return Promise.resolve(party);
       }),
     {
       onSuccess: (data) => {

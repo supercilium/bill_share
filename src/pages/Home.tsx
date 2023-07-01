@@ -22,10 +22,9 @@ import { HOW_DOES_IT_WORK } from "../__data__/howItWork";
 import { useNavigate } from "react-router";
 import "./Home.scss";
 
-export const Home = () => {
+const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const { user } = useUser();
-  const { token } = user || {};
   const [activeCase, setActiveCase] = useState<PartiesShowcase>("shared");
   const navigate = useNavigate();
 
@@ -234,7 +233,7 @@ export const Home = () => {
                             if (item.equally) {
                               return (
                                 <span key={id} className="is-size-6">
-                                  {!!itemUsers?.[id] ? "✅" : "❌"}
+                                  {itemUsers?.[id] ? "✅" : "❌"}
                                 </span>
                               );
                             }
@@ -329,7 +328,7 @@ export const Home = () => {
               <div className="columns">
                 <div className="column">
                   <div className="box">
-                    {token ? (
+                    {user ? (
                       <CreatePartyForm />
                     ) : (
                       <>
