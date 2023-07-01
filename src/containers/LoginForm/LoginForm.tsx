@@ -17,9 +17,10 @@ import { setXSRF } from "../../utils/cookie";
 
 interface LoginFormProps {
   onLogin?: () => void;
+  closePopup?: () => void;
 }
 
-export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
+export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
   const {
     setError,
     register,
@@ -59,7 +60,12 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   if (hasForgotPassword) {
-    return <ForgotPasswordForm onReturn={() => setHasForgotPassword(false)} />;
+    return (
+      <ForgotPasswordForm
+        closePopup={closePopup}
+        onReturn={() => setHasForgotPassword(false)}
+      />
+    );
   }
 
   return (

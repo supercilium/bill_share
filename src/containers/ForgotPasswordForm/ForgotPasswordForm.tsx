@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,13 +13,18 @@ import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useNavigate } from "react-router";
 import { setXSRF } from "../../utils/cookie";
+import { getTime } from "../../utils/time";
 
 interface ForgotPasswordFormProps {
   onReturn: () => void;
+  closePopup?: () => void;
 }
+
+const TIMEOUT_BETWEEN_ATTEMPTS = 1000 * 60 * 2;
 
 export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
   onReturn,
+  closePopup,
 }) => {
   const navigate = useNavigate();
   const {
@@ -39,7 +44,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
   >(forgotPassword, {
     onSuccess: () => {
       setXSRF();
-
+      closePopup?.();
       navigate("/reset-password");
     },
     onError: async (error) => {
@@ -51,10 +56,24 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
       }
     },
   });
+  const timeout = useRef<number>();
+  const [blockedTime, setBlockedTime] = useState(0);
+
+  useEffect(() => {
+    if (blockedTime === 0) {
+      clearInterval(timeout.current);
+    }
+  }, [blockedTime]);
+
   const onSubmit: SubmitHandler<ForgotPasswordInterface> = async (data) => {
-    if (!isValid) {
+    if (!isValid || blockedTime) {
       return;
     }
+    setBlockedTime(TIMEOUT_BETWEEN_ATTEMPTS);
+    timeout.current = window.setInterval(() => {
+      setBlockedTime((prev) => prev - 1000);
+    }, 1000);
+
     mutate(data);
   };
 
@@ -79,10 +98,13 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
         <div>
           <button
             type="submit"
-            className={cx("button", { "is-loading": isLoading })}
-            disabled={!isValid || !isDirty || isLoading}
+            className={cx("button", {
+              "is-loading": isLoading,
+              "is-disabled": blockedTime,
+            })}
+            disabled={!isValid || !isDirty || isLoading || blockedTime > 0}
           >
-            Submit
+            {blockedTime ? getTime(blockedTime) : "Submit"}
           </button>
           <button
             onClick={onReturn}

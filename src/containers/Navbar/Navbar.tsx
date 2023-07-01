@@ -160,7 +160,10 @@ export const Navbar: FC<NavbarProps> = ({
 
               {openedPopup === "login" ? (
                 <Block>
-                  <LoginForm onLogin={handleSuccess} />
+                  <LoginForm
+                    closePopup={() => setOpenedPopup(null)}
+                    onLogin={handleSuccess}
+                  />
                 </Block>
               ) : (
                 <Block>
