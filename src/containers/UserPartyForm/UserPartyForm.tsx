@@ -323,7 +323,7 @@ export const UserPartyForm: FC<{
                           </UserFormLayout>
                           {partySettings.isEquallyVisible && (
                             <Field
-                              label=" Calculate item equally"
+                              label=" Share item for all"
                               inputProps={{
                                 type: "checkbox",
                                 ...register(
