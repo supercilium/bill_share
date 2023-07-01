@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
+import cx from "classnames";
 import { useFormContext } from "react-hook-form";
 import { FormSettings } from "../../contexts/PartySettingsContext";
 import { useUISettings } from "../../contexts/UIsettings";
@@ -60,9 +61,9 @@ export const PartyHeader: FC<{
             {sortedUsers.map((one) => {
               return (
                 <li
-                  className={`is-flex styled-tab ${
-                    one.id === partySettings?.user?.id ? "is-active" : ""
-                  }`}
+                  className={cx("is-flex styled-tab", {
+                    "is-active": one.id === partySettings?.user?.id,
+                  })}
                   key={one.id}
                 >
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -83,9 +84,10 @@ export const PartyHeader: FC<{
                       {/* TODO add to all users when their status comes from BE */}
                       {currentUser.id === one.id && (
                         <span
-                          className={`status-dot is-size-3 ${
-                            partySettings ? "has-text-success" : "has-text-gray"
-                          }`}
+                          className={cx(
+                            "status-dot is-size-3",
+                            `has-text-${partySettings ? "success" : "gray"}`
+                          )}
                         >
                           •
                         </span>

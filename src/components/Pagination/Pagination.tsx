@@ -1,4 +1,5 @@
 import { FC } from "react";
+import cx from "classnames";
 import { getPageTitle } from "./utils";
 import "./Pagination.scss";
 
@@ -42,9 +43,9 @@ export const Pagination: FC<PaginationProps> = ({
         <li>
           <button
             onClick={() => onChangePage(1)}
-            className={`pagination-link${
-              activePage === 1 ? " is-current" : ""
-            }`}
+            className={cx("pagination-link", {
+              "is-current": activePage === 1,
+            })}
             aria-label="Goto page 1"
             aria-current={activePage === 1 ? "page" : undefined}
           >
@@ -55,9 +56,9 @@ export const Pagination: FC<PaginationProps> = ({
           typeof page === "number" ? (
             <li key={page}>
               <button
-                className={`pagination-link${
-                  activePage === page ? " is-current" : ""
-                }`}
+                className={cx("pagination-link", {
+                  "is-current": activePage === page,
+                })}
                 aria-label={`Goto page ${page}`}
                 onClick={() => onChangePage(page)}
                 aria-current={activePage === page ? "page" : undefined}
@@ -73,9 +74,9 @@ export const Pagination: FC<PaginationProps> = ({
         )}
         <li>
           <button
-            className={`pagination-link${
-              activePage === size ? " is-current" : ""
-            }`}
+            className={cx("pagination-link", {
+              "is-current": activePage === size,
+            })}
             aria-label={`Goto page ${size}`}
             aria-current={activePage === size ? "page" : undefined}
             onClick={() => onChangePage(size)}

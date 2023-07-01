@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
+import cx from "classnames";
 import { Block, Field } from "../../components";
 import { Item } from "../../types/item";
 import { PartyInterface } from "../../types/party";
@@ -98,9 +99,9 @@ export const PartyForm: FC<{
           Discount<span className="is-size-7 has-text-grey ml-1">(%)</span>
         </span>
         <span
-          className={`is-size-6${
-            partySettings.isEquallyVisible ? "" : " is-invisible"
-          }`}
+          className={cx("is-size-6", {
+            "is-invisible": !partySettings.isEquallyVisible,
+          })}
         >
           Is shared
         </span>
@@ -110,9 +111,9 @@ export const PartyForm: FC<{
             return (
               <div className="user-column-title" key={user.id}>
                 <span
-                  className={`text-overflow-hidden is-clickable is-size-6${
-                    isCurrentUser ? " has-text-info" : ""
-                  }`}
+                  className={cx("is-size-6 text-overflow-hidden is-clickable", {
+                    "has-text-info": isCurrentUser,
+                  })}
                   title={`Open detailed view for ${user.name}`}
                   onClick={() => {
                     setValue("user", user);
@@ -124,7 +125,7 @@ export const PartyForm: FC<{
                 {user.id === party.owner.id && (
                   <i>
                     <FontAwesomeIcon
-                      className={isCurrentUser ? " has-text-info" : ""}
+                      className={cx({ "has-text-info": isCurrentUser })}
                       icon="crown"
                       size="2xs"
                       title="Master of the party"
@@ -216,9 +217,9 @@ export const PartyForm: FC<{
                 />
               </span>
               <span
-                className={`is-size-4${
-                  partySettings.isDiscountVisible ? "" : " is-invisible"
-                }`}
+                className={cx("is-size-4", {
+                  "is-invisible": !partySettings.isDiscountVisible,
+                })}
               >
                 <Field
                   error={errors.items?.[i]?.discount}
@@ -242,9 +243,9 @@ export const PartyForm: FC<{
                 />
               </span>
               <div
-                className={`checkbox-wrapper${
-                  partySettings.isEquallyVisible ? "" : " is-invisible"
-                }`}
+                className={cx("checkbox-wrapper", {
+                  "is-invisible": !partySettings.isEquallyVisible,
+                })}
               >
                 <input
                   type="checkbox"

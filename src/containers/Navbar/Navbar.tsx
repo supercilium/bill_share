@@ -2,6 +2,7 @@ import { FC, useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
+import cx from "classnames";
 import { useUser } from "../../contexts/UserContext";
 import { Navbar as NavbarUI } from "../../components/Navbar";
 import { fetchLogout } from "../../__api__/auth";
@@ -57,23 +58,23 @@ export const Navbar: FC<NavbarProps> = ({
         <a className="navbar-link">{user.name}</a>
 
         <div
-          className={`navbar-dropdown${
-            navbarProps?.isTransparent ? " is-boxed has-background-dark" : ""
-          }`}
+          className={cx("navbar-dropdown", {
+            "is-boxed has-background-dark": navbarProps?.isTransparent,
+          })}
         >
           <Link
             to="/dashboard"
-            className={`navbar-item${
-              pathname === "/dashboard" ? " is-active" : ""
-            }`}
+            className={cx("navbar-item", {
+              "is-active": pathname === "/dashboard",
+            })}
           >
             Dashboard
           </Link>
           <Link
             to="/profile"
-            className={`navbar-item${
-              pathname === "/profile" ? " is-active" : ""
-            }`}
+            className={cx("navbar-item", {
+              "is-active": pathname === "/profile",
+            })}
           >
             My account
           </Link>
@@ -138,16 +139,16 @@ export const Navbar: FC<NavbarProps> = ({
             <div className="box has-background-white">
               <div className="tabs is-large">
                 <ul>
-                  <li className={openedPopup === "login" ? "is-active" : ""}>
+                  <li className={cx({ "is-active": openedPopup === "login" })}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a role="button" onClick={() => setOpenedPopup("login")}>
                       Log in
                     </a>
                   </li>
                   <li
-                    className={
-                      openedPopup === "registration" ? "is-active" : ""
-                    }
+                    className={cx({
+                      "is-active": openedPopup === "registration",
+                    })}
                   >
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a onClick={() => setOpenedPopup("registration")}>

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
+import cx from "classnames";
 import "./Navbar.scss";
 
 interface NavbarProps {
@@ -24,9 +25,9 @@ export const Navbar: FC<NavbarProps> = ({
   }`;
 
   return (
-    <div className={navbarProps?.isFixed ? "sticky-navbar" : ""}>
+    <div className={cx({ "sticky-navbar": navbarProps?.isFixed })}>
       <nav
-        className={`navbar${navbarClassName || ""}`}
+        className={cx(`navbar${navbarClassName || ""}`)}
         role="navigation"
         aria-label="main navigation"
       >
@@ -49,7 +50,7 @@ export const Navbar: FC<NavbarProps> = ({
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <a
               role="button"
-              className={`navbar-burger${isOpened ? " is-active" : ""}`}
+              className={cx("navbar-burger", { "is-active": isOpened })}
               aria-label="menu"
               aria-expanded="false"
               data-target="navbarBasicExample"
@@ -62,7 +63,7 @@ export const Navbar: FC<NavbarProps> = ({
           )}
         </div>
 
-        <div className={`navbar-menu${isOpened ? " is-active" : ""}`}>
+        <div className={cx("navbar-menu", { "is-active": isOpened })}>
           <div className="navbar-start">{NavbarStartItems}</div>
 
           <div className="navbar-end">

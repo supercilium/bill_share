@@ -1,4 +1,5 @@
 import { DetailedHTMLProps, FC, HTMLAttributes, ReactNode } from "react";
+import cx from "classnames";
 import "./UserFormLayout.scss";
 
 interface UserFormLayoutProps
@@ -9,14 +10,10 @@ interface UserFormLayoutProps
 export const UserFormLayout: FC<UserFormLayoutProps> = ({
   children,
   className,
-
   ...props
 }) => {
   return (
-    <div
-      {...props}
-      className={`${className ? className : ""} user-form-layout`}
-    >
+    <div {...props} className={cx(className, "user-form-layout")}>
       {children}
     </div>
   );

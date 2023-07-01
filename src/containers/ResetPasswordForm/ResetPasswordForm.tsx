@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import cx from "classnames";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ResetPasswordInterface, User } from "../../types/user";
@@ -111,7 +112,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
         <div>
           <button
             type="submit"
-            className={isLoading ? "button is-loading" : "button"}
+            className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
             Submit

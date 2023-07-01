@@ -5,6 +5,7 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import cx from "classnames";
 import "./PartyFormLayout.scss";
 
 interface PartyFormLayoutProps
@@ -44,10 +45,7 @@ export const PartyFormLayout: FC<PartyFormLayoutProps> = ({
   }, [amountOfUsers, isDiscountVisible, isEquallyVisible]);
 
   return (
-    <div
-      {...props}
-      className={`${className ? className : ""} party-form-layout`}
-    >
+    <div {...props} className={cx(className, "party-form-layout")}>
       {children}
     </div>
   );

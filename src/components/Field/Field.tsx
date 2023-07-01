@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import cx from "classnames";
 
 const getBulmaInputClassName = (
   type: React.InputHTMLAttributes<HTMLInputElement>["type"]
@@ -44,12 +45,12 @@ export const Field: FC<{
 
   if (type === "radio" && Array.isArray(inputProps.value)) {
     return (
-      <div className="field">
-        <div className="control">
+      <div className={cx("field")}>
+        <div className={cx("control")}>
           {inputProps.value.map((value, i) => (
             <React.Fragment key={value}>
               {labels && (
-                <label className={`${classNameLabel} mr-2`}>
+                <label className={cx(classNameLabel, "mr-2")}>
                   <input {...inputProps} value={value} />
                   {labels?.[i]}
                 </label>
@@ -61,30 +62,32 @@ export const Field: FC<{
     );
   }
   return (
-    <div className="field">
+    <div className={cx("field")}>
       {label && type !== "checkbox" && (
-        <label htmlFor={inputProps.name} className={classNameLabel}>
+        <label htmlFor={inputProps.name} className={cx(classNameLabel)}>
           {label}
         </label>
       )}
-      <div className="control">
+      <div className={cx("control")}>
         {(!label || type !== "checkbox") && (
           <input
-            className={`${classNameInput}${error ? " is-danger" : ""}`}
+            className={cx(classNameInput, { "is-danger": error })}
             {...inputProps}
           />
         )}
         {label && type === "checkbox" && (
-          <label className={classNameLabel}>
+          <label className={cx(classNameLabel)}>
             <input
-              className={`${classNameInput}${error ? " is-danger" : ""}`}
+              className={cx(classNameInput, { "is-danger": error })}
               {...inputProps}
             />
             {label}
           </label>
         )}
       </div>
-      {error?.message && <p className="help is-danger">{error?.message}</p>}
+      {error?.message && (
+        <p className={cx("help", "is-danger")}>{error?.message}</p>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
+import cx from "classnames";
 import { ForgotPasswordInterface } from "../../types/user";
 import { forgotPassword } from "../../__api__/auth";
 import {
@@ -78,7 +79,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
         <div>
           <button
             type="submit"
-            className={isLoading ? "button is-loading" : "button"}
+            className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
             Submit

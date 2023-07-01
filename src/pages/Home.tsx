@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { Columns, Footer } from "../components";
 import { LoginForm } from "../containers/LoginForm";
 import { RegisterForm } from "../containers/RegisterForm";
@@ -82,7 +83,7 @@ export const Home = () => {
                     (key) => (
                       <li
                         key={key}
-                        className={activeCase === key ? "is-active" : ""}
+                        className={cx({ "is-active": activeCase === key })}
                       >
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <a onClick={() => setActiveCase(key)}>
@@ -150,21 +151,17 @@ export const Home = () => {
                       <span className="is-size-6 has-text-grey">Amount</span>
                       <span className="is-size-6 has-text-grey">Price</span>
                       <span
-                        className={`is-size-6 has-text-grey${
-                          partyLayoutProps.isDiscountVisible
-                            ? ""
-                            : " is-invisible"
-                        }`}
+                        className={cx("is-size-6 has-text-grey", {
+                          "is-invisible": !partyLayoutProps.isDiscountVisible,
+                        })}
                       >
                         Discount
                         <span className="is-size-7 ml-1">(%)</span>
                       </span>
                       <span
-                        className={`is-size-6 has-text-grey${
-                          partyLayoutProps.isEquallyVisible
-                            ? ""
-                            : " is-invisible"
-                        }`}
+                        className={cx("is-size-6 has-text-grey", {
+                          "is-invisible": !partyLayoutProps.isEquallyVisible,
+                        })}
                       >
                         Is shared
                       </span>
@@ -174,9 +171,10 @@ export const Home = () => {
                           return (
                             <div key={user.id} className="user-column-title">
                               <span
-                                className={`text-overflow-hidden is-size-6${
-                                  isCurrentUser ? " has-text-info" : ""
-                                }`}
+                                className={cx(
+                                  "text-overflow-hidden is-size-6",
+                                  { "has-text-info": isCurrentUser }
+                                )}
                                 title={user.name}
                               >
                                 {user.name}
@@ -184,9 +182,9 @@ export const Home = () => {
                               {user.id === party.owner.id && (
                                 <i>
                                   <FontAwesomeIcon
-                                    className={
-                                      isCurrentUser ? " has-text-info" : ""
-                                    }
+                                    className={cx({
+                                      "has-text-info": isCurrentUser,
+                                    })}
                                     icon="crown"
                                     size="2xs"
                                     title="Master of the party"
@@ -216,22 +214,19 @@ export const Home = () => {
                             {item.price.toFixed(2)}
                           </span>
                           <span
-                            className={`is-size-6${
-                              item.discount ? "" : " has-text-grey-light"
-                            }${
-                              partyLayoutProps.isDiscountVisible
-                                ? ""
-                                : " is-invisible"
-                            }`}
+                            className={cx("is-size-6", {
+                              "is-invisible":
+                                !partyLayoutProps.isDiscountVisible,
+                              "has-text-grey-light": !item.discount,
+                            })}
                           >
                             {item.discount?.toFixed(2)}
                           </span>
                           <span
-                            className={`is-size-6${
-                              partyLayoutProps.isEquallyVisible
-                                ? ""
-                                : " is-invisible"
-                            }`}
+                            className={cx("is-size-6", {
+                              "is-invisible":
+                                !partyLayoutProps.isEquallyVisible,
+                            })}
                           >
                             {item.equally ? "✅" : "❌"}
                           </span>
@@ -247,11 +242,10 @@ export const Home = () => {
                             return (
                               <div key={id}>
                                 <span
-                                  className={`is-size-6${
-                                    itemUsers[id]?.value
-                                      ? ""
-                                      : " has-text-grey-light"
-                                  }`}
+                                  className={cx("is-size-6", {
+                                    "has-text-grey-light":
+                                      !itemUsers[id]?.value,
+                                  })}
                                 >
                                   {itemUsers[id]?.value || 0}
                                 </span>
@@ -293,7 +287,7 @@ export const Home = () => {
               </p>
               <div className="step-grid">
                 {HOW_DOES_IT_WORK.map((item, i) => (
-                  <div key={i} className={`step-grid-item-${i + 1}`}>
+                  <div key={i} className={cx(`step-grid-item-${i + 1}`)}>
                     <p className="subtitle is-size-5 mb-5">
                       <i className="is-size-2 has-text-primary party-step mr-3">
                         {i + 1}
@@ -342,9 +336,9 @@ export const Home = () => {
                         <div className="tabs is-large">
                           <ul>
                             <li
-                              className={
-                                activeTab === "login" ? "is-active" : ""
-                              }
+                              className={cx({
+                                "is-active": activeTab === "login",
+                              })}
                             >
                               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                               <a onClick={() => setActiveTab("login")}>
@@ -352,9 +346,9 @@ export const Home = () => {
                               </a>
                             </li>
                             <li
-                              className={
-                                activeTab === "register" ? "is-active" : ""
-                              }
+                              className={cx({
+                                "is-active": activeTab === "register",
+                              })}
                             >
                               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                               <a onClick={() => setActiveTab("register")}>

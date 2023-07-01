@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import copy from "copy-to-clipboard";
 import { FC, useEffect, useState } from "react";
+import cx from "classnames";
 import "./CopyButton.scss";
 
 interface CopyButtonProps {
@@ -26,14 +27,14 @@ export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
   return (
     <button
       title="Copy link to the party"
-      className="button is-plain is-flex is-align-items-center"
+      className={cx("button", "is-plain", "is-flex", "is-align-items-center")}
       onClick={() => {
         const result = copy(window.location.href);
         setIsCopied(result);
       }}
     >
-      <span className="is-size-3 mr-2 has-text-black">{title}</span>
-      <span className={`copy-button-icon${isCopied ? " copied" : ""}`}>
+      <span className={cx("is-size-3", "mr-2", "has-text-black")}>{title}</span>
+      <span className={cx("copy-button-icon", { copied: isCopied })}>
         <FontAwesomeIcon
           size="lg"
           color={isCopied ? "hsl(141, 71%, 48%)" : "hsl(217, 71%, 53%)"}

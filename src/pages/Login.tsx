@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { Columns, Header, Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { LoginForm } from "../containers/LoginForm";
@@ -29,11 +30,11 @@ export const Login = () => {
         <Header>
           <div className="tabs is-large">
             <ul>
-              <li className={activeTab === "login" ? "is-active" : ""}>
+              <li className={cx({ "is-active": activeTab === "login" })}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a onClick={() => setActiveTab("login")}>Log in</a>
               </li>
-              <li className={activeTab === "register" ? "is-active" : ""}>
+              <li className={cx({ "is-active": activeTab === "register" })}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a onClick={() => setActiveTab("register")}>Register</a>
               </li>
