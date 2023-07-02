@@ -2,11 +2,14 @@ $userFormGridTemplate: 200px 60px 90px;
 
 :root {
   --discount-column-user: 85px;
+  --amount-column-user: 65px;
 }
 
 .user-form-layout {
   display: grid;
-  grid-template-columns: $userFormGridTemplate var(--discount-column-user) 3rem;
+  grid-template-columns:
+    200px var(--amount-column-user) 90px var(--discount-column-user)
+    3rem;
   gap: 16px;
   width: fit-content;
   padding-right: 60px;

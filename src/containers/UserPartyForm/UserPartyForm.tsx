@@ -20,6 +20,7 @@ import { UserFormLayout } from "../../components/UserFormLayout";
 import "./UserPartyForm.scss";
 
 const DISCOUNT_COL_WIDTH = "85px";
+const AMOUNT_COL_WIDTH = "110px";
 
 export const UserPartyForm: FC<{
   party: PartyInterface;
@@ -41,6 +42,15 @@ export const UserPartyForm: FC<{
       );
     });
   }, [partySettings.isDiscountVisible]);
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      (document.querySelector(":root") as HTMLElement)?.style?.setProperty(
+        "--amount-column-user",
+        party.items?.some((item) => !item.equally) ? AMOUNT_COL_WIDTH : "65px"
+      );
+    });
+  }, [party]);
 
   if (!partyId) {
     return <EmptyPartyLayout />;
@@ -188,45 +198,63 @@ export const UserPartyForm: FC<{
                             </span>
                             <span className="is-size-5-touch is-size-4-desktop">
                               {!item.equally ? (
-                                <Field
-                                  error={
-                                    errors.items?.[item.originalIndex]?.users?.[
-                                      userId
-                                    ]?.value
-                                  }
-                                  onEnter={() => {
-                                    const value = +watchParty(
-                                      `items.${item.originalIndex}.users.${userId}.value`
-                                    );
-                                    if (item.users[userId].value === value) {
-                                      return;
-                                    }
-                                    handleUpdateUserItem({
-                                      itemId: item.id,
-                                      value: value,
-                                    });
-                                  }}
-                                  inputProps={{
-                                    type: "number",
-                                    min: 0,
-                                    ...register(
-                                      `items.${item.originalIndex}.users.${userId}.value`
-                                    ),
-                                    onBlur: ({ target }) => {
-                                      if (
-                                        +target.value ===
-                                        item.users[userId].value
-                                      ) {
-                                        return new Promise(() => {});
+                                <span className="is-flex is-align-items-center">
+                                  <div>
+                                    <Field
+                                      error={
+                                        errors.items?.[item.originalIndex]
+                                          ?.users?.[userId]?.value
                                       }
+                                      onEnter={() => {
+                                        const value = +watchParty(
+                                          `items.${item.originalIndex}.users.${userId}.value`
+                                        );
+                                        if (
+                                          item.users[userId].value === value
+                                        ) {
+                                          return;
+                                        }
+                                        handleUpdateUserItem({
+                                          itemId: item.id,
+                                          value: value,
+                                        });
+                                      }}
+                                      inputProps={{
+                                        type: "number",
+                                        min: 0,
+                                        ...register(
+                                          `items.${item.originalIndex}.users.${userId}.value`
+                                        ),
+                                        onBlur: ({ target }) => {
+                                          if (
+                                            +target.value ===
+                                            item.users[userId].value
+                                          ) {
+                                            return new Promise(() => {});
+                                          }
 
-                                      return handleUpdateUserItem({
+                                          return handleUpdateUserItem({
+                                            itemId: item.id,
+                                            value: +target.value,
+                                          });
+                                        },
+                                      }}
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="button ml-2 is-primary is-small is-rounded pl-2 pr-2"
+                                    title="One more, please!"
+                                    onClick={() =>
+                                      handleUpdateUserItem({
                                         itemId: item.id,
-                                        value: +target.value,
-                                      });
-                                    },
-                                  }}
-                                />
+                                        value: item.users[userId].value + 1,
+                                      })
+                                    }
+                                  >
+                                    +1
+                                  </button>
+                                </span>
                               ) : (
                                 <span className="has-text-grey-light is-size-6">
                                   {`${item.amount}${
