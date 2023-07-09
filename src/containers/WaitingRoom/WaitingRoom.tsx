@@ -9,13 +9,18 @@ import { GUEST_KEY } from "../JoinPartyForm/JoinPartyForm";
 interface WaitingRoomProps {
   userId: string;
   partyId: string;
+  onSuccess: () => void;
 }
 
 interface CheckPartyConfirmedResponse {
   success: boolean;
 }
 
-export const WaitingRoom: FC<WaitingRoomProps> = ({ userId, partyId }) => {
+export const WaitingRoom: FC<WaitingRoomProps> = ({
+  userId,
+  partyId,
+  onSuccess,
+}) => {
   const navigate = useNavigate();
 
   const guestQuery = useQuery<
@@ -32,12 +37,12 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({ userId, partyId }) => {
     {
       refetchInterval: (data, query) => {
         return !data?.success || query.state.error?.status === 400
-          ? 10000
+          ? 1000
           : false;
       },
       onSuccess: (data) => {
         if (data.success) {
-          navigate(`/party/${partyId}`);
+          onSuccess();
         }
       },
       onError: (error) => {

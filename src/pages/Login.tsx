@@ -11,7 +11,7 @@ import "./Login.scss";
 
 export const Login = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { search } = useLocation();
   const navigate = useNavigate();
   const returnPath = new URLSearchParams(search).get("returnPath");
@@ -70,7 +70,12 @@ export const Login = () => {
                   <p className="has-text-grey-dark is-size-5 mb-3">
                     Join as a guest
                   </p>
-                  <JoinPartyForm onSuccess={() => navigate(returnPath)} />
+                  <JoinPartyForm
+                    onSuccess={(data) => {
+                      setUser(data);
+                      navigate(returnPath);
+                    }}
+                  />
                 </div>
               </div>
             )}

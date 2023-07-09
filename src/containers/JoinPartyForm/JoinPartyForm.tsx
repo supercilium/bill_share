@@ -106,7 +106,18 @@ export const JoinPartyForm: FC<{
   };
 
   if (isInWaitingRoom && guest?.id && partyFromSearch) {
-    return <WaitingRoom userId={guest.id} partyId={partyFromSearch} />;
+    return (
+      <WaitingRoom
+        onSuccess={() => {
+          window.localStorage.removeItem(GUEST_KEY);
+          setUser(guest);
+          setGuest(null);
+          goToWaitingRoom(false);
+        }}
+        userId={guest.id}
+        partyId={partyFromSearch}
+      />
+    );
   }
 
   return (

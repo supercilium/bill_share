@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useMemo } from "react";
+import React, { FC, useContext, useEffect, useMemo } from "react";
 import { User } from "../types/user";
 import { useQuery, useQueryClient } from "react-query";
 import { fetchUser } from "../__api__/users";
