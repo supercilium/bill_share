@@ -36,9 +36,10 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({
       }),
     {
       refetchInterval: (data, query) => {
-        return !data?.success || query.state.error?.status === 400
-          ? 1000
-          : false;
+        if (query.state.error?.status === 400) {
+          return false;
+        }
+        return !data?.success ? 1000 : false;
       },
       onSuccess: (data) => {
         if (data.success) {
