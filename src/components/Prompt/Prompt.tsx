@@ -2,6 +2,7 @@ import { FC, ReactNode } from "react";
 import "./Prompt.scss";
 
 export interface PromptProps {
+  id: string;
   title?: ReactNode;
   text: ReactNode;
   onConfirm: () => void;

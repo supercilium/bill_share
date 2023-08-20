@@ -2,9 +2,9 @@ import React, { FC, useContext, useMemo, useState } from "react";
 import { PromptProps } from "../components/Prompt/Prompt";
 
 interface PromptContextInterface {
-  prompts?: PromptProps;
-  addPrompt: React.Dispatch<React.SetStateAction<PromptProps | undefined>>;
-  removePrompt: () => void;
+  prompts?: PromptProps[];
+  addPrompt: (prompt: PromptProps) => void;
+  removePrompt: (id: string) => void;
 }
 
 const PromptContext = React.createContext<PromptContextInterface>({
@@ -16,13 +16,15 @@ const PromptContext = React.createContext<PromptContextInterface>({
 export const PromptProvider: FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [prompts, setPrompt] = useState<PromptProps>();
+  const [prompts, setPrompt] = useState<PromptProps[]>([]);
 
   const value = useMemo(
     () => ({
       prompts,
-      addPrompt: setPrompt,
-      removePrompt: () => setPrompt(undefined),
+      addPrompt: (newPrompt: PromptProps) =>
+        setPrompt((prev) => [...prev, newPrompt]),
+      removePrompt: (id: string) =>
+        setPrompt((prev) => prev?.filter((prompt) => prompt.id !== id)),
     }),
     [prompts, setPrompt]
   );

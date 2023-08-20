@@ -10,7 +10,11 @@ export const PromptList: FC<PromptListProps> = (props) => {
 
   return (
     <div className="prompts-container">
-      {prompts ? <Prompt {...prompts} /> : null}
+      {prompts?.length
+        ? prompts.map((item) => {
+            return <Prompt key={item.id} {...item} />;
+          })
+        : null}
     </div>
   );
 };

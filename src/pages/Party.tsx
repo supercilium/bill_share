@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
+import uuid from "uuidv4";
 import { Aside, Columns, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
@@ -124,9 +125,6 @@ export const Party = () => {
     CreateUserDTO,
     unknown
   >(createUser, {
-    onSuccess: () => {
-      removePrompt();
-    },
     onError: async (error) => {
       if (error.status === 401) {
         setUser(null);
@@ -162,11 +160,15 @@ export const Party = () => {
           return;
         }
         if (data.type === "confirm guest addition") {
+          const id = uuid();
+
           addPrompt({
             title: `${data.eventData?.userName} wants to join your party.`,
             text: "Please confirm",
             confirmLabel: "Ok, allow",
+            id,
             onConfirm: () => {
+              removePrompt(id);
               data.eventData?.userId &&
                 mutateUser({
                   userId: data.eventData.userId,
@@ -181,7 +183,7 @@ export const Party = () => {
                   partyId: partyId as string,
                   userId: data.eventData?.userId,
                 });
-              removePrompt();
+              removePrompt(id);
             },
             cancelLabel: "No, reject",
           });
