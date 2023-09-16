@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 
 export const IS_PARTY_HINTS_HIDDEN = "IS_PARTY_HINTS_HIDDEN";
 
@@ -23,12 +23,15 @@ export const UISettingsProvider: FC<{
   const [areHintsVisible, setHintsVisibility] = useState(
     !localStorage.getItem(IS_PARTY_HINTS_HIDDEN)
   );
-  const value = {
-    isAsideVisible,
-    areHintsVisible,
-    setAsideVisibility,
-    setHintsVisibility,
-  };
+  const value = useMemo(
+    () => ({
+      isAsideVisible,
+      areHintsVisible,
+      setAsideVisibility,
+      setHintsVisibility,
+    }),
+    [isAsideVisible, areHintsVisible, setAsideVisibility, setHintsVisibility]
+  );
 
   useEffect(() => {
     if (isAsideVisible) {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { Aside, Header, Main } from "../components";
+import uuid from "uuidv4";
+import { Aside, Columns, Header, Main } from "../components";
 import { HeroLayout } from "../layouts/heroLayout";
 import { PlainLayout } from "../layouts/plain";
 import { getPartyById } from "../__api__/parties";
@@ -14,16 +15,23 @@ import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
 import { Navbar } from "../containers/Navbar";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useUser } from "../contexts/UserContext";
 import { PartyInterface } from "../types/party";
 import { useLogout } from "../hooks/useLogout";
 import { EventResponseDTO, PartyEvents } from "../types/events";
-import { useNotifications } from "../contexts/NotificationContext";
+import {
+  useNotifications,
+  Notification,
+} from "../contexts/NotificationContext";
 import { CopyButton } from "../containers/CopyButton";
 import { Transport } from "../services/transport";
 import { SOCKET_STATE } from "../services/constants";
 import { sortPartyUsers } from "../utils/sort";
+import { usePrompts } from "../contexts/PromptContext";
+import { CreateUserDTO, createUser } from "../__api__/users";
+import { ErrorRequest } from "../__api__/helpers";
+import { GUEST_KEY } from "../containers/JoinPartyForm/JoinPartyForm";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -41,16 +49,39 @@ const mapEventToText: Partial<
   "remove item": "removed",
 };
 
+const getAlertData = (event: EventResponseDTO): Notification | null => {
+  if (event.type === "error") {
+    return { text: event.message, mode: "danger" };
+  }
+  if (EVENTS_SHOULD_NOTIFY.includes(event.type)) {
+    if (!event.eventData?.itemName) {
+      return {
+        mode: "info",
+        text: `${mapEventToText[event.type]}: ${event.eventData?.userName}`,
+      };
+    } else {
+      return {
+        mode: "info",
+        text: `${event.eventData?.userName} ${mapEventToText[event.type]} ${
+          event.eventData?.itemName
+        }`,
+      };
+    }
+  }
+  return null;
+};
+
 export const Party = () => {
   const { partyId } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const { addAlert } = useNotifications();
+  const { addPrompt, removePrompt } = usePrompts();
 
   const [socketState, setSocketState] = useState<number>();
   const [currentUser, setCurrentUser] = useState<User>(
-    JSON.parse(localStorage.getItem("user") || "{}") || {}
+    JSON.parse(localStorage.getItem("user") ?? "{}") || {}
   );
 
   const queryClient = useQueryClient();
@@ -71,8 +102,11 @@ export const Party = () => {
             partyId as string
           );
         }
+        if (window.localStorage.getItem(GUEST_KEY)) {
+          window.localStorage.removeItem(GUEST_KEY);
+        }
         const party = sortPartyUsers(result, user?.id || "");
-        return Promise.resolve(party as PartyInterface);
+        return Promise.resolve(party);
       }),
     {
       retry: false,
@@ -85,20 +119,34 @@ export const Party = () => {
     }
   );
   const isNoUser = error?.status === 403;
+  const { mutate: mutateUser } = useMutation<
+    User,
+    ErrorRequest,
+    CreateUserDTO,
+    unknown
+  >(createUser, {
+    onError: async (error) => {
+      if (error.status === 401) {
+        setUser(null);
+      }
+      if (error) {
+        addAlert({ mode: "danger", text: "Ooops..." });
+      }
+    },
+  });
 
   const eventHandler = useCallback(
     (data: EventResponseDTO) => {
       try {
-        if (data.type === "error") {
-          addAlert({ mode: "danger", text: data.message });
-          return;
-        }
         if (data.type === "connect") {
-          refetch();
-          addAlert({
-            mode: "success",
-            text: `Connected to ${party?.name}`,
-          });
+          refetch().then(
+            () =>
+              addAlert({
+                mode: "success",
+                text: `Connected to ${party?.name}`,
+              }),
+            () => addAlert({ mode: "danger", text: "Unable to connect" })
+          );
           return;
         }
         if (data.type === "change state") {
@@ -111,20 +159,38 @@ export const Party = () => {
           }
           return;
         }
-        if (EVENTS_SHOULD_NOTIFY.includes(data.type)) {
-          if (!data.eventData?.itemName) {
-            addAlert({
-              mode: "info",
-              text: `${mapEventToText[data.type]}: ${data.eventData?.userName}`,
-            });
-          } else {
-            addAlert({
-              mode: "info",
-              text: `${data.eventData?.userName} ${mapEventToText[data.type]} ${
-                data.eventData?.itemName
-              }`,
-            });
-          }
+        if (data.type === "confirm guest addition") {
+          const id = uuid();
+
+          addPrompt({
+            title: `${data.eventData?.userName} wants to join your party.`,
+            text: "Please confirm",
+            confirmLabel: "Ok, allow",
+            id,
+            onConfirm: () => {
+              removePrompt(id);
+              data.eventData?.userId &&
+                mutateUser({
+                  userId: data.eventData.userId,
+                  partyId: partyId as string,
+                });
+            },
+            onCancel: () => {
+              data.eventData?.userId &&
+                Transport.sendEvent({
+                  type: "reject guest addition",
+                  currentUser: user?.id as string,
+                  partyId: partyId as string,
+                  userId: data.eventData?.userId,
+                });
+              removePrompt(id);
+            },
+            cancelLabel: "No, reject",
+          });
+        }
+        const alertData = getAlertData(data);
+        if (alertData) {
+          addAlert(alertData);
         }
         const processedData = sortPartyUsers(data.party, user?.id || "");
         queryClient.setQueryData(["party", partyId, user], processedData);
@@ -133,7 +199,17 @@ export const Party = () => {
         console.error(err);
       }
     },
-    [addAlert, party?.name, partyId, queryClient, refetch, user]
+    [
+      addAlert,
+      addPrompt,
+      mutateUser,
+      party?.name,
+      partyId,
+      queryClient,
+      refetch,
+      removePrompt,
+      user,
+    ]
   );
 
   useEffect(() => {
@@ -162,7 +238,13 @@ export const Party = () => {
   if (isNoUser) {
     return (
       <HeroLayout>
-        <JoinPartyForm onSuccess={onJoiningParty} />
+        <h2 className="title is-2 my-5">Joining the party</h2>
+        <Columns>
+          <div>
+            <JoinPartyForm onSuccess={onJoiningParty} />
+          </div>
+          <div />
+        </Columns>
       </HeroLayout>
     );
   }
@@ -191,7 +273,7 @@ export const Party = () => {
           <p className="subtitle is-flex is-align-items-baseline">
             No connection{" "}
             <button
-              onClick={() => Transport.connect(partyId as string)}
+              onClick={() => Transport.connect(partyId)}
               className="button ml-2"
             >
               re-connect

@@ -1,0 +1,9 @@
+@import "../../../node_modules/bulma/sass/utilities/mixins.sass";
+
+.prompt {
+  max-width: 30rem;
+
+  @include from($tablet) {
+    margin-left: -50%;
+  }
+}

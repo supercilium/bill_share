@@ -15,6 +15,14 @@ export const getParties = async (params: RequestParams) => {
   return data;
 };
 
+export const checkPartyConfirmed = async (params: RequestParams) => {
+  const query = new URLSearchParams(params);
+  const data = await fetchAPI<{ success: boolean }>(
+    `/guests/check-confirmed?${query}`
+  );
+  return data;
+};
+
 export const getPartyById = async (id: string) =>
   fetchAPI<PartyInterfaceDTO>(`/parties/${id}`);
 
