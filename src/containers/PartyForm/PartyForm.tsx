@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParty } from "../../hooks/useParty";
 import { PartyFormLayout } from "../../components/PartyFormLayout";
 import "./PartyForm.scss";
+import { useTranslation } from "react-i18next";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -24,6 +25,7 @@ export const PartyForm: FC<{
   const { isValid, errors } = formState;
   const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
+  const { t } = useTranslation();
 
   if (!party.items.length || !partyId) {
     return <EmptyPartyLayout />;
@@ -89,24 +91,25 @@ export const PartyForm: FC<{
   };
 
   return (
-    <Block title="Full bill">
+    <Block title={t("TITLE_FULL_BILL")}>
       <PartyFormLayout {...partyLayoutProps}>
-        <span className="is-size-6">Item name</span>
-        <span className="is-size-6">Amount</span>
-        <span className="is-size-6">Price</span>
+        <span className="is-size-6">{t("ITEM_NAME")}</span>
+        <span className="is-size-6">{t("AMOUNT")}</span>
+        <span className="is-size-6">{t("PRICE")}</span>
         <span
           className={`is-size-6${
             partySettings.isDiscountVisible ? "" : " is-invisible"
           }`}
         >
-          Discount<span className="is-size-7 has-text-grey ml-1">(%)</span>
+          {t("DISCOUNT")}
+          <span className="is-size-7 has-text-grey ml-1">(%)</span>
         </span>
         <span
           className={cx("is-size-6", {
             "is-invisible": !partySettings.isEquallyVisible,
           })}
         >
-          Is shared
+          {t("IS_SHARED")}
         </span>
         {users ? (
           Object.values(users).map((user) => {
@@ -117,7 +120,7 @@ export const PartyForm: FC<{
                   className={cx("is-size-6 text-overflow-hidden is-clickable", {
                     "has-text-info": isCurrentUser,
                   })}
-                  title={`Open detailed view for ${user.name}`}
+                  title={t("BUTTON_OPEN_USERS_DETAILS", { name: user.name })}
                   onClick={() => {
                     setValue("user", user);
                     setValue("view", "user");
@@ -131,7 +134,7 @@ export const PartyForm: FC<{
                       className={cx({ "has-text-info": isCurrentUser })}
                       icon="crown"
                       size="2xs"
-                      title="Master of the party"
+                      title={t("PARTY_MASTER")}
                     />
                   </i>
                 )}
@@ -157,7 +160,7 @@ export const PartyForm: FC<{
                   <button
                     type="button"
                     className="delete mr-2"
-                    title="Remove item"
+                    title={t("BUTTON_REMOVE_ITEM")}
                     onClick={() => handleRemoveItem(item.id)}
                   />
                 </div>

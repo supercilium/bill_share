@@ -6,6 +6,7 @@ import { FormSettings } from "../../contexts/PartySettingsContext";
 import { useUISettings } from "../../contexts/UIsettings";
 import { PartyInterface } from "../../types/party";
 import "./PartyHeader.scss";
+import { useTranslation } from "react-i18next";
 
 export const PartyHeader: FC<{
   users: PartyInterface["users"];
@@ -13,6 +14,7 @@ export const PartyHeader: FC<{
 }> = ({ users, master }) => {
   const { watch, setValue } = useFormContext<FormSettings>();
   const { setAsideVisibility } = useUISettings();
+  const { t } = useTranslation();
   const partySettings = watch();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
   const sortedUsers = [
@@ -30,7 +32,9 @@ export const PartyHeader: FC<{
           <span className="icon">
             <FontAwesomeIcon icon="sliders" />
           </span>
-          <span className="ml-1 is-hidden-mobile">Bill config</span>
+          <span className="ml-1 is-hidden-mobile">
+            {t("TITLE_BILL_CONFIG")}
+          </span>
         </span>
       </button>
       <div className="styled-tabs">
@@ -54,7 +58,7 @@ export const PartyHeader: FC<{
                   <span className="icon mr-1">
                     <FontAwesomeIcon icon="people-group" />
                   </span>
-                  <span>All</span>
+                  <span>{t("TAB_ALL")}</span>
                 </span>
               </a>
             </li>

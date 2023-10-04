@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import cx from "classnames";
+import { useTranslation } from "react-i18next";
 import { useUser } from "../../contexts/UserContext";
 import { Navbar as NavbarUI } from "../../components/Navbar";
 import { fetchLogout } from "../../__api__/auth";
@@ -27,6 +28,7 @@ export const Navbar: FC<NavbarProps> = ({
   shouldShowAuthButtons = true,
   navbarProps,
 }) => {
+  const { t } = useTranslation();
   const { setUser, user } = useUser();
   const [openedPopup, setOpenedPopup] = useState<
     "login" | "registration" | null
@@ -68,7 +70,7 @@ export const Navbar: FC<NavbarProps> = ({
               "is-active": pathname === "/dashboard",
             })}
           >
-            Dashboard
+            {t("LINK_DASHBOARD")}
           </Link>
           <Link
             to="/profile"
@@ -76,7 +78,7 @@ export const Navbar: FC<NavbarProps> = ({
               "is-active": pathname === "/profile",
             })}
           >
-            My account
+            {t("LINK_MY_ACCOUNT")}
           </Link>
           {/* <a className="navbar-item">Stats</a> */}
           <hr className="navbar-divider" />
@@ -86,12 +88,12 @@ export const Navbar: FC<NavbarProps> = ({
             className="navbar-item"
             href="https://github.com/supercilium/bill_share/issues"
           >
-            Report an issue
+            {t("LINK_REPORT_ISSUE")}
           </a>
         </div>
       </div>
     ),
-    [navbarProps?.isTransparent, pathname]
+    [navbarProps?.isTransparent, pathname, t]
   );
 
   return (
@@ -107,7 +109,7 @@ export const Navbar: FC<NavbarProps> = ({
                     className="mr-3"
                     icon="arrow-right-from-bracket"
                   />
-                  Log out
+                  {t("BUTTON_LOG_OUT")}
                 </button>
               </div>
             </>
@@ -118,13 +120,13 @@ export const Navbar: FC<NavbarProps> = ({
                   onClick={() => setOpenedPopup("registration")}
                   className="button is-primary"
                 >
-                  <strong>Sign up</strong>
+                  <strong>{t("BUTTON_SIGN_UP")}</strong>
                 </button>
                 <button
                   onClick={() => setOpenedPopup("login")}
                   className="button is-light"
                 >
-                  Sign in
+                  {t("BUTTON_SIGN_IN")}
                 </button>
               </div>
             )
@@ -142,7 +144,7 @@ export const Navbar: FC<NavbarProps> = ({
                   <li className={cx({ "is-active": openedPopup === "login" })}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a role="button" onClick={() => setOpenedPopup("login")}>
-                      Log in
+                      {t("BUTTON_LOG_IN")}
                     </a>
                   </li>
                   <li
@@ -152,7 +154,7 @@ export const Navbar: FC<NavbarProps> = ({
                   >
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a onClick={() => setOpenedPopup("registration")}>
-                      Register
+                      {t("BUTTON_REGISTER")}
                     </a>
                   </li>
                 </ul>

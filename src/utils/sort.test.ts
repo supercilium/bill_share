@@ -102,10 +102,16 @@ describe("sortPartyUsers", () => {
         id: "28e0a10c-affc-42b1-8ba9-f737654a97bf",
         createdOn: "2023-04-28T17:24:35.550149",
         users: {
-          "9c5ea836-9b4a-4050-bd29-cfadf045fd55": {
+          "441dc9fd-a3c3-473e-8534-baaf587be9b1": {
+            id: "441dc9fd-a3c3-473e-8534-baaf587be9b1",
+          },
+          "567b52b5-9315-47d5-9264-1603abb49360": {
             id: "9c5ea836-9b4a-4050-bd29-cfadf045fd55",
             name: "ama",
             value: 0,
+          },
+          "9c5ea836-9b4a-4050-bd29-cfadf045fd55": {
+            id: "9c5ea836-9b4a-4050-bd29-cfadf045fd55",
           },
         },
       },
@@ -172,8 +178,14 @@ describe("sortPartyUsers", () => {
         users: {
           "441dc9fd-a3c3-473e-8534-baaf587be9b1": {
             id: "441dc9fd-a3c3-473e-8534-baaf587be9b1",
+          },
+          "567b52b5-9315-47d5-9264-1603abb49360": {
+            id: "441dc9fd-a3c3-473e-8534-baaf587be9b1",
             name: "eee",
             value: 1,
+          },
+          "9c5ea836-9b4a-4050-bd29-cfadf045fd55": {
+            id: "9c5ea836-9b4a-4050-bd29-cfadf045fd55",
           },
         },
       },

@@ -15,6 +15,7 @@ import {
   getValidationErrorsFromREsponse,
   imageSchema,
 } from "../../services/validation";
+import { useTranslation } from "react-i18next";
 
 interface ChangeAvatarFormProps {}
 
@@ -47,6 +48,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
     reset({ avatar: undefined });
     setIsEditing(false);
   };
+  const { t } = useTranslation();
 
   const { mutate, isLoading, error } = useMutation<
     {
@@ -62,7 +64,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
       refetch();
       addAlert({
         mode: "success",
-        text: "Your avatar was updated",
+        text: t("ALERT_INFO_AVATAR_UPDATED"),
       });
     },
     onError: async (error) => {
@@ -105,7 +107,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
           <div className="modal-background"></div>
           <div className="modal-content">
             <div className="box has-background-white">
-              <Block title="Upload your photo">
+              <Block title={t("TITLE_UPLOAD_AVATAR")}>
                 <div className="is-flex is-justify-content-center my-5">
                   {avatar ? (
                     <div>
@@ -145,7 +147,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
                                   <FontAwesomeIcon icon="upload" />
                                 </span>
                                 <span className="file-label">
-                                  Choose a file…
+                                  {t("CHOOSE_FILE")}
                                 </span>
                               </span>
                             </label>
@@ -163,7 +165,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
                     })}
                     disabled={!isValid || !isDirty || isLoading}
                   >
-                    Submit
+                    {t("BUTTON_SUBMIT")}
                   </button>
                   {avatar && (
                     <button
@@ -171,7 +173,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
                       className={cx("ml-3 button", { "is-loading": isLoading })}
                       onClick={() => setValue("avatar", undefined)}
                     >
-                      Choose another file
+                      {t("BUTTON_CHOOSE_ANOTHER_FILE")}
                     </button>
                   )}
                 </div>

@@ -10,6 +10,7 @@ import { PartiesListDTO } from "../../types/party";
 import { ErrorRequest } from "../../__api__/helpers";
 import { deleteParty, getParties } from "../../__api__/parties";
 import "./PartiesList.scss";
+import { useTranslation } from "react-i18next";
 
 interface PartiesListProps {}
 
@@ -20,6 +21,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
   const { user, setUser } = useUser();
   const userId = user?.id;
   const { addAlert } = useNotifications();
+  const { t } = useTranslation();
 
   const { data, status, refetch } = useQuery<
     PartiesListDTO,
@@ -55,7 +57,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
         if (error) {
           addAlert({
             mode: "danger",
-            text: "Party was not deleted due to error",
+            text: t("ALERT_PARTY_DELETION_ERROR"),
           });
         }
       },
@@ -72,7 +74,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
 
   return (
     <div className="panel styled-panel has-background-white">
-      <p className="panel-heading">Your parties</p>
+      <p className="panel-heading">{t("TITLE_PARTIES")}</p>
       {(status === "loading" || isLoading) && (
         <div className="panel-block middle-row is-justify-content-center">
           <Loader />
@@ -80,7 +82,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
       )}
       {status !== "loading" && !parties?.length && (
         <div className="panel-block middle-row is-justify-content-center has-text-grey-light">
-          You have no parties
+          {t("NO_PARTIES")}
         </div>
       )}
 
@@ -95,7 +97,7 @@ export const PartiesList: FC<PartiesListProps> = (props) => {
                   className="mr-2"
                   icon="crown"
                   size="2xs"
-                  title="You are the master of the party"
+                  title={t("PARTY_MASTER_HOVER")}
                 />
               )}
             </i>

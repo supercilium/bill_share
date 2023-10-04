@@ -6,6 +6,7 @@ import { Transport } from "../../services/transport";
 import { addItemSchema } from "../../services/validation";
 import { useState } from "react";
 import "./AddItemForm.scss";
+import { useTranslation } from "react-i18next";
 
 interface ItemCreationInterface {
   name: string;
@@ -45,9 +46,10 @@ export const AddItemForm = () => {
     });
     formHandlers.reset();
   };
+  const { t } = useTranslation();
 
   return (
-    <Block title="Add new item to share">
+    <Block title={t("TITLE_ADD_ITEM_FORM")}>
       <form
         noValidate={true}
         className="add-item-layout mb-3"
@@ -55,27 +57,28 @@ export const AddItemForm = () => {
       >
         <div className="wide-track mb-3">
           <Field
-            label="Item name"
+            label={t("ITEM_NAME")}
             error={errors.name}
             inputProps={{
               type: "text",
-              placeholder: "Enter item name",
+              placeholder: t("LABEL_ITEM_NAME"),
               autoComplete: "item name",
               ...formHandlers.register("name"),
             }}
           />
         </div>
         <Field
-          label="Amount"
+          label={t("AMOUNT")}
           error={errors.amount}
           inputProps={{
             type: "number",
+            placeholder: t("LABEL_AMOUNT"),
             min: 1,
             ...formHandlers.register("amount"),
           }}
         />
         <Field
-          label="Price"
+          label={t("AMOUNT")}
           error={errors.price}
           inputProps={{
             type: "number",
@@ -90,11 +93,11 @@ export const AddItemForm = () => {
           className="button add-item-button mb-3"
           disabled={!isValid || !isDirty}
         >
-          Add item
+          {t("BUTTON_ADD_ITEM")}
         </button>
         <div className="wide-track">
           <Field
-            label=" Share item for all"
+            label={t("LABEL_SHARE_FOR_ALL")}
             inputProps={{
               type: "checkbox",
               ...formHandlers.register("equally"),
@@ -115,7 +118,7 @@ export const AddItemForm = () => {
                   setPriceType(target.value as PriceType)
                 }
               />
-              Enter full price
+              {t("LABEL_FULL_PRICE")}
             </label>
 
             <label className={`radio`}>
@@ -128,7 +131,7 @@ export const AddItemForm = () => {
                   setPriceType(target.value as PriceType)
                 }
               />
-              Enter price per item
+              {t("LABEL_PRICE_PER_ITEM")}
             </label>
           </div>
         </div>

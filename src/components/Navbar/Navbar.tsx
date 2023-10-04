@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
@@ -24,6 +25,7 @@ export const Navbar: FC<NavbarProps> = ({
   const navbarClassName = `${navbarProps?.hasShadow ? " has-shadow" : ""}${
     navbarProps?.isTransparent ? " is-transparent" : ""
   }`;
+  const { t } = useTranslation();
 
   return (
     <div className={cx({ "sticky-navbar": navbarProps?.isFixed })}>
@@ -44,7 +46,7 @@ export const Navbar: FC<NavbarProps> = ({
                 }
                 icon="champagne-glasses"
               />
-              Party Bill Share
+              {t("TITLE_HEADER")}
             </span>
           </Link>
           {(NavbarEndItems || NavbarStartItems) && (

@@ -7,6 +7,7 @@ import { RegisterForm } from "../containers/RegisterForm";
 import { useUser } from "../contexts/UserContext";
 import { useLocation, useNavigate } from "react-router";
 import { JoinPartyForm } from "../containers/JoinPartyForm";
+import { useTranslation } from "react-i18next";
 import "./Login.scss";
 
 export const Login = () => {
@@ -15,6 +16,7 @@ export const Login = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const returnPath = new URLSearchParams(search).get("returnPath");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (user) {
@@ -35,11 +37,15 @@ export const Login = () => {
             <ul>
               <li className={cx({ "is-active": activeTab === "login" })}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a onClick={() => setActiveTab("login")}>Log in</a>
+                <a onClick={() => setActiveTab("login")}>
+                  {t("BUTTON_LOG_IN")}
+                </a>
               </li>
               <li className={cx({ "is-active": activeTab === "register" })}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a onClick={() => setActiveTab("register")}>Register</a>
+                <a onClick={() => setActiveTab("register")}>
+                  {t("BUTTON_REGISTER")}
+                </a>
               </li>
             </ul>
           </div>
@@ -57,7 +63,7 @@ export const Login = () => {
               <div className="box">
                 {returnPath && (
                   <p className="has-text-grey-dark is-size-5 mb-3">
-                    Log in to proceed
+                    {t("TITLE_LOGIN")}
                   </p>
                 )}
                 {activeTab === "login" && <LoginForm />}
@@ -68,7 +74,7 @@ export const Login = () => {
               <div className="full-height">
                 <div className="box full-height">
                   <p className="has-text-grey-dark is-size-5 mb-3">
-                    Join as a guest
+                    {t("TITLE_JOIN_AS_GUEST")}
                   </p>
                   <JoinPartyForm
                     onSuccess={(data) => {

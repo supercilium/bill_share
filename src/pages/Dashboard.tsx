@@ -6,10 +6,12 @@ import { PartiesList } from "../containers/PartiesList";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { CreatePartyForm } from "../containers/CreatePartyForm";
+import { useTranslation } from "react-i18next";
 
 export const Dashboard = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) {
@@ -22,7 +24,9 @@ export const Dashboard = () => {
       Navbar={<Navbar shouldShowAuthButtons={false} />}
       Header={
         <Header>
-          <h1 className="title is-1">Hello, {user?.name}!</h1>
+          <h1 className="title is-1">
+            {t("TITLE_DASHBOARD", { name: user?.name })}
+          </h1>
         </Header>
       }
       Main={

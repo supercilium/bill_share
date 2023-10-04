@@ -5,6 +5,7 @@ import { Loader } from "../../components/Loader";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useNavigate } from "react-router";
 import { GUEST_KEY } from "../JoinPartyForm/JoinPartyForm";
+import { useTranslation } from "react-i18next";
 
 interface WaitingRoomProps {
   userId: string;
@@ -22,6 +23,7 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({
   onSuccess,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const guestQuery = useQuery<
     CheckPartyConfirmedResponse,
@@ -58,7 +60,7 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({
   return (
     <div>
       {!guestQuery.isSuccess && (
-        <p className="is-5 mb-5">Wait until someone confirms your request</p>
+        <p className="is-5 mb-5">{t("TITLE_WAITING_ROOM")}</p>
       )}
       {guestQuery.isLoading && (
         <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
@@ -67,15 +69,12 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({
       )}
       {guestQuery.isSuccess && guestQuery.data?.success && (
         <>
-          <p className="is-5 mb-5">
-            You are confirmed. You will be redirected to the party in a couple
-            of seconds, or you can join by clicking the button
-          </p>
+          <p className="is-5 mb-5">{t("USER_ALLOWED")}</p>
           <button
             className="button is-primary"
             onClick={() => navigate(`/party/${partyId}`)}
           >
-            Join the party
+            {t("BUTTON_JOIN_PARTY")}
           </button>
         </>
       )}
@@ -83,7 +82,7 @@ export const WaitingRoom: FC<WaitingRoomProps> = ({
         <>
           <p className="is-5 mb-5">{guestQuery.error?.message}</p>
           <button className="button is-primary" onClick={() => navigate("/")}>
-            Go to homepage
+            {t("LINK_HOMEPAGE")}
           </button>
         </>
       )}

@@ -1,9 +1,12 @@
 import { FC, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Columns } from "../Columns";
 import "./Footer.scss";
-import { Link } from "react-router-dom";
 
 export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer is-relative">
       {children}
@@ -11,10 +14,10 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
       <Columns>
         <div />
         <div>
-          <p className="is-size-5 mb-2">Your party makers:</p>
+          <p className="is-size-5 mb-2">{t("TITLE_FOOTER_CREDS")}</p>
           <p className="is-size-6 mb-1">
             <a target="_blank" rel="noreferrer" href="https://github.com/Oyns">
-              👷‍♂️ Motivator and data keeper
+              {t("LINK_FOOTER_OYNS")}
             </a>
           </p>
           <p className="is-size-6 mb-1">
@@ -23,7 +26,7 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
               rel="noreferrer"
               href="https://github.com/supercilium"
             >
-              👩‍💻 Visualizer and procrastinator
+              {t("LINK_FOOTER_SUPERCILIUM")}
             </a>
           </p>
           <p className="is-size-6 mb-1">
@@ -32,18 +35,17 @@ export const Footer: FC<{ children: ReactNode }> = ({ children }) => {
               rel="noreferrer"
               href="https://github.com/Ifkeybirf"
             >
-              🥷 benefactor (hosting), bad news deliver (QA), the lord of the
-              dendro-fecal elements (Devops)
+              {t("LINK_FOOTER_IFKEYBIRF")}
             </a>
           </p>
         </div>
       </Columns>
       <div className="version-tag px-5 has-text-grey">
         <Link className="is-size-6 has-text-grey" to="/service-agreement">
-          Service agreement
+          {t("TITLE_FOOTER_SERVICE")}
         </Link>
         <span className="is-pulled-right is-size-7">
-          V. {process.env.REACT_APP_VERSION}
+          {t("VERSION", { version: process.env.REACT_APP_VERSION })}
         </span>
       </div>
     </footer>

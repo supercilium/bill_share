@@ -1,16 +1,14 @@
 import { FC } from "react";
 import { HeroLayout } from "../layouts/heroLayout";
+import { useTranslation } from "react-i18next";
 
 export const ServiceAgreement: FC = () => {
+  const { t } = useTranslation();
   return (
     <HeroLayout>
       <div>
-        <p className="title mb-6">Service Agreement</p>
-        <p className="subtitle">
-          Service is provided in the hope that it will be useful, but WITHOUT
-          ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-          FITNESS FOR A PARTICULAR PURPOSE.
-        </p>
+        <p className="title mb-6">{t("TITLE_SERVICE_AGREEMENT")}</p>
+        <p className="subtitle">{t("SERVICE_AGREEMENT")}</p>
       </div>
     </HeroLayout>
   );

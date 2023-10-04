@@ -2,8 +2,8 @@ import { Item } from "../types/item";
 
 export const getItemParticipants = (item: Item) =>
   item.equally
-    ? Object.values(item.users).filter((user) => user.value >= 0)
-    : Object.values(item.users).filter((user) => user.value > 0);
+    ? Object.values(item.users).filter((user) => user?.value >= 0)
+    : Object.values(item.users).filter((user) => user?.value > 0);
 
 export const getItemBaseTotal = (item: Item, amount: number) =>
   item.price * (amount || 0);
