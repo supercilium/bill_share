@@ -32,6 +32,8 @@ import { usePrompts } from "../contexts/PromptContext";
 import { CreateUserDTO, createUser } from "../__api__/users";
 import { ErrorRequest } from "../__api__/helpers";
 import { GUEST_KEY } from "../containers/JoinPartyForm/JoinPartyForm";
+import { useTranslation } from "react-i18next";
+import i18n from "../services/i18next";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -43,10 +45,10 @@ const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
 const mapEventToText: Partial<
   Record<(typeof EVENTS_SHOULD_NOTIFY)[number], string>
 > = {
-  "add user": "User added",
-  "remove user": "User left",
-  "add item": "added",
-  "remove item": "removed",
+  "add user": "ALERT_INFO_USER_ADDED",
+  "remove user": "ALERT_INFO_USER_LEFT",
+  "add item": "ALERT_INFO_ITEM_ADDED",
+  "remove item": "ALERT_INFO_ITEM_REMOVED",
 };
 
 const getAlertData = (event: EventResponseDTO): Notification | null => {
@@ -57,14 +59,17 @@ const getAlertData = (event: EventResponseDTO): Notification | null => {
     if (!event.eventData?.itemName) {
       return {
         mode: "info",
-        text: `${mapEventToText[event.type]}: ${event.eventData?.userName}`,
+        text: i18n.t(mapEventToText[event.type] as string, {
+          name: event.eventData?.userName,
+        }),
       };
     } else {
       return {
         mode: "info",
-        text: `${event.eventData?.userName} ${mapEventToText[event.type]} ${
-          event.eventData?.itemName
-        }`,
+        text: i18n.t(mapEventToText[event.type] as string, {
+          name: event.eventData?.userName,
+          item: event.eventData?.itemName,
+        }),
       };
     }
   }
@@ -83,6 +88,7 @@ export const Party = () => {
   const [currentUser, setCurrentUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") ?? "{}") || {}
   );
+  const { t } = useTranslation();
 
   const queryClient = useQueryClient();
   const {
@@ -143,9 +149,13 @@ export const Party = () => {
             () =>
               addAlert({
                 mode: "success",
-                text: `Connected to ${party?.name}`,
+                text: t("ALERT_INFO_CONNECTED_TO", { party: party?.name }),
               }),
-            () => addAlert({ mode: "danger", text: "Unable to connect" })
+            () =>
+              addAlert({
+                mode: "danger",
+                text: t("ALERT_ERROR_UNABLE_TO_CONNECT"),
+              })
           );
           return;
         }
@@ -154,7 +164,7 @@ export const Party = () => {
           if (Number(data.message) !== SOCKET_STATE.open) {
             addAlert({
               mode: "danger",
-              text: "Connection is lost",
+              text: t("ALERT_ERROR_UNABLE_TO_CONNECT"),
             });
           }
           return;
@@ -163,9 +173,9 @@ export const Party = () => {
           const id = uuid();
 
           addPrompt({
-            title: `${data.eventData?.userName} wants to join your party.`,
-            text: "Please confirm",
-            confirmLabel: "Ok, allow",
+            title: t("PROMPT_USER_JOINING", { name: data.eventData?.userName }),
+            text: t("PROMPT_USER_JOINING_TEXT"),
+            confirmLabel: t("PROMPT_USER_JOINING_BUTTON_CONFIRM"),
             id,
             onConfirm: () => {
               removePrompt(id);
@@ -185,7 +195,7 @@ export const Party = () => {
                 });
               removePrompt(id);
             },
-            cancelLabel: "No, reject",
+            cancelLabel: t("PROMPT_USER_JOINING_BUTTON_REJECT"),
           });
         }
         const alertData = getAlertData(data);
@@ -209,6 +219,7 @@ export const Party = () => {
       refetch,
       removePrompt,
       user,
+      t,
     ]
   );
 
@@ -238,7 +249,7 @@ export const Party = () => {
   if (isNoUser) {
     return (
       <HeroLayout>
-        <h2 className="title is-2 my-5">Joining the party</h2>
+        <h2 className="title is-2 my-5">{t("TITLE_JOINING_PARTY")}</h2>
         <Columns>
           <div>
             <JoinPartyForm onSuccess={onJoiningParty} />
@@ -253,11 +264,11 @@ export const Party = () => {
     return (
       <HeroLayout>
         <div>
-          <p className="title">Looks like there is no such party</p>
+          <p className="title">{t("TITLE_NO_PARTY")}</p>
           <p className="subtitle is-flex is-align-items-baseline">
-            Try to refresh the page or go to{" "}
+            {t("ERROR_SUBTITLE_NO_PARTY")}
             <a className="button ml-2" href="/">
-              home page
+              {t("LINK_HOME")}
             </a>
           </p>
         </div>
@@ -269,14 +280,14 @@ export const Party = () => {
     return (
       <HeroLayout>
         <div>
-          <p className="title">Ooops! Something went wrong</p>
+          <p className="title">{t("ERROR_DEFAULT_TITLE")}</p>
           <p className="subtitle is-flex is-align-items-baseline">
-            No connection{" "}
+            {t("ERROR_NO_CONNECTION")}
             <button
               onClick={() => Transport.connect(partyId)}
               className="button ml-2"
             >
-              re-connect
+              {t("BUTTON_RECONNECT")}
             </button>
           </p>
         </div>
@@ -306,9 +317,10 @@ export const Party = () => {
           <Header>
             <h2 className="title">
               <CopyButton
-                title={`${
-                  currentUser.name ? `Hello, ${currentUser.name}` : "Hello"
-                }! Welcome to ${party?.name}`}
+                title={t("TITLE_WELCOME_TO_PARTY", {
+                  name: currentUser.name ? `, ${currentUser.name}` : "",
+                  party: party?.name,
+                })}
               />
             </h2>
           </Header>

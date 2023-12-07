@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import cx from "classnames";
+import { useTranslation } from "react-i18next";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginInterface, User } from "../../types/user";
@@ -21,6 +22,8 @@ interface LoginFormProps {
 }
 
 export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
+  const { t } = useTranslation();
+
   const {
     setError,
     register,
@@ -73,7 +76,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
-          label="Enter your email"
+          label={t("LABEL_EMAIL")}
           error={errors.email}
           inputProps={{
             type: "email",
@@ -82,7 +85,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
           }}
         />
         <Field
-          label="Enter your password"
+          label={t("LABEL_PASSWORD")}
           error={errors.password}
           inputProps={{
             type: "password",
@@ -96,14 +99,14 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
             className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
-            Log in
+            {t("BUTTON_LOG_IN")}
           </button>
           <button
             onClick={() => setHasForgotPassword(true)}
             type="button"
             className="button is-ghost ml-4"
           >
-            Forgot password?
+            {t("BUTTON_FORGOT_PASSWORD")}
           </button>
         </div>
       </div>

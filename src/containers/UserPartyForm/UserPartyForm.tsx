@@ -18,6 +18,7 @@ import { useParty } from "../../hooks/useParty";
 import { Transport } from "../../services/transport";
 import { UserFormLayout } from "../../components/UserFormLayout";
 import "./UserPartyForm.scss";
+import { useTranslation } from "react-i18next";
 
 const DISCOUNT_COL_WIDTH = "85px";
 const AMOUNT_COL_WIDTH = "110px";
@@ -33,6 +34,7 @@ export const UserPartyForm: FC<{
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const { t } = useTranslation();
 
   useEffect(() => {
     window.requestAnimationFrame(() => {
@@ -132,18 +134,18 @@ export const UserPartyForm: FC<{
                 {userItems.length ? (
                   <>
                     <p className="is-size-5-touch is-size-4-desktop">
-                      In your bill
+                      {t("IN_YOUR_BILL")}
                     </p>
                     <UserFormLayout>
-                      <span className="is-size-6">Item name</span>
-                      <span className="is-size-6">Amount</span>
-                      <span className="is-size-6">Price</span>
+                      <span className="is-size-6">{t("ITEM_NAME")}</span>
+                      <span className="is-size-6">{t("AMOUNT")}</span>
+                      <span className="is-size-6">{t("PRICE")}</span>
                       <span
                         className={cx("is-size-6", {
                           "is-invisible": !partySettings.isDiscountVisible,
                         })}
                       >
-                        Discount
+                        {t("DISCOUNT")}
                         <span className="is-size-7 has-text-grey ml-1">
                           (%)
                         </span>
@@ -160,7 +162,7 @@ export const UserPartyForm: FC<{
                               <button
                                 type="button"
                                 className="delete mr-2"
-                                title="Remove item from my bill"
+                                title={t("BUTTON_REMOVE_FROM_MY_BILL")}
                                 onClick={() =>
                                   handleRemoveItemFromUser(item.id)
                                 }
@@ -244,7 +246,7 @@ export const UserPartyForm: FC<{
                                   <button
                                     type="button"
                                     className="button ml-2 is-primary is-small is-rounded pl-2 pr-2"
-                                    title="One more, please!"
+                                    title={t("BUTTON_ONE_MORE")}
                                     onClick={() =>
                                       handleUpdateUserItem({
                                         itemId: item.id,
@@ -351,7 +353,7 @@ export const UserPartyForm: FC<{
                           </UserFormLayout>
                           {partySettings.isEquallyVisible && (
                             <Field
-                              label=" Share item for all"
+                              label={t("LABEL_SHARE_FOR_ALL")}
                               inputProps={{
                                 type: "checkbox",
                                 ...register(
@@ -371,19 +373,19 @@ export const UserPartyForm: FC<{
                     {discount ? (
                       <>
                         <p className="is-size-6 mt-2 has-text-grey has-text-right">
-                          Base cost: {total.toFixed(2)}
+                          {t("TOTAL_BASE")}: {total.toFixed(2)}
                         </p>
                         <p className="is-size-6 mt-2 has-text-grey has-text-right">
-                          Discount: {discount.toFixed(2)}
+                          {t("DISCOUNT")}: {discount.toFixed(2)}
                         </p>
                         <hr className="my-3" />
                         <p className="is-size-5 mt-2 has-text-primary-dark has-text-right">
-                          Total: {(total - discount).toFixed(2)}
+                          {t("TOTAL")}: {(total - discount).toFixed(2)}
                         </p>
                       </>
                     ) : (
                       <p className="is-size-5 mt-2 has-text-primary-dark has-text-right">
-                        Total: {total.toFixed(2)}
+                        {t("TOTAL")}: {total.toFixed(2)}
                       </p>
                     )}
                   </>
@@ -395,11 +397,11 @@ export const UserPartyForm: FC<{
             <div className="is-translated">
               {restItems.length > 0 && (
                 <div className="box with-scroll-horizontal mt-4">
-                  <p className="is-size-4">More items from party</p>
+                  <p className="is-size-4">{t("MORE_ITEMS")}</p>
                   <UserFormLayout>
-                    <span className="is-size-6">Item name</span>
-                    <span className="is-size-6">Amount</span>
-                    <span className="is-size-6">Price</span>
+                    <span className="is-size-6">{t("ITEM_NAME")}</span>
+                    <span className="is-size-6">{t("AMOUNT")}</span>
+                    <span className="is-size-6">{t("PRICE")}</span>
                   </UserFormLayout>
                   {restItems.map((item) => (
                     <div
@@ -413,8 +415,8 @@ export const UserPartyForm: FC<{
                       }
                       title={
                         item.isMuted
-                          ? "Already in my bill"
-                          : `Add ${item.name} to my bill`
+                          ? t("ALREADY_IN_BILL")
+                          : t("ADD_TO_BILL", { name: item.name })
                       }
                     >
                       <UserFormLayout className="my-3" key={item.id}>

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { setXSRF } from "../../utils/cookie";
+import { useTranslation } from "react-i18next";
 
 interface RegisterFormProps {
   code?: string;
@@ -49,7 +50,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
       setUser(data);
       addAlert({
         mode: "success",
-        text: "Your password was successfully reset",
+        text: t("ALERT_PASSWORD_RESET"),
       });
       navigate("/dashboard");
     },
@@ -62,6 +63,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
       }
     },
   });
+  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<ResetPasswordInterface> = async (data) => {
     if (!isValid) {
@@ -87,12 +89,12 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
     >
       {error && (
         <p className="has-text-danger">
-          {error.message || "Something went wrong"}
+          {error.message || t("ERROR_DEFAULT_TITLE")}
         </p>
       )}
       <div className="block">
         <Field
-          label="Enter new password"
+          label={t("LABEL_PASSWORD_NEW")}
           error={errors.password}
           inputProps={{
             type: "password",
@@ -101,7 +103,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
           }}
         />
         <Field
-          label="Confirm password"
+          label={t("LABEL_PASSWORD_CONFIRM")}
           error={errors.passwordConfirmation}
           inputProps={{
             type: "password",
@@ -115,7 +117,7 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
             className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
-            Submit
+            {t("BUTTON_SUBMIT")}
           </button>
         </div>
       </div>

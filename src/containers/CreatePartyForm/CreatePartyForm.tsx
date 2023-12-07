@@ -14,6 +14,7 @@ import {
 import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 import { sortPartyUsers } from "../../utils/sort";
+import { useTranslation } from "react-i18next";
 
 interface CreatePartyFormProps {}
 
@@ -62,6 +63,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
       },
     }
   );
+  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<CreatePartyInterface> = async (data) => {
     if (!isValid) {
@@ -80,7 +82,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
     >
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
-        <h2 className="title is-3 my-2">Create your party</h2>
+        <h2 className="title is-3 my-2">{t("TITLE_CREATE_PARTY")}</h2>
         {/* Field for /party/temporary creation */}
         {/* <Field
           label="Enter your name"
@@ -88,7 +90,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
           inputProps={{ type: "text", ...register("userName") }}
         /> */}
         <Field
-          label="Enter your party name"
+          label={t("LABEL_PARTY_NAME")}
           error={errors.partyName}
           inputProps={{
             type: "text",
@@ -101,7 +103,7 @@ export const CreatePartyForm: FC<CreatePartyFormProps> = (props) => {
           className={cx("button", { "is-loading": isLoading })}
           disabled={!isValid || !isDirty || isLoading}
         >
-          Start party
+          {t("BUTTON_START_PARTY")}
         </button>
       </div>
     </form>

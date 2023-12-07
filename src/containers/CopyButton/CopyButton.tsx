@@ -3,6 +3,7 @@ import copy from "copy-to-clipboard";
 import { FC, useEffect, useState } from "react";
 import cx from "classnames";
 import "./CopyButton.scss";
+import { useTranslation } from "react-i18next";
 
 interface CopyButtonProps {
   title: string;
@@ -10,6 +11,7 @@ interface CopyButtonProps {
 
 export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let clearCopiedTimeout: NodeJS.Timeout;
@@ -26,7 +28,7 @@ export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
 
   return (
     <button
-      title="Copy link to the party"
+      title={t("BUTTON_COPY_LINK")}
       className={cx("button", "is-plain", "is-flex", "is-align-items-center")}
       onClick={() => {
         const result = copy(window.location.href);

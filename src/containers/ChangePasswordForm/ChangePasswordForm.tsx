@@ -15,6 +15,7 @@ import { setXSRF } from "../../utils/cookie";
 import { ChangePasswordFormInterface } from "../../types/user";
 import { changePassword } from "../../__api__/users";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 interface ChangePasswordFormProps {}
 
@@ -58,6 +59,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
     }
     mutate({ oldPassword: data.oldPassword, newPassword: data.newPassword });
   };
+  const { t } = useTranslation();
 
   return (
     <form
@@ -68,7 +70,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
-          label="Enter your current password"
+          label={t("LABEL_PASSWORD")}
           error={errors.oldPassword}
           inputProps={{
             type: "password",
@@ -77,7 +79,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
           }}
         />
         <Field
-          label="Enter new password"
+          label={t("LABEL_PASSWORD_NEW")}
           error={errors.newPassword}
           inputProps={{
             type: "password",
@@ -86,7 +88,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
           }}
         />
         <Field
-          label="Confirm password"
+          label={t("LABEL_PASSWORD_CONFIRM")}
           error={errors.passwordConfirmation}
           inputProps={{
             type: "password",
@@ -100,7 +102,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = () => {
             className={cx("button", { "is-loading": isLoading })}
             disabled={!isValid || !isDirty || isLoading}
           >
-            Change password
+            {t("BUTTON_CHANGE_PASSWORD")}
           </button>
         </div>
       </div>

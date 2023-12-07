@@ -21,12 +21,14 @@ import {
 import { HOW_DOES_IT_WORK } from "../__data__/howItWork";
 import { useNavigate } from "react-router";
 import "./Home.scss";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const { user } = useUser();
   const [activeCase, setActiveCase] = useState<PartiesShowcase>("shared");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const party = DATA_MOCKS[activeCase];
   const total = getBaseTotal(party.items);
@@ -38,20 +40,17 @@ const Home = () => {
 
   return (
     <LandingLayout
-      footer={<Footer>There is nothing better than a good party! ❤️</Footer>}
+      footer={<Footer>{t("TITLE_FOOTER")}</Footer>}
       showcase={{
         foot: (
           <p className="subtitle is-size-5 has-text-grey-lighter has-text-centered mb-5">
-            Memento hangover!
+            {t("SHOWCASE_TITLE")}
           </p>
         ),
         body: (
           <div className="container has-text-centered">
-            <p className="title is-size-1">You have fun, We do the math</p>
-            <p className="subtitle is-size-3">
-              Share items between all or some users, equally or in parts. Apply
-              discounts to your bill in percentages, or in absolute values.
-            </p>
+            <p className="title is-size-1">{t("SHOWCASE_SLOGAN")}</p>
+            <p className="subtitle is-size-3">{t("SHOWCASE_SUBTITLE")}</p>
           </div>
         ),
       }}
@@ -71,10 +70,10 @@ const Home = () => {
           <section className="py-6 px-2 has-background-white">
             <div className="container">
               <p className="title is-size-4 has-text-centered">
-                Let's see some cases...
+                {t("CARDS_TITLE")}
               </p>
               <p className="subtitle is-size-5 has-text-centered mb-6">
-                Considering you have some parties with your fishes
+                {t("CARDS_SUBTITLE")}
               </p>
               <div className="tabs">
                 <ul>
@@ -96,13 +95,17 @@ const Home = () => {
               <div className="columns is-flex-wrap-wrap">
                 <div key={`${party.id}-bill`} className="column is-one-third">
                   <nav className="panel">
-                    <p className="panel-heading">Your bill</p>
+                    <p className="panel-heading">{t("TITLE_YOUR_BILL")}</p>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a key="head" className="panel-block ">
-                      <span className="panel-icon is-size-7">Qty</span>
-                      <span className="is-size-7 has-text-grey ml-1">Name</span>
+                      <span className="panel-icon is-size-7">
+                        {t("TITLE_QUANTITY_SHORT")}
+                      </span>
+                      <span className="is-size-7 has-text-grey ml-1">
+                        {t("TITLE_NAME")}
+                      </span>
                       <span className="ml-auto has-text-grey is-size-7">
-                        Price
+                        {t("PRICE")}
                       </span>
                     </a>
                     {party.items.map((item) => (
@@ -122,7 +125,7 @@ const Home = () => {
                         className="panel-block has-background-white-ter"
                       >
                         <span className="panel-icon"></span>
-                        <span className="has-text-grey">Discount</span>
+                        <span className="has-text-grey">{t("DISCOUNT")}</span>
 
                         <span className="ml-auto">
                           {party.discount}
@@ -136,7 +139,7 @@ const Home = () => {
                       className="panel-block has-background-white-ter"
                     >
                       <span className="panel-icon"></span>
-                      <span className="has-text-grey">Total</span>
+                      <span className="has-text-grey">{t("TOTAL")}</span>
 
                       <span className="ml-auto">{total.toFixed(2)}</span>
                     </a>
@@ -146,15 +149,21 @@ const Home = () => {
                   <p className="title is-size-4">{party.name}</p>
                   <div className="with-scroll-horizontal pt-3">
                     <PartyFormLayout {...partyLayoutProps}>
-                      <span className="is-size-6 has-text-grey">Item name</span>
-                      <span className="is-size-6 has-text-grey">Amount</span>
-                      <span className="is-size-6 has-text-grey">Price</span>
+                      <span className="is-size-6 has-text-grey">
+                        {t("ITEM_NAME")}
+                      </span>
+                      <span className="is-size-6 has-text-grey">
+                        {t("AMOUNT")}
+                      </span>
+                      <span className="is-size-6 has-text-grey">
+                        {t("PRICE")}
+                      </span>
                       <span
                         className={cx("is-size-6 has-text-grey", {
                           "is-invisible": !partyLayoutProps.isDiscountVisible,
                         })}
                       >
-                        Discount
+                        {t("DISCOUNT")}
                         <span className="is-size-7 ml-1">(%)</span>
                       </span>
                       <span
@@ -162,7 +171,7 @@ const Home = () => {
                           "is-invisible": !partyLayoutProps.isEquallyVisible,
                         })}
                       >
-                        Is shared
+                        {t("IS_SHARED")}
                       </span>
                       {party.users ? (
                         Object.values(party.users).map((user) => {
@@ -186,7 +195,7 @@ const Home = () => {
                                     })}
                                     icon="crown"
                                     size="2xs"
-                                    title="Master of the party"
+                                    title={t("PARTY_MASTER")}
                                   />
                                 </i>
                               )}
@@ -282,7 +291,7 @@ const Home = () => {
           <section className="hero is-light py-6 px-2">
             <div className="container">
               <p className="title is-size-3 has-text-centered mb-6">
-                How does it work? 🤔
+                {t("TITLE_HOW_IT_WORK")}
               </p>
               <div className="step-grid">
                 {HOW_DOES_IT_WORK.map((item, i) => (
@@ -306,8 +315,7 @@ const Home = () => {
                 <i className="is-size-2 has-text-primary party-step mr-3">
                   {HOW_DOES_IT_WORK.length + 1}
                 </i>
-                Once party is done, you have all calculations for you and the
-                rest folks 🎉
+                {t("SUBTITLE_HOW_IT_WORK")}
               </p>
               <div className="total-item">
                 <Card
@@ -322,7 +330,7 @@ const Home = () => {
           <section className="py-6 px-2">
             <div className="container">
               <p className="title is-size-3 has-text-centered mb-6">
-                Now it's time to start your own party
+                {t("TITLE_START_YOUR_PARTY")}
               </p>
 
               <div className="columns">
@@ -341,7 +349,7 @@ const Home = () => {
                             >
                               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                               <a onClick={() => setActiveTab("login")}>
-                                Log in
+                                {t("BUTTON_LOG_IN")}
                               </a>
                             </li>
                             <li
@@ -351,7 +359,7 @@ const Home = () => {
                             >
                               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                               <a onClick={() => setActiveTab("register")}>
-                                Register
+                                {t("BUTTON_REGISTER")}
                               </a>
                             </li>
                           </ul>
@@ -372,7 +380,7 @@ const Home = () => {
                   {user ? (
                     <PartiesList />
                   ) : (
-                    <div className="get-in-touch box" />
+                    <div className="get-in-touch box is-hidden-mobile" />
                   )}
                 </div>
               </div>
@@ -381,7 +389,7 @@ const Home = () => {
           <section className="hero is-dark">
             <div className="hero-body">
               <p className="title is-size-5 has-text-centered">
-                Don't trust us - verify with your calculator
+                {t("TITLE_DONT_TRUST_US")}
               </p>
             </div>
           </section>

@@ -11,12 +11,14 @@ import {
   getPartyUserDiscount,
   getTotalDiscount,
 } from "../../utils/calculation";
+import { useTranslation } from "react-i18next";
 
 export const PartyTotals: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
   partySettings: FormSettings;
 }> = ({ party, currentUser, partySettings }) => {
+  const { t } = useTranslation();
   if (!party.items.length) {
     return null;
   }
@@ -39,7 +41,7 @@ export const PartyTotals: FC<{
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={Object.keys(party.users).length}
       >
-        <span className="is-size-6 has-text-right">Base total</span>
+        <span className="is-size-6 has-text-right">{t("TOTAL_BASE")}</span>
         <span className="is-size-6" />
         <span className={sumClassName}>{baseTotal}</span>
         <span
@@ -78,7 +80,7 @@ export const PartyTotals: FC<{
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={Object.keys(party.users).length}
       >
-        <span className="is-size-6 has-text-right">Discount</span>
+        <span className="is-size-6 has-text-right">{t("DISCOUNT")}</span>
         <span className={sumClassName} />
         <span className={sumClassName}>{Number(discount || 0).toFixed(2)}</span>
 
@@ -126,7 +128,7 @@ export const PartyTotals: FC<{
         isEquallyVisible={partySettings.isEquallyVisible}
         amountOfUsers={Object.keys(party.users).length}
       >
-        <span className="is-size-6 has-text-right">Total</span>
+        <span className="is-size-6 has-text-right">{t("TOTAL")}</span>
         <span className={sumClassName} />
         <span className={sumClassName}>
           {Number(getPartyTotal(party.items) - (discount || 0)).toFixed(2)}

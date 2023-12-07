@@ -2,6 +2,7 @@ import { FC } from "react";
 import cx from "classnames";
 import { getPageTitle } from "./utils";
 import "./Pagination.scss";
+import { useTranslation } from "react-i18next";
 
 interface PaginationProps {
   onChangePage: (page: number) => void;
@@ -18,6 +19,7 @@ export const Pagination: FC<PaginationProps> = ({
     activePage,
     size,
   });
+  const { t } = useTranslation();
 
   return (
     <nav
@@ -30,14 +32,14 @@ export const Pagination: FC<PaginationProps> = ({
         disabled={activePage === 1}
         onClick={() => onChangePage(activePage - 1)}
       >
-        Previous
+        {t("BUTTON_PAGINATION_PREV")}
       </button>
       <button
         className="pagination-next is-flex-grow-0"
         onClick={() => onChangePage(activePage + 1)}
         disabled={activePage === size}
       >
-        Next
+        {t("BUTTON_PAGINATION_NEXT")}
       </button>
       <ul className="pagination-list is-flex-wrap-nowrap">
         <li>
@@ -46,7 +48,7 @@ export const Pagination: FC<PaginationProps> = ({
             className={cx("pagination-link", {
               "is-current": activePage === 1,
             })}
-            aria-label="Goto page 1"
+            aria-label={t("BUTTON_PAGINATION_PAGE", { page: 1 })}
             aria-current={activePage === 1 ? "page" : undefined}
           >
             1
@@ -59,7 +61,7 @@ export const Pagination: FC<PaginationProps> = ({
                 className={cx("pagination-link", {
                   "is-current": activePage === page,
                 })}
-                aria-label={`Goto page ${page}`}
+                aria-label={t("BUTTON_PAGINATION_PAGE", { page })}
                 onClick={() => onChangePage(page)}
                 aria-current={activePage === page ? "page" : undefined}
               >
@@ -77,7 +79,7 @@ export const Pagination: FC<PaginationProps> = ({
             className={cx("pagination-link", {
               "is-current": activePage === size,
             })}
-            aria-label={`Goto page ${size}`}
+            aria-label={t("BUTTON_PAGINATION_PAGE", { page: size })}
             aria-current={activePage === size ? "page" : undefined}
             onClick={() => onChangePage(size)}
           >

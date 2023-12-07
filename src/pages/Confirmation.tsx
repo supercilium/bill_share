@@ -7,12 +7,14 @@ import { HeroLayout } from "../layouts/heroLayout";
 import { fetchConfirm } from "../__api__/auth";
 import { ErrorRequest } from "../__api__/helpers";
 import { ErrorPage } from "./Error";
+import { useTranslation } from "react-i18next";
 
 export const Confirmation: FC = () => {
   const { token } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, setUser } = useUser();
+  const { t } = useTranslation();
 
   const { status, error } = useQuery<void, ErrorRequest, void, any>(
     ["auth_confirmation", token],
@@ -36,7 +38,7 @@ export const Confirmation: FC = () => {
   }, [navigate, pathname, user]);
 
   if (error) {
-    return <ErrorPage title="Ooops, we don't know what's happened..." />;
+    return <ErrorPage title={t("ERROR_DEFAULT_TITLE")} />;
   }
 
   return (
@@ -47,9 +49,9 @@ export const Confirmation: FC = () => {
         </div>
       ) : (
         <div>
-          <p className="title mb-6">Thank You!</p>
-          <p className="subtitle">Your email address has been confirmed</p>
-          <Link to="/dashboard">Check your parties</Link>
+          <p className="title mb-6">{t("TITLE_CONFIRMED")}</p>
+          <p className="subtitle">{t("SUBTITLE_CONFIRMED")}</p>
+          <Link to="/dashboard">{t("LINK_PARTIES")}</Link>
         </div>
       )}
     </HeroLayout>

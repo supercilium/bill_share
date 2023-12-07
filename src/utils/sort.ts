@@ -8,7 +8,7 @@ export const sortPartyUsers = (
 
   const items = party.items.map((item) => ({
     ...item,
-    users: mapUsers(item.users, currentUser),
+    users: mapUsers(item.users, currentUser, party.users),
   }));
   const data = { ...party, items, users: usersMap };
   return data as PartyInterface;
@@ -16,14 +16,19 @@ export const sortPartyUsers = (
 
 const mapUsers = (
   users: Array<{ id: string; [key: string]: any | undefined }>,
-  user: string
+  user: string,
+  partyUsers?: Array<{ id: string; [key: string]: any | undefined }>
 ) => {
   const [currentUser] = users.splice(
     users.findIndex(({ id }) => id === user),
     1
   );
-  const res = users.reduce((acc, user) => {
-    acc[user.id] = user;
+  const arr = new Set([
+    ...users.map((user) => user.id),
+    ...(partyUsers?.map((user) => user.id) || []),
+  ]);
+  const res = Array.from(arr).reduce((acc, id) => {
+    acc[id] = users.find((user) => user.id === id) || { id };
     return acc;
   }, {} as Record<string, { id: string; [key: string]: any | undefined }>);
   return { [user]: currentUser, ...res };

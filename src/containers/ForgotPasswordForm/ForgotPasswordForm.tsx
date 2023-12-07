@@ -14,6 +14,7 @@ import { ErrorRequest } from "../../__api__/helpers";
 import { useNavigate } from "react-router";
 import { setXSRF } from "../../utils/cookie";
 import { getTime } from "../../utils/time";
+import { useTranslation } from "react-i18next";
 
 interface ForgotPasswordFormProps {
   onReturn: () => void;
@@ -58,6 +59,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
   });
   const timeout = useRef<number>();
   const [blockedTime, setBlockedTime] = useState(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (blockedTime === 0) {
@@ -83,11 +85,11 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
       id="forgot-password-form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <p className="title is-4">Password resetting</p>
+      <p className="title is-4">{t("TITLE_RESET_PASSWORD")}</p>
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
-          label="Enter your email address to reset a password"
+          label={t("LABEL_RESET_PASSWORD_EMAIL")}
           error={errors.email}
           inputProps={{
             type: "email",
@@ -104,14 +106,14 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
             })}
             disabled={!isValid || !isDirty || isLoading || blockedTime > 0}
           >
-            {blockedTime ? getTime(blockedTime) : "Submit"}
+            {blockedTime ? getTime(blockedTime) : t("BUTTON_SUBMIT")}
           </button>
           <button
             onClick={onReturn}
             type="button"
             className="button is-ghost ml-4"
           >
-            Back to Log in
+            {t("BUTTON_BACK_TO_LOGIN")}
           </button>
         </div>
       </div>

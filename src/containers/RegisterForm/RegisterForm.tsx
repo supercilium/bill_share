@@ -14,6 +14,7 @@ import { useMutation } from "react-query";
 import { ErrorRequest } from "../../__api__/helpers";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { setXSRF } from "../../utils/cookie";
+import { useTranslation } from "react-i18next";
 
 interface RegisterFormProps {
   onRegister?: () => void;
@@ -31,6 +32,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   });
   const { setUser } = useUser();
   const { addAlert } = useNotifications();
+  const { t } = useTranslation();
   const { mutate, isLoading, error } = useMutation<
     User,
     ErrorRequest,
@@ -76,12 +78,12 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       <div className="block">
         <Field
-          label="Enter your name"
+          label={t("LABEL_FIRST_NAME")}
           error={errors.name}
           inputProps={{ type: "text", ...register("name") }}
         />
         <Field
-          label="Enter your email"
+          label={t("LABEL_EMAIL")}
           error={errors.email}
           inputProps={{
             type: "email",
@@ -90,7 +92,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
           }}
         />
         <Field
-          label="Enter your password"
+          label={t("LABEL_PASSWORD")}
           error={errors.password}
           inputProps={{
             type: "password",
@@ -103,7 +105,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
           className={cx("button", { "is-loading": isLoading })}
           disabled={!isValid || !isDirty || isLoading}
         >
-          Register
+          {t("BUTTON_REGISTER")}
         </button>
       </div>
     </form>

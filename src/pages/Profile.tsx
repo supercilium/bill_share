@@ -12,14 +12,7 @@ import { Link } from "react-router-dom";
 import { sendCode } from "../__api__/users";
 import { useNotifications } from "../contexts/NotificationContext";
 import { ChangeAvatarForm } from "../containers/ChangeAvatarForm";
-
-const LABELS = {
-  email: "Email address",
-  name: "Username",
-  isConfirmed: "Your email is not confirmed",
-  changePassword: "Change password",
-  logout: "Log out",
-};
+import { useTranslation } from "react-i18next";
 
 export const Profile = () => {
   const { user, setUser } = useUser();
@@ -39,16 +32,17 @@ export const Profile = () => {
     onSuccess: () => {
       addAlert({
         mode: "success",
-        text: "Confirmation code was sent",
+        text: t("ALERT_INFO_CONFIRMATION"),
       });
     },
     onError: () => {
       addAlert({
         mode: "danger",
-        text: "Something went wrong, please try later",
+        text: t("ALERT_ERROR_DEFAULT"),
       });
     },
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) {
@@ -58,24 +52,24 @@ export const Profile = () => {
 
   const items: React.ComponentProps<typeof DefinitionList>["items"] = [
     {
-      label: LABELS.email,
+      label: t("LABEL_PROFILE_EMAIL"),
       value: user?.email,
     },
     {
-      label: LABELS.name,
+      label: t("LABEL_PROFILE_NAME"),
       value: user?.name,
     },
     {
-      label: LABELS.isConfirmed,
+      label: t("LABEL_PROFILE_NOT_CONFIRMED"),
       value: user?.isConfirmed ? null : (
         <>
-          To secure your account please confirm your email address
+          {t("TITLE_CONFIRM_EMAIL")}
           <button
             onClick={() => sendConfirmationCode()}
             className="button is-ghost ml-3"
           >
             <FontAwesomeIcon className="mr-2 icon" size="xs" icon="envelope" />
-            <span>Send code</span>
+            <span>{t("BUTTON_SEND_CODE")}</span>
           </button>
         </>
       ),
@@ -84,7 +78,7 @@ export const Profile = () => {
       label: "",
       value: (
         <Link to="/change-password" className="button is-link">
-          {LABELS.changePassword}
+          {t("BUTTON_CHANGE_PASSWORD")}
         </Link>
       ),
     },
@@ -93,7 +87,7 @@ export const Profile = () => {
       value: (
         <button className="button" onClick={() => refetch()}>
           <FontAwesomeIcon className="mr-3" icon="arrow-right-from-bracket" />
-          <span>{LABELS.logout}</span>
+          <span>{t("BUTTON_LOG_OUT")}</span>
         </button>
       ),
     },
@@ -106,7 +100,7 @@ export const Profile = () => {
         <Main>
           {user && (
             <div className="box mt-6">
-              <h1 className="title is-3">Account</h1>{" "}
+              <h1 className="title is-3">{t("TITLE_ACCOUNT")}</h1>
               <div className="columns">
                 <div className="column is-narrow">
                   <ChangeAvatarForm />

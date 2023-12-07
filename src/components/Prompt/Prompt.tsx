@@ -1,5 +1,6 @@
 import { FC, ReactNode } from "react";
 import "./Prompt.scss";
+import { useTranslation } from "react-i18next";
 
 export interface PromptProps {
   id: string;
@@ -12,6 +13,8 @@ export interface PromptProps {
 }
 
 export const Prompt: FC<PromptProps> = (props) => {
+  const { t } = useTranslation();
+
   return (
     <div className="box prompt">
       {props.title && <p className="title is-5 my-2">{props.title}</p>}
@@ -25,7 +28,7 @@ export const Prompt: FC<PromptProps> = (props) => {
       </button>
       {props.onCancel && (
         <button type="button" className="button" onClick={props.onCancel}>
-          {props.cancelLabel ?? "Cancel"}
+          {props.cancelLabel ?? t("BUTTON_CANCEL")}
         </button>
       )}
     </div>

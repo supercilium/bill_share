@@ -11,12 +11,14 @@ import { PartyInterface } from "../../types/party";
 import { Transport } from "../../services/transport";
 import { AddUserForm } from "../AddUserForm";
 import "./PartySettings.scss";
+import { useTranslation } from "react-i18next";
 
 export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const handlers = useFormContext<FormSettings>();
   const { areHintsVisible, setHintsVisibility, setAsideVisibility } =
     useUISettings();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const { t } = useTranslation();
 
   const total = handlers.watch("total");
   const isPercentage = handlers.watch("isPercentage");
@@ -69,9 +71,9 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   const header = (
     <div className="is-flex is-justify-content-space-between">
       <div className="is-flex is-align-items-baseline">
-        <span className="mr-5">Party settings</span>
+        <span className="mr-5">{t("TITLE_PARTY_SETTINGS")}</span>
         <Field
-          label=" Show hints"
+          label={t("LABEL_SHOW_HINTS")}
           inputProps={{
             type: "checkbox",
             checked: areHintsVisible,
@@ -104,28 +106,23 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
           <div>
             <Block>
               <p className="has-text-grey-dark is-size-5 mb-3">
-                Visibility settings
+                {t("TITLE_VISIBILITY_SETTINGS")}
               </p>
               {areHintsVisible && (
                 <article className="message">
-                  <div className="message-body">
-                    We hid unimportant columns, because the form already has a
-                    lot of stuff and we do not have a designer to make it fits
-                    the screen (at least for now). So you can choose to show
-                    discount and is shared columns here.
-                  </div>
+                  <div className="message-body">{t("HINT_VISIBILITY")}</div>
                 </article>
               )}
 
               <Field
-                label=" Show discount column for items (D)"
+                label={t("LABEL_SHOW_DISCOUNT")}
                 inputProps={{
                   type: "checkbox",
                   ...handlers.register("isDiscountVisible"),
                 }}
               />
               <Field
-                label=" Show «Is shared» column (S)"
+                label={t("LABEL_SHOW_SHARED")}
                 inputProps={{
                   type: "checkbox",
                   ...handlers.register("isEquallyVisible"),
@@ -134,30 +131,22 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
 
               {areHintsVisible && (
                 <article className="message">
-                  <div className="message-body">
-                    Is shared - means items will shared between all participants
-                    (guys with checked checkboxes), in the other way you will
-                    have an opportunity to write amounts of items to each
-                    member.
-                  </div>
+                  <div className="message-body">{t("HINT_SHARED")}</div>
                 </article>
               )}
             </Block>
             <Block>
-              <p className="has-text-grey-dark is-size-5 mb-3">Switch view</p>
+              <p className="has-text-grey-dark is-size-5 mb-3">
+                {t("TITLE_VIEW")}
+              </p>
               {areHintsVisible && (
                 <article className="message">
-                  <div className="message-body">
-                    You can switch view to see full party with all participants
-                    and tons of checkboxes or only your items. Clicking on
-                    member's name or totals will switch the form to that
-                    member's view. Press U/P keys to switch between them.
-                  </div>
+                  <div className="message-body">{t("HINT_VIEW")}</div>
                 </article>
               )}
 
               <Field
-                labels={[" User (U)", " Full party (P)"]}
+                labels={[t("LABEL_USER_VIEW"), t("LABEL_PARTY_VIEW")]}
                 inputProps={{
                   type: "radio",
                   value: ["user", "party"],
@@ -173,7 +162,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
             {party.users ? (
               <Block>
                 <p className="has-text-grey-dark is-size-5 mb-3">
-                  Already in da club
+                  {t("TITLE_USERS_IN_PARTY")}
                 </p>
                 {Object.values(party.users).map((user) => (
                   <p
@@ -190,7 +179,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
                     ) : (
                       <span
                         className="ml-2 icon has-text-grey-light"
-                        title="Master of the party"
+                        title={t("PARTY_MASTER_HOVER")}
                       >
                         <FontAwesomeIcon icon="crown" />
                       </span>
@@ -207,17 +196,11 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
         >
           <div>
             <p className="has-text-grey-dark is-size-5 mb-0">
-              Discounts and tips
+              {t("TITLE_DISCOUNTS_TIPS")}
             </p>
             {areHintsVisible && (
               <article className="message">
-                <div className="message-body">
-                  You can add discount for any item by switching on discount
-                  column or by putting discount for full bill here. In
-                  percentage or absolute amount - these fields are calculated
-                  depending on total sum of your bill. All discounts (item's and
-                  for full bill) will be summarized.
-                </div>
+                <div className="message-body">{t("HINT_DISCOUNT")}</div>
               </article>
             )}
           </div>
@@ -225,7 +208,9 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
         <Columns columnProps={{ className: "is-narrow" }}>
           <div>
             <label htmlFor="discount" className="label">
-              Discount {isPercentage ? "(%)" : "(absolute amount)"}
+              {isPercentage
+                ? t("LABEL_DISCOUNT_VALUE_PERCENT")
+                : t("LABEL_DISCOUNT_VALUE_ABSOLUTE")}
             </label>
             <div className="field has-addons">
               <div className="control is-flex-grow-1">
@@ -259,7 +244,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
               </div>
             </div>
             <Field
-              label=" Discount is in percentage"
+              label={t("LABEL_DISCOUNT_TYPE")}
               inputProps={{
                 type: "checkbox",
                 ...handlers.register("isPercentage"),

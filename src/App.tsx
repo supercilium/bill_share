@@ -1,5 +1,6 @@
 import React, { ReactNode, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
 import "./App.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -32,6 +33,7 @@ import { Confirmation } from "./pages/Confirmation";
 import { ResetPassword } from "./pages/ResetPassword";
 import { ChangePassword } from "./pages/ChangePassword";
 import { setXSRF } from "./utils/cookie";
+import i18n from "./services/i18next";
 import { PromptProvider } from "./contexts/PromptContext";
 import { PromptList } from "./containers/PromptList";
 
@@ -111,7 +113,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <ErrorPage title="404: Ooops, we didn't prepare such page" />,
+    element: <ErrorPage title="ERROR_404_TITLE" />,
   },
 ]);
 
@@ -129,20 +131,30 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <NotificationProvider>
-        <PromptProvider>
-          <UserProvider>
-            <UISettingsProvider>
-              <RouterProvider router={router} />
-              <NotificationList />
-              <PromptList />
-            </UISettingsProvider>
-          </UserProvider>
-        </PromptProvider>
-      </NotificationProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <Suspense
+      fallback={
+        <div className="is-flex full-height container is-align-items-center is-flex-direction-column is-justify-content-center">
+          <Loader />
+        </div>
+      }
+    >
+      <I18nextProvider i18n={i18n}>
+        <QueryClientProvider client={queryClient}>
+          <NotificationProvider>
+            <PromptProvider>
+              <UserProvider>
+                <UISettingsProvider>
+                  <RouterProvider router={router} />
+                  <NotificationList />
+                  <PromptList />
+                </UISettingsProvider>
+              </UserProvider>
+            </PromptProvider>
+          </NotificationProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </I18nextProvider>
+    </Suspense>
   );
 };
 

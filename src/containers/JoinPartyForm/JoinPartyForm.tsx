@@ -11,6 +11,7 @@ import { ErrorRequest } from "../../__api__/helpers";
 import { CreateUserDTO, createUser } from "../../__api__/users";
 import { CreateGuestDTO, createGuest } from "../../__api__/guests";
 import { WaitingRoom } from "../WaitingRoom";
+import { useTranslation } from "react-i18next";
 
 interface JoinPartyFormInterface {
   userName: string;
@@ -104,6 +105,7 @@ export const JoinPartyForm: FC<{
       });
     }
   };
+  const { t } = useTranslation();
 
   if (isInWaitingRoom && guest?.id && partyFromSearch) {
     return (
@@ -129,7 +131,7 @@ export const JoinPartyForm: FC<{
       {error?.message && <p className="has-text-danger">{error.message}</p>}
       {!user && (
         <Field
-          label="Enter your name"
+          label={t("LABEL_NAME")}
           error={errors.userName}
           inputProps={{
             type: "text",
@@ -142,7 +144,7 @@ export const JoinPartyForm: FC<{
         className={cx("button", { "is-loading": isLoading })}
         disabled={isLoading || !isValid || isGuestLoading}
       >
-        Join party
+        {t("BUTTON_JOIN_PARTY")}
       </button>
     </form>
   );
