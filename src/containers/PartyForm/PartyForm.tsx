@@ -312,7 +312,7 @@ export const PartyForm: FC<{
                       <input
                         type="checkbox"
                         className="is-size-4 checkbox"
-                        checked={!!itemUsers?.[id]}
+                        checked={"value" in itemUsers?.[id]}
                         onChange={({ target }) =>
                           handleChangeUserInItem(target.checked, id, item.id)
                         }
