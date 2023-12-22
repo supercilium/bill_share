@@ -11,7 +11,8 @@ import { useTranslation } from "react-i18next";
 export const PartyHeader: FC<{
   users: PartyInterface["users"];
   master: PartyInterface["owner"];
-}> = ({ users, master }) => {
+  isReadOnly?: boolean;
+}> = ({ users, master, isReadOnly = true }) => {
   const { watch, setValue } = useFormContext<FormSettings>();
   const { setAsideVisibility } = useUISettings();
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export const PartyHeader: FC<{
       <button
         className="button mr-3 is-flex-shrink-0"
         onClick={() => setAsideVisibility(true)}
+        disabled={isReadOnly}
       >
         <span className="icon-text">
           <span className="icon">

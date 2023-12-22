@@ -11,16 +11,29 @@ import { PartyTotals } from "../PartyTotals";
 interface PartyViewProps {
   party: PartyInterface;
   user: User;
+  isReadOnly?: boolean;
 }
 
-export const PartyView: FC<PartyViewProps> = ({ party, user }) => {
+export const PartyView: FC<PartyViewProps> = ({
+  party,
+  user,
+  isReadOnly = true,
+}) => {
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
   return (
-    <Block title={<PartyHeader users={party.users} master={party.owner} />}>
+    <Block
+      title={
+        <PartyHeader
+          isReadOnly={isReadOnly}
+          users={party.users}
+          master={party.owner}
+        />
+      }
+    >
       <div className="is-translated">
         <div className="with-scroll-horizontal box">
-          <PartyForm party={party} currentUser={user} />
+          <PartyForm isReadOnly={isReadOnly} party={party} currentUser={user} />
           <PartyTotals
             partySettings={partySettings}
             party={party}

@@ -17,7 +17,8 @@ import { useTranslation } from "react-i18next";
 export const PartyForm: FC<{
   party: PartyInterface;
   currentUser: { id: string; name: string };
-}> = ({ party, currentUser }) => {
+  isReadOnly: boolean;
+}> = ({ party, currentUser, isReadOnly }) => {
   const { users } = party;
   const { partyId } = useParams();
   const handlers = useParty({ party });
@@ -122,6 +123,9 @@ export const PartyForm: FC<{
                   })}
                   title={t("BUTTON_OPEN_USERS_DETAILS", { name: user.name })}
                   onClick={() => {
+                    if (isReadOnly) {
+                      return;
+                    }
                     setValue("user", user);
                     setValue("view", "user");
                   }}
@@ -162,6 +166,7 @@ export const PartyForm: FC<{
                     className="delete mr-2"
                     title={t("BUTTON_REMOVE_ITEM")}
                     onClick={() => handleRemoveItem(item.id)}
+                    disabled={isReadOnly}
                   />
                 </div>
 
@@ -169,7 +174,7 @@ export const PartyForm: FC<{
                   error={errors.items?.[i]?.name}
                   onEnter={() => {
                     const name = watchParty(`items.${i}.name`);
-                    if (name === item.name) {
+                    if (name === item.name || isReadOnly) {
                       return;
                     }
                     handleChangeItem({
@@ -179,6 +184,7 @@ export const PartyForm: FC<{
                   }}
                   inputProps={{
                     type: "text",
+                    disabled: isReadOnly,
                     ...register(`items.${i}.name`),
                     onBlur: ({ target }) => {
                       if (target.value === item.name) {
@@ -197,7 +203,7 @@ export const PartyForm: FC<{
                   error={errors.items?.[i]?.amount}
                   onEnter={() => {
                     const amount = watchParty(`items.${i}.amount`);
-                    if (amount === item.amount) {
+                    if (amount === item.amount || isReadOnly) {
                       return;
                     }
                     handleChangeItem({
@@ -207,6 +213,7 @@ export const PartyForm: FC<{
                   }}
                   inputProps={{
                     type: "number",
+                    disabled: isReadOnly,
                     min: 1,
                     ...register(`items.${i}.amount`),
                     onBlur: ({ target }) => {
@@ -227,7 +234,7 @@ export const PartyForm: FC<{
                   error={errors.items?.[i]?.price}
                   onEnter={() => {
                     const price = watchParty(`items.${i}.price`);
-                    if (price === item.price) {
+                    if (price === item.price || isReadOnly) {
                       return;
                     }
                     handleChangeItem({
@@ -237,6 +244,7 @@ export const PartyForm: FC<{
                   }}
                   inputProps={{
                     type: "number",
+                    disabled: isReadOnly,
                     min: 0,
                     ...register(`items.${i}.price`),
                     onBlur: ({ target }) => {
@@ -261,7 +269,7 @@ export const PartyForm: FC<{
                   error={errors.items?.[i]?.discount}
                   onEnter={() => {
                     const discount = watchParty(`items.${i}.discount`);
-                    if (discount === item.discount) {
+                    if (discount === item.discount || isReadOnly) {
                       return;
                     }
                     handleChangeItem({
@@ -273,6 +281,7 @@ export const PartyForm: FC<{
                     type: "number",
                     step: 5,
                     min: 0,
+                    disabled: isReadOnly,
                     max: 100,
                     ...register(`items.${i}.discount`),
                     onBlur: ({ target }) => {
@@ -296,6 +305,7 @@ export const PartyForm: FC<{
                 <input
                   type="checkbox"
                   className="checkbox"
+                  disabled={isReadOnly}
                   {...register(`items.${i}.equally`)}
                   onChange={({ target }) =>
                     handleChangeItem({
@@ -310,9 +320,11 @@ export const PartyForm: FC<{
                   return (
                     <div className="checkbox-wrapper" key={id}>
                       <input
+                        id={`items.${i}.users.${id}`}
                         type="checkbox"
                         className="is-size-4 checkbox"
-                        checked={"value" in itemUsers?.[id]}
+                        disabled={isReadOnly}
+                        checked={itemUsers?.[id] && "value" in itemUsers[id]}
                         onChange={({ target }) =>
                           handleChangeUserInItem(target.checked, id, item.id)
                         }
@@ -329,7 +341,7 @@ export const PartyForm: FC<{
                         const value = watchParty(
                           `items.${i}.users.${id}.value`
                         );
-                        if (value === itemUsers[id]?.value) {
+                        if (value === itemUsers[id]?.value || isReadOnly) {
                           return;
                         }
                         handleUpdateUserItem({
@@ -340,8 +352,10 @@ export const PartyForm: FC<{
                       }}
                       inputProps={{
                         type: "number",
+                        id: `items.${i}.users.${id}`,
                         placeholder: "0",
                         min: 0,
+                        disabled: isReadOnly,
                         ...register(`items.${i}.users.${id}.value`),
                         onBlur: ({ target }) => {
                           if (+target.value === itemUsers[id]?.value) {

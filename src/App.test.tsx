@@ -10,6 +10,6 @@ test("renders learn react link", async () => {
   render(<App />);
   // eslint-disable-next-line testing-library/prefer-find-by
   await waitFor(() =>
-    expect(screen.getByText(/party bill share/i)).toBeInTheDocument()
+    expect(screen.getByText(/SHOWCASE_TITLE/i)).toBeInTheDocument()
   );
 });

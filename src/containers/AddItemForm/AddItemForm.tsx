@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Transport } from "../../services/transport";
 import { addItemSchema } from "../../services/validation";
-import { useState } from "react";
+import { FC, useState } from "react";
 import "./AddItemForm.scss";
 import { useTranslation } from "react-i18next";
 
@@ -17,9 +17,13 @@ interface ItemCreationInterface {
 
 type PriceType = "per item" | "full";
 
-export const AddItemForm = () => {
+interface Props {
+  isReadOnly?: boolean;
+}
+
+export const AddItemForm: FC<Props> = ({ isReadOnly = true }) => {
   const { partyId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}") || {};
   const [priceType, setPriceType] = useState<PriceType>("full");
 
   const formHandlers = useForm<ItemCreationInterface>({
@@ -61,6 +65,7 @@ export const AddItemForm = () => {
             error={errors.name}
             inputProps={{
               type: "text",
+              disabled: isReadOnly,
               placeholder: t("LABEL_ITEM_NAME"),
               autoComplete: "item name",
               ...formHandlers.register("name"),
@@ -72,6 +77,7 @@ export const AddItemForm = () => {
           error={errors.amount}
           inputProps={{
             type: "number",
+            disabled: isReadOnly,
             placeholder: t("LABEL_AMOUNT"),
             min: 1,
             ...formHandlers.register("amount"),
@@ -82,6 +88,7 @@ export const AddItemForm = () => {
           error={errors.price}
           inputProps={{
             type: "number",
+            disabled: isReadOnly,
             step: 1,
             min: 0,
             formNoValidate: true,
@@ -91,7 +98,7 @@ export const AddItemForm = () => {
         <button
           type="submit"
           className="button add-item-button mb-3"
-          disabled={!isValid || !isDirty}
+          disabled={!isValid || !isDirty || isReadOnly}
         >
           {t("BUTTON_ADD_ITEM")}
         </button>
@@ -99,6 +106,7 @@ export const AddItemForm = () => {
           <Field
             label={t("LABEL_SHARE_FOR_ALL")}
             inputProps={{
+              disabled: isReadOnly,
               type: "checkbox",
               ...formHandlers.register("equally"),
             }}
@@ -113,6 +121,7 @@ export const AddItemForm = () => {
                 type="radio"
                 value="full"
                 className="radio mr-2"
+                disabled={isReadOnly}
                 checked={priceType === "full"}
                 onChange={({ target }) =>
                   setPriceType(target.value as PriceType)
@@ -126,6 +135,7 @@ export const AddItemForm = () => {
                 type="radio"
                 value="per item"
                 className="radio mr-2"
+                disabled={isReadOnly}
                 checked={priceType === "per item"}
                 onChange={({ target }) =>
                   setPriceType(target.value as PriceType)

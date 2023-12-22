@@ -5,7 +5,7 @@ export interface Item {
   amount: number;
   equally: boolean;
   discount?: number;
-  users: Record<string, { id: string; value: number }>;
+  users: Record<string, { id: string; value?: number }>;
 }
 export interface ItemDTO {
   id: string;
@@ -14,5 +14,5 @@ export interface ItemDTO {
   amount: number;
   equally: boolean;
   discount?: number;
-  users: Array<{ id: string; value: number }>;
+  users: Array<{ id: string; value?: number }>;
 }
