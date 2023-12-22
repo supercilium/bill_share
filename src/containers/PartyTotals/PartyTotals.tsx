@@ -31,7 +31,7 @@ export const PartyTotals: FC<{
   const shouldRotate = baseTotal.toString().length >= 8 && !hasPartial;
 
   const discount = partySettings.isPercentage
-    ? +baseTotal * (partySettings.discount || 0) * 0.01
+    ? +baseTotal * (partySettings.discount ?? 0) * 0.01
     : partySettings.discount;
 
   return (
@@ -82,7 +82,7 @@ export const PartyTotals: FC<{
       >
         <span className="is-size-6 has-text-right">{t("DISCOUNT")}</span>
         <span className={sumClassName} />
-        <span className={sumClassName}>{Number(discount || 0).toFixed(2)}</span>
+        <span className={sumClassName}>{Number(discount ?? 0).toFixed(2)}</span>
 
         <span
           className={cx(sumClassName, {
@@ -113,7 +113,7 @@ export const PartyTotals: FC<{
               {(
                 getPartyUserDiscount(party.items, id) +
                 getPartyUserBaseTotal(party.items, id) *
-                  (partySettings.discountPercent || 0) *
+                  (partySettings.discountPercent ?? 0) *
                   0.01
               ).toFixed(2)}
             </span>
@@ -131,7 +131,7 @@ export const PartyTotals: FC<{
         <span className="is-size-6 has-text-right">{t("TOTAL")}</span>
         <span className={sumClassName} />
         <span className={sumClassName}>
-          {Number(getPartyTotal(party.items) - (discount || 0)).toFixed(2)}
+          {Number(getPartyTotal(party.items) - (discount ?? 0)).toFixed(2)}
         </span>
 
         <span
@@ -139,7 +139,7 @@ export const PartyTotals: FC<{
             "is-invisible": !partySettings.isDiscountVisible,
           })}
         >
-          {Number(totalDiscount + (discount || 0)).toFixed(2)}
+          {Number(totalDiscount + (discount ?? 0)).toFixed(2)}
         </span>
         <span
           className={cx(sumClassName, {
@@ -151,7 +151,7 @@ export const PartyTotals: FC<{
             const baseTotal = getPartyUserBaseTotal(party.items, id);
             const discount =
               getPartyUserDiscount(party.items, id) +
-              baseTotal * (partySettings.discountPercent || 0) * 0.01;
+              baseTotal * (partySettings.discountPercent ?? 0) * 0.01;
             return (
               <span
                 key={id}

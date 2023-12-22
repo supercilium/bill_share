@@ -2,22 +2,22 @@ import { Item } from "../types/item";
 
 export const getItemParticipants = (item: Item) =>
   item.equally
-    ? Object.values(item.users).filter((user) => user?.value >= 0)
-    : Object.values(item.users).filter((user) => user?.value > 0);
+    ? Object.values(item.users).filter((user) => "value" in user)
+    : Object.values(item.users).filter((user) => (user?.value ?? 0) > 0);
 
-export const getItemBaseTotal = (item: Item, amount: number) =>
-  item.price * (amount || 0);
+export const getItemBaseTotal = (item: Item, amount?: number) =>
+  item.price * (amount ?? 0);
 
-export const getItemDiscount = (item: Item, amount: number) =>
-  0.01 * (item.discount || 0) * (amount || 0) * item.price;
+export const getItemDiscount = (item: Item, amount?: number) =>
+  0.01 * (item.discount ?? 0) * (amount ?? 0) * item.price;
 
-export const getItemTotal = (item: Item, amount: number) =>
+export const getItemTotal = (item: Item, amount?: number) =>
   getItemBaseTotal(item, amount) - getItemDiscount(item, amount);
 
 export const getTotalDiscount = (items: Item[]) =>
   items.reduce(
     (acc, item) =>
-      acc + item.price * 0.01 * (item.discount || 0) * (item.amount || 0),
+      acc + item.price * 0.01 * (item.discount ?? 0) * (item.amount || 0),
     0
   );
 
@@ -30,7 +30,8 @@ export const getPartyTotal = (items: Item[]) =>
 export const getPartyUserBaseTotal = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    if (item.users[id]?.value >= 0) {
+    // it's -1 for tha shared items because there is no value
+    if ((item.users[id]?.value ?? -1) >= 0) {
       return (
         acc +
         (item.equally
@@ -44,7 +45,7 @@ export const getPartyUserBaseTotal = (items: Item[], id: string) =>
 export const getPartyUserDiscount = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    if (item.users[id]?.value >= 0) {
+    if ((item.users[id]?.value ?? -1) >= 0) {
       return (
         acc +
         (item.equally
@@ -82,7 +83,12 @@ export const splitItems = (
     [];
 
   items.forEach((item, i) => {
-    if (item.users[userId] && (item.equally || item.users[userId].value > 0)) {
+    if (
+      item.users[userId] &&
+      (item.equally
+        ? item.users[userId] && "value" in item.users[userId]
+        : (item.users[userId].value ?? 0) > 0)
+    ) {
       const participants = getItemParticipants(item);
       userItems.push({
         ...item,
@@ -92,7 +98,7 @@ export const splitItems = (
           ? getItemTotal(item, item.amount) / participants.length
           : getItemTotal(item, item.users[userId].value),
       });
-      if (!item.equally && item.users[userId].value < item.amount) {
+      if (!item.equally && (item.users[userId].value ?? 0) < item.amount) {
         restItems.push({ ...item, originalIndex: i, isMuted: true });
       }
     } else {

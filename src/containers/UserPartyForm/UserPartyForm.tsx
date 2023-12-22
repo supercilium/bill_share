@@ -26,14 +26,15 @@ const AMOUNT_COL_WIDTH = "110px";
 export const UserPartyForm: FC<{
   party: PartyInterface;
   user: User;
-}> = ({ party, user }) => {
+  isReadOnly?: boolean;
+}> = ({ party, user, isReadOnly = true }) => {
   const { partyId } = useParams();
   const handlers = useParty({ party });
   const { register, formState, watch: watchParty } = handlers;
   const { isValid, errors } = formState;
   const { watch } = useFormContext<FormSettings>();
   const partySettings = watch();
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+  const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}") || {};
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -123,7 +124,15 @@ export const UserPartyForm: FC<{
     total * (partySettings.discountPercent ?? 0) * 0.01;
 
   return (
-    <Block title={<PartyHeader users={party.users} master={party.owner} />}>
+    <Block
+      title={
+        <PartyHeader
+          isReadOnly={isReadOnly}
+          users={party.users}
+          master={party.owner}
+        />
+      }
+    >
       {!party.items?.length ? (
         <EmptyPartyLayout />
       ) : (
@@ -163,6 +172,7 @@ export const UserPartyForm: FC<{
                                 type="button"
                                 className="delete mr-2"
                                 title={t("BUTTON_REMOVE_FROM_MY_BILL")}
+                                disabled={isReadOnly}
                                 onClick={() =>
                                   handleRemoveItemFromUser(item.id)
                                 }
@@ -170,6 +180,9 @@ export const UserPartyForm: FC<{
                               <Field
                                 error={errors.items?.[i]?.name}
                                 onEnter={() => {
+                                  if (isReadOnly) {
+                                    return;
+                                  }
                                   const value = watchParty(
                                     `items.${item.originalIndex}.name`
                                   );
@@ -183,6 +196,7 @@ export const UserPartyForm: FC<{
                                 }}
                                 inputProps={{
                                   type: "text",
+                                  disabled: isReadOnly,
                                   ...register(
                                     `items.${item.originalIndex}.name`
                                   ),
@@ -222,6 +236,7 @@ export const UserPartyForm: FC<{
                                         });
                                       }}
                                       inputProps={{
+                                        disabled: isReadOnly,
                                         type: "number",
                                         min: 0,
                                         ...register(
@@ -247,10 +262,12 @@ export const UserPartyForm: FC<{
                                     type="button"
                                     className="button ml-2 is-primary is-small is-rounded pl-2 pr-2"
                                     title={t("BUTTON_ONE_MORE")}
+                                    disabled={isReadOnly}
                                     onClick={() =>
                                       handleUpdateUserItem({
                                         itemId: item.id,
-                                        value: item.users[userId].value + 1,
+                                        value:
+                                          (item.users[userId].value ?? 0) + 1,
                                       })
                                     }
                                   >
@@ -284,6 +301,7 @@ export const UserPartyForm: FC<{
                                 }}
                                 inputProps={{
                                   type: "number",
+                                  disabled: isReadOnly,
                                   min: 0,
                                   ...register(
                                     `items.${item.originalIndex}.price`
@@ -316,7 +334,7 @@ export const UserPartyForm: FC<{
                                   const value = +(
                                     watchParty(
                                       `items.${item.originalIndex}.discount`
-                                    ) || 0
+                                    ) ?? 0
                                   );
                                   if (value === item.discount) {
                                     return;
@@ -328,6 +346,7 @@ export const UserPartyForm: FC<{
                                 }}
                                 inputProps={{
                                   type: "number",
+                                  disabled: isReadOnly,
                                   step: 5,
                                   min: 0,
                                   max: 100,
@@ -355,6 +374,7 @@ export const UserPartyForm: FC<{
                             <Field
                               label={t("LABEL_SHARE_FOR_ALL")}
                               inputProps={{
+                                disabled: isReadOnly,
                                 type: "checkbox",
                                 ...register(
                                   `items.${item.originalIndex}.equally`
@@ -408,10 +428,12 @@ export const UserPartyForm: FC<{
                       key={item.id}
                       className={cx({
                         "has-text-grey": item.isMuted,
-                        "is-clickable": !item.isMuted,
+                        "is-clickable": !item.isMuted && !isReadOnly,
                       })}
                       onClick={() =>
-                        !item.isMuted && handleChangeUserInItem(item)
+                        !isReadOnly &&
+                        !item.isMuted &&
+                        handleChangeUserInItem(item)
                       }
                       title={
                         item.isMuted

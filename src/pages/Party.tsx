@@ -51,6 +51,8 @@ const mapEventToText: Partial<
   "remove item": "ALERT_INFO_ITEM_REMOVED",
 };
 
+const CONNECTION_ERROR_PROMPT_ID = "no_socket_connection";
+
 const getAlertData = (event: EventResponseDTO): Notification | null => {
   if (event.type === "error") {
     return { text: event.message, mode: "danger" };
@@ -111,7 +113,7 @@ export const Party = () => {
         if (window.localStorage.getItem(GUEST_KEY)) {
           window.localStorage.removeItem(GUEST_KEY);
         }
-        const party = sortPartyUsers(result, user?.id || "");
+        const party = sortPartyUsers(result, user?.id ?? "");
         return Promise.resolve(party);
       }),
     {
@@ -202,7 +204,7 @@ export const Party = () => {
         if (alertData) {
           addAlert(alertData);
         }
-        const processedData = sortPartyUsers(data.party, user?.id || "");
+        const processedData = sortPartyUsers(data.party, user?.id ?? "");
         queryClient.setQueryData(["party", partyId, user], processedData);
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -230,6 +232,30 @@ export const Party = () => {
   }, [navigate, pathname, user]);
 
   useLogout({ queryKey: ["party", partyId, user] });
+
+  const isReadOnly = socketState !== SOCKET_STATE.open;
+
+  useEffect(() => {
+    if (status === "loading" || socketState === SOCKET_STATE.connecting) {
+      removePrompt(CONNECTION_ERROR_PROMPT_ID);
+      return;
+    }
+
+    if (socketState === SOCKET_STATE.closed) {
+      addPrompt({
+        title: t("ERROR_DEFAULT_TITLE"),
+        text: t("ERROR_NO_CONNECTION"),
+        confirmLabel: t("BUTTON_RECONNECT"),
+        id: CONNECTION_ERROR_PROMPT_ID,
+        onConfirm: () => {
+          partyId && Transport.connect(partyId);
+        },
+      });
+    } else {
+      removePrompt(CONNECTION_ERROR_PROMPT_ID);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socketState, status, isReadOnly, partyId]);
 
   if (status === "loading" || socketState === SOCKET_STATE.connecting) {
     return (
@@ -276,35 +302,26 @@ export const Party = () => {
     );
   }
 
-  if (socketState !== SOCKET_STATE.open) {
-    return (
-      <HeroLayout>
-        <div>
-          <p className="title">{t("ERROR_DEFAULT_TITLE")}</p>
-          <p className="subtitle is-flex is-align-items-baseline">
-            {t("ERROR_NO_CONNECTION")}
-            <button
-              onClick={() => Transport.connect(partyId)}
-              className="button ml-2"
-            >
-              {t("BUTTON_RECONNECT")}
-            </button>
-          </p>
-        </div>
-      </HeroLayout>
-    );
-  }
-
   const renderMain = () => {
     return (
       <>
         <MainFormView
           UserView={({ user }) => (
-            <UserPartyForm party={party} user={user || currentUser} />
+            <UserPartyForm
+              isReadOnly={isReadOnly}
+              party={party}
+              user={user ?? currentUser}
+            />
           )}
-          PartyView={() => <PartyView party={party} user={currentUser} />}
+          PartyView={() => (
+            <PartyView
+              isReadOnly={isReadOnly}
+              party={party}
+              user={currentUser}
+            />
+          )}
         />
-        <AddItemForm />
+        <AddItemForm isReadOnly={isReadOnly} />
       </>
     );
   };
@@ -327,7 +344,8 @@ export const Party = () => {
         }
         Main={<Main>{renderMain()}</Main>}
         Aside={
-          !isNoUser && (
+          !isNoUser &&
+          !isReadOnly && (
             <Aside>
               <PartySettings party={party} />
             </Aside>
