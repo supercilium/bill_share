@@ -52,6 +52,8 @@ export const Navbar: FC<NavbarProps> = ({
     navigate("/dashboard");
   };
 
+  const hasUserLinks = user?.role === "AUTHENTICATED";
+
   const renderUserMenu = useCallback(
     (user: User) => (
       <div className="navbar-item has-dropdown is-hoverable">
@@ -63,28 +65,32 @@ export const Navbar: FC<NavbarProps> = ({
             "is-boxed has-background-dark": navbarProps?.isTransparent,
           })}
         >
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              cx("navbar-item", {
-                "is-active": isActive,
-              })
-            }
-          >
-            {t("LINK_DASHBOARD")}
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              cx("navbar-item", {
-                "is-active": isActive,
-              })
-            }
-          >
-            {t("LINK_MY_ACCOUNT")}
-          </NavLink>
-          {/* <a className="navbar-item">Stats</a> */}
-          <hr className="navbar-divider" />
+          {hasUserLinks && (
+            <>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  cx("navbar-item", {
+                    "is-active": isActive,
+                  })
+                }
+              >
+                {t("LINK_DASHBOARD")}
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  cx("navbar-item", {
+                    "is-active": isActive,
+                  })
+                }
+              >
+                {t("LINK_MY_ACCOUNT")}
+              </NavLink>
+              {/* <a className="navbar-item">Stats</a> */}
+              <hr className="navbar-divider" />
+            </>
+          )}
           <a
             target="_blank"
             rel="noreferrer"
@@ -96,7 +102,7 @@ export const Navbar: FC<NavbarProps> = ({
         </div>
       </div>
     ),
-    [navbarProps?.isTransparent, t]
+    [navbarProps?.isTransparent, t, hasUserLinks]
   );
 
   return (

@@ -5,6 +5,7 @@ export interface User {
   email?: string;
   isConfirmed?: boolean;
   avatar?: string;
+  role?: "AUTHENTICATED" | "PSEUDO";
 }
 
 export interface LoginInterface {
