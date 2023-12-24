@@ -231,6 +231,24 @@ export const Party = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, user]);
 
+  useEffect(() => {
+    const handleReconnect = () => {
+      partyId && user && Transport.connect(partyId);
+    };
+    const handleDisconnect = () => {
+      Transport.terminate();
+    };
+
+    window.addEventListener("online", handleReconnect);
+    window.addEventListener("offline", handleDisconnect);
+
+    return () => {
+      window.removeEventListener("online", handleReconnect);
+      window.removeEventListener("offline", handleReconnect);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useLogout({ queryKey: ["party", partyId, user] });
 
   const isReadOnly = socketState !== SOCKET_STATE.open;
