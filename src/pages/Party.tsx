@@ -14,7 +14,6 @@ import { PartySettingsProvider } from "../contexts/PartySettingsContext";
 import { UserPartyForm } from "../containers/UserPartyForm";
 import { MainFormView } from "../containers/MainFormView";
 import { PartyView } from "../containers/PartyView";
-import { Navbar } from "../containers/Navbar";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useUser } from "../contexts/UserContext";
 import { PartyInterface } from "../types/party";
@@ -229,7 +228,8 @@ export const Party = () => {
     if (!user && pathname) {
       navigate(`/login?returnPath=${pathname}`);
     }
-  }, [navigate, pathname, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, user]);
 
   useLogout({ queryKey: ["party", partyId, user] });
 

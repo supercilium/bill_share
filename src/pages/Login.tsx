@@ -27,7 +27,7 @@ export const Login = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, search, navigate]);
+  }, [user, search]);
 
   return (
     <PlainLayout

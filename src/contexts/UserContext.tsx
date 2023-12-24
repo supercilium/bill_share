@@ -46,7 +46,8 @@ export const UserProvider: FC<{
         queryClient.setQueryData(["user"], data),
       refetch: () => query.refetch(),
     }),
-    [query, queryClient]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [query.data, queryClient.setQueryData, query.refetch]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

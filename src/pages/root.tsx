@@ -8,6 +8,7 @@ import { Navbar } from "../containers/Navbar";
 import { Footer as FooterComponent } from "../components";
 import { useTranslation } from "react-i18next";
 import { ScrollRestoration } from "react-router-dom";
+import { createPortal } from "react-dom";
 
 const ROUTES_WITHOUT_AUTH_BUTTONS = ["profile", "dashboard"];
 const ROUTES_WITH_HERO_LAYOUT = [
@@ -17,18 +18,18 @@ const ROUTES_WITH_HERO_LAYOUT = [
 ];
 const ROUTES_WITH_TRANSPARENT_NAVBAR = ["/"];
 
+const checkRoutes = (
+  routes: string[],
+  location: ReturnType<typeof useLocation>
+) => routes.some((pattern) => matchPath(pattern, location.pathname));
+
 export const Root = () => {
   const location = useLocation();
-  const hasAuthButtons = !ROUTES_WITHOUT_AUTH_BUTTONS.some((pattern) =>
-    matchPath(pattern, location.pathname)
-  );
-  const hasFixedNavbar = !ROUTES_WITH_HERO_LAYOUT.some((pattern) =>
-    matchPath(pattern, location.pathname)
-  );
-  const hasCustomNavbar = ROUTES_WITH_TRANSPARENT_NAVBAR.some((pattern) =>
-    matchPath(pattern, location.pathname)
-  );
+  const hasAuthButtons = !checkRoutes(ROUTES_WITHOUT_AUTH_BUTTONS, location);
+  const hasFixedNavbar = !checkRoutes(ROUTES_WITH_HERO_LAYOUT, location);
+  const hasCustomNavbar = checkRoutes(ROUTES_WITH_TRANSPARENT_NAVBAR, location);
   const { t } = useTranslation();
+  const heroFooterComponent = document.getElementById("hero-footer");
 
   return (
     <Suspense
@@ -50,7 +51,14 @@ export const Root = () => {
         />
       )}
       <Outlet />
-      {hasFixedNavbar && <FooterComponent>{t("TITLE_FOOTER")}</FooterComponent>}
+      {heroFooterComponent ? (
+        createPortal(
+          <FooterComponent>{t("TITLE_FOOTER")}</FooterComponent>,
+          heroFooterComponent
+        )
+      ) : (
+        <FooterComponent>{t("TITLE_FOOTER")}</FooterComponent>
+      )}
       <ScrollRestoration />
       <NotificationList />
       <PromptList />

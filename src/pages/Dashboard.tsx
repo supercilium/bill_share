@@ -16,7 +16,8 @@ export const Dashboard = () => {
     if (!user) {
       navigate("/");
     }
-  }, [navigate, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <PlainLayout

@@ -74,6 +74,7 @@ export const Field: FC<{
           <input
             className={cx(classNameInput, { "is-danger": error })}
             onKeyUp={(e) => e.key === "Enter" && onEnter && onEnter(e)}
+            id={inputProps.name}
             {...inputProps}
           />
         )}

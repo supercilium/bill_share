@@ -47,7 +47,8 @@ export const Profile = () => {
     if (!user) {
       navigate("/");
     }
-  }, [navigate, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const items: React.ComponentProps<typeof DefinitionList>["items"] = [
     {

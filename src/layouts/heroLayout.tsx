@@ -12,9 +12,7 @@ export const HeroLayout: FC<PlainLayoutInterface> = ({ children }) => {
   return (
     <section className="hero is-fullheight">
       <div className="hero-body">{children}</div>
-      <div className="hero-foot">
-        <Footer>{t("TITLE_FOOTER")}</Footer>
-      </div>
+      <div className="hero-foot" id="hero-footer" />
     </section>
   );
 };
