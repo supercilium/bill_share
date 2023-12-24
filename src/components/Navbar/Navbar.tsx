@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "./Navbar.scss";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface NavbarProps {
   NavbarStartItems?: React.ReactNode;
@@ -26,6 +26,14 @@ export const Navbar: FC<NavbarProps> = ({
     navbarProps?.isTransparent ? " is-transparent" : ""
   }`;
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (isOpened) {
+      setIsOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <div className={cx({ "sticky-navbar": navbarProps?.isFixed })}>

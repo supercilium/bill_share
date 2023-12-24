@@ -329,7 +329,6 @@ export const Party = () => {
   return (
     <PartySettingsProvider isOnline={socketState === SOCKET_STATE.open}>
       <PlainLayout
-        Navbar={<Navbar navbarProps={{ hasShadow: true, isFixed: true }} />}
         Header={
           <Header>
             <h2 className="title">

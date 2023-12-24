@@ -1,10 +1,8 @@
 import { FC, ReactNode } from "react";
 import { Navbar } from "../containers/Navbar";
-import { useScrollTop } from "../hooks/useScrollTop";
 
 interface LandingLayoutProps {
   sections: ReactNode;
-  footer: ReactNode;
   showcase: {
     body: ReactNode;
     foot?: ReactNode;
@@ -14,10 +12,7 @@ interface LandingLayoutProps {
 export const LandingLayout: FC<LandingLayoutProps> = ({
   showcase,
   sections,
-  footer,
 }) => {
-  useScrollTop();
-
   return (
     <>
       <div className="hero is-dark hero-with-background is-fullheight">
@@ -28,7 +23,6 @@ export const LandingLayout: FC<LandingLayoutProps> = ({
         <div className="hero-foot">{showcase.foot}</div>
       </div>
       {sections}
-      {footer}
     </>
   );
 };
