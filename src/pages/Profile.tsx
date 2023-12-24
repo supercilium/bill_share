@@ -1,7 +1,6 @@
 import { Main } from "../components";
 import { PlainLayout } from "../layouts/plain";
 import { useUser } from "../contexts/UserContext";
-import { Navbar } from "../containers/Navbar";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { DefinitionList } from "../components/DefinitionList";
@@ -95,7 +94,6 @@ export const Profile = () => {
 
   return (
     <PlainLayout
-      Navbar={<Navbar shouldShowAuthButtons={false} />}
       Main={
         <Main>
           {user && (

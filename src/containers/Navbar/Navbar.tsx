@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { NavLink } from "react-router-dom";
 import { useQuery } from "react-query";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
@@ -34,7 +34,6 @@ export const Navbar: FC<NavbarProps> = ({
     "login" | "registration" | null
   >(null);
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const { refetch } = useQuery(["logout"], () => fetchLogout, {
     retry: false,
@@ -64,22 +63,26 @@ export const Navbar: FC<NavbarProps> = ({
             "is-boxed has-background-dark": navbarProps?.isTransparent,
           })}
         >
-          <Link
+          <NavLink
             to="/dashboard"
-            className={cx("navbar-item", {
-              "is-active": pathname === "/dashboard",
-            })}
+            className={({ isActive }) =>
+              cx("navbar-item", {
+                "is-active": isActive,
+              })
+            }
           >
             {t("LINK_DASHBOARD")}
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/profile"
-            className={cx("navbar-item", {
-              "is-active": pathname === "/profile",
-            })}
+            className={({ isActive }) =>
+              cx("navbar-item", {
+                "is-active": isActive,
+              })
+            }
           >
             {t("LINK_MY_ACCOUNT")}
-          </Link>
+          </NavLink>
           {/* <a className="navbar-item">Stats</a> */}
           <hr className="navbar-divider" />
           <a
@@ -93,7 +96,7 @@ export const Navbar: FC<NavbarProps> = ({
         </div>
       </div>
     ),
-    [navbarProps?.isTransparent, pathname, t]
+    [navbarProps?.isTransparent, t]
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, { ReactNode, Suspense } from "react";
+import React, { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import "./App.scss";
@@ -24,9 +24,7 @@ import {
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import { NotificationList } from "./containers/NotificationList";
 import { ErrorPage } from "./pages/Error";
-import { HeroLayout } from "./layouts/heroLayout";
 import { Loader } from "./components/Loader";
 import { ServiceAgreement } from "./pages/Agreement";
 import { Confirmation } from "./pages/Confirmation";
@@ -35,7 +33,9 @@ import { ChangePassword } from "./pages/ChangePassword";
 import { setXSRF } from "./utils/cookie";
 import i18n from "./services/i18next";
 import { PromptProvider } from "./contexts/PromptContext";
-import { PromptList } from "./containers/PromptList";
+import { ErrorBoundary } from "./containers/ErrorBoundary";
+import { Root } from "./pages/root";
+import { ErrorFallback } from "./layouts/errorFallback";
 
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Profile = React.lazy(() => import("./pages/Profile"));
@@ -60,60 +60,46 @@ library.add(
   faUpload
 );
 
-const withSuspense = (component: ReactNode) => (
-  <Suspense
-    fallback={
-      <HeroLayout>
-        <div className="is-flex container is-align-items-center is-flex-direction-column is-justify-content-center">
-          <Loader />
-        </div>
-      </HeroLayout>
-    }
-  >
-    {component}
-  </Suspense>
-);
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: withSuspense(<Home />),
-  },
-  {
-    path: "/party/:partyId",
-    element: withSuspense(<Party />),
-  },
-  {
-    path: "/login",
-    element: withSuspense(<Login />),
-  },
-  {
-    path: "/dashboard",
-    element: withSuspense(<Dashboard />),
-  },
-  {
-    path: "/profile",
-    element: withSuspense(<Profile />),
-  },
-  {
-    path: "/change-password",
-    element: <ChangePassword />,
-  },
-  {
-    path: "/confirm/:token",
-    element: <Confirmation />,
-  },
-  {
-    path: "/service-agreement",
-    element: <ServiceAgreement />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  {
-    path: "*",
-    element: <ErrorPage title="ERROR_404_TITLE" />,
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Home /> },
+      {
+        path: "party/:partyId",
+        element: <Party />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "change-password",
+        element: <ChangePassword />,
+      },
+      {
+        path: "confirm/:token",
+        element: <Confirmation />,
+      },
+      {
+        path: "service-agreement",
+        element: <ServiceAgreement />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
+      },
+    ],
   },
 ]);
 
@@ -131,30 +117,33 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <Suspense
-      fallback={
-        <div className="is-flex full-height container is-align-items-center is-flex-direction-column is-justify-content-center">
-          <Loader />
-        </div>
-      }
-    >
-      <I18nextProvider i18n={i18n}>
-        <QueryClientProvider client={queryClient}>
-          <NotificationProvider>
-            <PromptProvider>
-              <UserProvider>
-                <UISettingsProvider>
-                  <RouterProvider router={router} />
-                  <NotificationList />
-                  <PromptList />
-                </UISettingsProvider>
-              </UserProvider>
-            </PromptProvider>
-          </NotificationProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </I18nextProvider>
-    </Suspense>
+    <ErrorBoundary fallback={<ErrorFallback />}>
+      <Suspense
+        fallback={
+          <div className="is-flex full-height container is-align-items-center is-flex-direction-column is-justify-content-center">
+            <Loader />
+          </div>
+        }
+      >
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <NotificationProvider>
+              <PromptProvider>
+                <UserProvider>
+                  <UISettingsProvider>
+                    <RouterProvider
+                      router={router}
+                      fallbackElement={<ErrorPage />}
+                    />
+                  </UISettingsProvider>
+                </UserProvider>
+              </PromptProvider>
+            </NotificationProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </I18nextProvider>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 

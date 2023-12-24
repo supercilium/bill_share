@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { Columns, Footer } from "../components";
+import { Columns } from "../components";
 import { LoginForm } from "../containers/LoginForm";
 import { RegisterForm } from "../containers/RegisterForm";
 import { useState } from "react";
@@ -40,7 +40,6 @@ const Home = () => {
 
   return (
     <LandingLayout
-      footer={<Footer>{t("TITLE_FOOTER")}</Footer>}
       showcase={{
         foot: (
           <p className="subtitle is-size-5 has-text-grey-lighter has-text-centered mb-5">
