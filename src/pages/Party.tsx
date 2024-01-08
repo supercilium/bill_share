@@ -23,7 +23,6 @@ import {
   useNotifications,
   Notification,
 } from "../contexts/NotificationContext";
-import { CopyButton } from "../containers/CopyButton";
 import { Transport } from "../services/transport";
 import { SOCKET_STATE } from "../services/constants";
 import { sortPartyUsers } from "../utils/sort";
@@ -33,6 +32,8 @@ import { ErrorRequest } from "../__api__/helpers";
 import { GUEST_KEY } from "../containers/JoinPartyForm/JoinPartyForm";
 import { useTranslation } from "react-i18next";
 import i18n from "../services/i18next";
+import { SharePartyModal } from "../containers/SharePartyModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -90,6 +91,7 @@ export const Party = () => {
     JSON.parse(localStorage.getItem("user") ?? "{}") || {}
   );
   const { t } = useTranslation();
+  const [isSharingModalOpen, setSharingModalOpen] = useState(false);
 
   const queryClient = useQueryClient();
   const {
@@ -349,14 +351,22 @@ export const Party = () => {
       <PlainLayout
         Header={
           <Header>
-            <h2 className="title">
-              <CopyButton
-                title={t("TITLE_WELCOME_TO_PARTY", {
-                  name: currentUser.name ? `, ${currentUser.name}` : "",
-                  party: party?.name,
-                })}
-              />
+            <h2
+              className="title is-size-3 is-clickable is-flex container is-align-items-center"
+              onClick={() => setSharingModalOpen(true)}
+            >
+              {t("TITLE_WELCOME_TO_PARTY", {
+                name: currentUser.name ? `, ${currentUser.name}` : "",
+                party: party?.name,
+              })}
+              <span className="icon has-text-info ml-2">
+                <FontAwesomeIcon size="sm" icon="share-nodes" />
+              </span>
             </h2>
+            <SharePartyModal
+              isOpen={isSharingModalOpen}
+              onClose={() => setSharingModalOpen(false)}
+            />
           </Header>
         }
         Main={<Main>{renderMain()}</Main>}

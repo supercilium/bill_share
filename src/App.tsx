@@ -20,6 +20,7 @@ import {
   faEnvelope,
   faPencil,
   faUpload,
+  faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
@@ -57,7 +58,8 @@ library.add(
   faClone,
   faEnvelope,
   faPencil,
-  faUpload
+  faUpload,
+  faShareNodes
 );
 
 const router = createBrowserRouter([

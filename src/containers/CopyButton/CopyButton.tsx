@@ -7,9 +7,10 @@ import { useTranslation } from "react-i18next";
 
 interface CopyButtonProps {
   title: string;
+  onCopy?: () => void;
 }
 
-export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
+export const CopyButton: FC<CopyButtonProps> = ({ title, onCopy }) => {
   const [isCopied, setIsCopied] = useState(false);
   const { t } = useTranslation();
 
@@ -18,13 +19,14 @@ export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
     if (isCopied) {
       clearCopiedTimeout = setTimeout(() => {
         setIsCopied(false);
+        onCopy?.();
       }, 2000);
     }
 
     return () => {
       clearTimeout(clearCopiedTimeout);
     };
-  }, [isCopied]);
+  }, [isCopied, onCopy]);
 
   return (
     <button
@@ -35,7 +37,7 @@ export const CopyButton: FC<CopyButtonProps> = ({ title }) => {
         setIsCopied(result);
       }}
     >
-      <span className={cx("is-size-3", "mr-2", "has-text-black")}>{title}</span>
+      <span className={cx("is-size-4", "mr-2", "has-text-black")}>{title}</span>
       <span className={cx("copy-button-icon", { copied: isCopied })}>
         <FontAwesomeIcon
           size="lg"

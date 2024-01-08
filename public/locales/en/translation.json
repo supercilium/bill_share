@@ -146,5 +146,6 @@
     "TITLE_START_YOUR_PARTY": "Now it's time to start your own party",
     "TITLE_DONT_TRUST_US": "Don't trust us - verify with your calculator",
     "ALERT_REGISTER_SUCCESS": "Confirm that this is your email address to keep your account secure. We've just sent you an email.",
-    "ALERT_REGISTER_MAIL_SERVER_ERROR": "Your registration is completed. We've got an error with sending a confirmation email. Please try to confirm your account later from your profile."
+    "ALERT_REGISTER_MAIL_SERVER_ERROR": "Your registration is completed. We've got an error with sending a confirmation email. Please try to confirm your account later from your profile.",
+    "SCAN_QR_CODE": "Scan QR-code or copy a link address to your clipboard"
 }
