@@ -1,5 +1,5 @@
 export function getURL(path: RequestInfo) {
-  return `${process.env.REACT_APP_API_URL || "http://localhost:3001"}${path}`;
+  return `${process.env.REACT_APP_API_URL ?? "http://localhost:3001"}${path}`;
 }
 
 export interface ErrorRequest {
@@ -14,7 +14,7 @@ export interface ErrorRequest {
 export type FetchType = <JSON = unknown>(
   input: RequestInfo,
   init?: RequestInit
-) => Promise<JSON>;
+) => Promise<JSON & { status?: number }>;
 
 export const getCSRFToken = () => {
   const token = document
@@ -52,15 +52,22 @@ export const fetchAPI: FetchType = async (input, init) => {
         return;
       }
       const data = await response.json();
-      return data;
+      return { status: response.status, ...data };
     } else {
       if (response.status === 401) {
         return Promise.reject<ErrorRequest>({
           status: 401,
         });
       }
-      const error = await response.json();
-      return Promise.reject<ErrorRequest>(error);
+      try {
+        const error = await response.json();
+        return Promise.reject<ErrorRequest>(error);
+      } catch (err) {
+        return Promise.reject<ErrorRequest>({
+          status: response.status,
+          message: "Something went wrong, please try again later",
+        });
+      }
     }
   } catch (err) {
     return Promise.reject<ErrorRequest>(err);
