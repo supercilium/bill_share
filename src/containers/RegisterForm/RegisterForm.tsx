@@ -34,7 +34,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
   const { addAlert } = useNotifications();
   const { t } = useTranslation();
   const { mutate, isLoading, error } = useMutation<
-    User,
+    User & { status?: number },
     ErrorRequest,
     RegisterInterface,
     unknown
@@ -44,11 +44,17 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       setXSRF();
 
       setUser && setUser(data);
+
+      if (data.status === 206) {
+        addAlert({
+          mode: "warning",
+          text: t("ALERT_REGISTER_MAIL_SERVER_ERROR"),
+        });
+        return;
+      }
       addAlert({
         mode: "success",
-        text: `Confirm that this is your email address to keep your account secure. We've just sent you an email.`,
-        // TODO: need to create profile first
-        // You can resend confirmation email from your profile
+        text: t("ALERT_REGISTER_SUCCESS"),
       });
     },
     onError: async (error) => {
