@@ -32,6 +32,7 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
     setError,
     register,
     handleSubmit,
+    watch,
     formState: { errors, isValid, isDirty },
   } = useForm<ForgotPasswordInterface>({
     resolver: yupResolver(forgotPasswordSchema),
@@ -66,6 +67,14 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({
       clearInterval(timeout.current);
     }
   }, [blockedTime]);
+
+  const { email } = watch();
+  useEffect(() => {
+    if (blockedTime) {
+      setBlockedTime(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email]);
 
   const onSubmit: SubmitHandler<ForgotPasswordInterface> = async (data) => {
     if (!isValid || blockedTime) {

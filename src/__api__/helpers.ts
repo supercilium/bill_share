@@ -59,8 +59,15 @@ export const fetchAPI: FetchType = async (input, init) => {
           status: 401,
         });
       }
-      const error = await response.json();
-      return Promise.reject<ErrorRequest>(error);
+      try {
+        const error = await response.json();
+        return Promise.reject<ErrorRequest>(error);
+      } catch (err) {
+        return Promise.reject<ErrorRequest>({
+          status: response.status,
+          message: "Something went wrong, please try again later",
+        });
+      }
     }
   } catch (err) {
     return Promise.reject<ErrorRequest>(err);
