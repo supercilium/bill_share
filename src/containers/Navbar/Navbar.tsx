@@ -11,9 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 import { Block } from "../../components";
-import { useClickOutside } from "../../hooks/useClickOutside";
 import { User } from "../../types/user";
 import { Transport } from "../../services/transport";
+import { Modal } from "../../components/Modal";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -44,8 +44,6 @@ export const Navbar: FC<NavbarProps> = ({
       navigate("/");
     },
   });
-
-  const ref = useClickOutside<HTMLDivElement>(() => setOpenedPopup(null));
 
   const handleSuccess = () => {
     setOpenedPopup(null);
@@ -143,53 +141,41 @@ export const Navbar: FC<NavbarProps> = ({
         }
         navbarProps={navbarProps}
       />
-      {openedPopup && (
-        <div className={`modal${openedPopup ? " is-active" : ""}`}>
-          <div className="modal-background"></div>
-          <div ref={ref} className="modal-content">
-            <div className="box has-background-white">
-              <div className="tabs is-large">
-                <ul>
-                  <li className={cx({ "is-active": openedPopup === "login" })}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a role="button" onClick={() => setOpenedPopup("login")}>
-                      {t("BUTTON_LOG_IN")}
-                    </a>
-                  </li>
-                  <li
-                    className={cx({
-                      "is-active": openedPopup === "registration",
-                    })}
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a onClick={() => setOpenedPopup("registration")}>
-                      {t("BUTTON_REGISTER")}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {openedPopup === "login" ? (
-                <Block>
-                  <LoginForm
-                    closePopup={() => setOpenedPopup(null)}
-                    onLogin={handleSuccess}
-                  />
-                </Block>
-              ) : (
-                <Block>
-                  <RegisterForm onRegister={handleSuccess} />
-                </Block>
-              )}
-            </div>
-          </div>
-          <button
-            className="modal-close is-large"
-            aria-label="close"
-            onClick={() => setOpenedPopup(null)}
-          ></button>
+      <Modal isOpen={!!openedPopup} setIsOpen={setOpenedPopup}>
+        <div className="tabs is-large">
+          <ul>
+            <li className={cx({ "is-active": openedPopup === "login" })}>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a role="button" onClick={() => setOpenedPopup("login")}>
+                {t("BUTTON_LOG_IN")}
+              </a>
+            </li>
+            <li
+              className={cx({
+                "is-active": openedPopup === "registration",
+              })}
+            >
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a onClick={() => setOpenedPopup("registration")}>
+                {t("BUTTON_REGISTER")}
+              </a>
+            </li>
+          </ul>
         </div>
-      )}
+
+        {openedPopup === "login" ? (
+          <Block>
+            <LoginForm
+              closePopup={() => setOpenedPopup(null)}
+              onLogin={handleSuccess}
+            />
+          </Block>
+        ) : (
+          <Block>
+            <RegisterForm onRegister={handleSuccess} />
+          </Block>
+        )}
+      </Modal>
     </>
   );
 };

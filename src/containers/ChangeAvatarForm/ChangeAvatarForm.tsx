@@ -16,6 +16,7 @@ import {
   imageSchema,
 } from "../../services/validation";
 import { useTranslation } from "react-i18next";
+import { Modal } from "../../components/Modal";
 
 interface ChangeAvatarFormProps {}
 
@@ -102,91 +103,77 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
           />
         </div>
       </div>
-      {isEditing && (
-        <div className={`modal${isEditing ? " is-active" : ""}`}>
-          <div className="modal-background"></div>
-          <div className="modal-content">
-            <div className="box has-background-white">
-              <Block title={t("TITLE_UPLOAD_AVATAR")}>
-                <div className="is-flex is-justify-content-center my-5">
-                  {avatar ? (
-                    <div>
-                      <figure className="image is-128x128 image-preview">
-                        <img
-                          className="is-rounded has-background-grey"
-                          src={URL.createObjectURL(avatar)}
-                          alt="Avatar"
+      <Modal isOpen={isEditing} setIsOpen={setIsEditing}>
+        <Block title={t("TITLE_UPLOAD_AVATAR")}>
+          <div className="is-flex is-justify-content-center my-5">
+            {avatar ? (
+              <div>
+                <figure className="image is-128x128 image-preview">
+                  <img
+                    className="is-rounded has-background-grey"
+                    src={URL.createObjectURL(avatar)}
+                    alt="Avatar"
+                  />
+                </figure>
+                {(errors?.avatar?.message || error?.message) && (
+                  <p className="help is-danger">
+                    {errors?.avatar?.message || error?.message}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="file is-boxed">
+                <Controller
+                  control={control}
+                  name="avatar"
+                  render={({ field: { value, onChange, ...field } }) => {
+                    return (
+                      <label className="file-label">
+                        <input
+                          {...field}
+                          accept="image/*"
+                          className="file-input"
+                          type="file"
+                          onChange={(event) => {
+                            onChange(event.target.files?.[0]);
+                          }}
                         />
-                      </figure>
-                      {(errors?.avatar?.message || error?.message) && (
-                        <p className="help is-danger">
-                          {errors?.avatar?.message || error?.message}
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="file is-boxed">
-                      <Controller
-                        control={control}
-                        name="avatar"
-                        render={({ field: { value, onChange, ...field } }) => {
-                          return (
-                            <label className="file-label">
-                              <input
-                                {...field}
-                                accept="image/*"
-                                className="file-input"
-                                type="file"
-                                onChange={(event) => {
-                                  onChange(event.target.files?.[0]);
-                                }}
-                              />
 
-                              <span className="file-cta">
-                                <span className="file-icon">
-                                  <FontAwesomeIcon icon="upload" />
-                                </span>
-                                <span className="file-label">
-                                  {t("CHOOSE_FILE")}
-                                </span>
-                              </span>
-                            </label>
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className={cx("is-primary button", {
-                      "is-loading": isLoading,
-                    })}
-                    disabled={!isValid || !isDirty || isLoading}
-                  >
-                    {t("BUTTON_SUBMIT")}
-                  </button>
-                  {avatar && (
-                    <button
-                      type="button"
-                      className={cx("ml-3 button", { "is-loading": isLoading })}
-                      onClick={() => setValue("avatar", undefined)}
-                    >
-                      {t("BUTTON_CHOOSE_ANOTHER_FILE")}
-                    </button>
-                  )}
-                </div>
-              </Block>
-            </div>
+                        <span className="file-cta">
+                          <span className="file-icon">
+                            <FontAwesomeIcon icon="upload" />
+                          </span>
+                          <span className="file-label">{t("CHOOSE_FILE")}</span>
+                        </span>
+                      </label>
+                    );
+                  }}
+                />
+              </div>
+            )}
           </div>
-          <button
-            className="modal-close is-large"
-            aria-label="close"
-            onClick={onClose}
-          ></button>
-        </div>
-      )}
+          <div>
+            <button
+              type="submit"
+              className={cx("is-primary button", {
+                "is-loading": isLoading,
+              })}
+              disabled={!isValid || !isDirty || isLoading}
+            >
+              {t("BUTTON_SUBMIT")}
+            </button>
+            {avatar && (
+              <button
+                type="button"
+                className={cx("ml-3 button", { "is-loading": isLoading })}
+                onClick={() => setValue("avatar", undefined)}
+              >
+                {t("BUTTON_CHOOSE_ANOTHER_FILE")}
+              </button>
+            )}
+          </div>
+        </Block>
+      </Modal>
     </form>
   );
 };
