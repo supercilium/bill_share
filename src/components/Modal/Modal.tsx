@@ -4,11 +4,11 @@ import { useClickOutside } from "../../hooks/useClickOutside";
 interface ModalProps {
   children: ReactNode;
   isOpen: boolean;
-  setIsOpen: (value: any) => void;
+  onClose: () => void;
 }
 
 export const Modal: FC<ModalProps> = (props) => {
-  const ref = useClickOutside<HTMLDivElement>(() => props.setIsOpen(null));
+  const ref = useClickOutside<HTMLDivElement>(() => props.onClose());
 
   if (!props.isOpen) {
     return null;
@@ -22,7 +22,7 @@ export const Modal: FC<ModalProps> = (props) => {
       <button
         className="modal-close is-large"
         aria-label="close"
-        onClick={() => props.setIsOpen(null)}
+        onClick={() => props.onClose()}
       ></button>
     </div>
   );

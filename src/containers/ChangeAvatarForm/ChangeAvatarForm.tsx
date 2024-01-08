@@ -103,7 +103,7 @@ export const ChangeAvatarForm: FC<ChangeAvatarFormProps> = () => {
           />
         </div>
       </div>
-      <Modal isOpen={isEditing} setIsOpen={setIsEditing}>
+      <Modal isOpen={isEditing} onClose={onClose}>
         <Block title={t("TITLE_UPLOAD_AVATAR")}>
           <div className="is-flex is-justify-content-center my-5">
             {avatar ? (

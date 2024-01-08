@@ -141,7 +141,7 @@ export const Navbar: FC<NavbarProps> = ({
         }
         navbarProps={navbarProps}
       />
-      <Modal isOpen={!!openedPopup} setIsOpen={setOpenedPopup}>
+      <Modal isOpen={!!openedPopup} onClose={() => setOpenedPopup(null)}>
         <div className="tabs is-large">
           <ul>
             <li className={cx({ "is-active": openedPopup === "login" })}>
