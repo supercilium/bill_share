@@ -1,3 +1,4 @@
+import { Translation } from "react-i18next";
 import { Card } from "../components/Card";
 import { PartyInterface } from "../types/party";
 import { COCKTAIL_PARTY } from "./cocktail-party";
@@ -22,11 +23,11 @@ export const DATA_MOCKS: Record<PartiesShowcase, PartyInterface> = {
 };
 
 export const TAB_LABELS: Record<PartiesShowcase, string> = {
-  shared: "Shared everything",
-  parts: "In parts",
-  discount: "With discount",
-  "discount-percentage": "With discount in %",
-  "discount-items": "With discount for some items",
+  shared: "LANDING_TAB_LABEL_SHARED",
+  parts: "LANDING_TAB_LABEL_PARTS",
+  discount: "LANDING_TAB_LABEL_DISCOUNT",
+  "discount-percentage": "LANDING_TAB_LABEL_DISCOUNT_PERCENTAGE",
+  "discount-items": "LANDING_TAB_LABEL_DISCOUNT_ITEMS",
 };
 
 export const CARDS: Array<React.ComponentPropsWithoutRef<typeof Card>> = [
@@ -35,22 +36,20 @@ export const CARDS: Array<React.ComponentPropsWithoutRef<typeof Card>> = [
       isFullHeight: true,
     },
     image: { imageUrl: "/static/media/get-some-drinks.jpg" },
-    content: (
-      <p>Share party with friends and start adding your drinks and snaks</p>
-    ),
+    content: <Translation>{(t) => <p>{t("LANDING_CARD_1")}</p>}</Translation>,
   },
   {
     card: {
       isFullHeight: true,
     },
     image: { imageUrl: "/static/media/pay-bill.jpg" },
-    content: <p>Check, please! You already know how much you should pay</p>,
+    content: <Translation>{(t) => <p>{t("LANDING_CARD_2")}</p>}</Translation>,
   },
   {
     card: {
       isFullHeight: true,
     },
     image: { imageUrl: "/static/media/friends-convince.jpg" },
-    content: <p>Convince your friends to return your money</p>,
+    content: <Translation>{(t) => <p>{t("LANDING_CARD_3")}</p>}</Translation>,
   },
 ];

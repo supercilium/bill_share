@@ -3,15 +3,15 @@ import { PartyInterface } from "../types/party";
 export const MEAT_PARTY: PartyInterface = {
   owner: {
     id: "your-id",
-    name: "You",
+    name: "PARTY_NAME_OWNER",
   },
-  name: "Meat party",
+  name: "MEAT_PARTY_NAME",
   discount: 100.0,
   id: "meat-party-id",
   isPercentage: false,
   items: [
     {
-      name: "Roast beef",
+      name: "MEAT_PARTY_ITEM_1",
       id: "roast-beef-id",
       price: 220.0,
       amount: 2,
@@ -29,7 +29,7 @@ export const MEAT_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Chicken wings",
+      name: "MEAT_PARTY_ITEM_2",
       id: "chicken-wings-salad",
       price: 160.0,
       amount: 1,
@@ -51,7 +51,7 @@ export const MEAT_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Hamburger",
+      name: "MEAT_PARTY_ITEM_3",
       id: "hamburger-id",
       price: 80.0,
       amount: 1,
@@ -65,7 +65,7 @@ export const MEAT_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Sparkling water",
+      name: "MEAT_PARTY_ITEM_4",
       id: "water-id",
       price: 5.0,
       amount: 5,
@@ -90,15 +90,15 @@ export const MEAT_PARTY: PartyInterface = {
   users: {
     "your-id": {
       id: "your-id",
-      name: "You",
+      name: "PARTY_NAME_OWNER",
     },
     "devil-ray-id": {
       id: "devil-ray-id",
-      name: "Devil ray",
+      name: "MEAT_PARTY_NAME_1",
     },
     "firefish-id": {
       id: "firefish-id",
-      name: "Firefish",
+      name: "MEAT_PARTY_NAME_2",
     },
   },
 };

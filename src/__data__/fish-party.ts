@@ -3,15 +3,15 @@ import { PartyInterface } from "../types/party";
 export const FISH_PARTY: PartyInterface = {
   owner: {
     id: "your-id",
-    name: "You",
+    name: "PARTY_NAME_OWNER",
   },
-  name: "Just party",
+  name: "FISH_PARTY_NAME",
   discount: 0.0,
   id: "fish-party-id",
   isPercentage: false,
   items: [
     {
-      name: "Beer",
+      name: "FISH_PARTY_ITEM_1",
       id: "beer-id",
       price: 100.0,
       amount: 4,
@@ -33,7 +33,7 @@ export const FISH_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Chips",
+      name: "FISH_PARTY_ITEM_2",
       id: "chips-id",
       price: 16.0,
       amount: 3,
@@ -55,7 +55,7 @@ export const FISH_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Fish",
+      name: "FISH_PARTY_ITEM_3",
       id: "fish-id",
       price: 45.0,
       amount: 2,
@@ -72,15 +72,15 @@ export const FISH_PARTY: PartyInterface = {
   users: {
     "your-id": {
       id: "your-id",
-      name: "You",
+      name: "PARTY_NAME_OWNER",
     },
     "bonito-id": {
       id: "bonito-id",
-      name: "Bonito",
+      name: "FISH_PARTY_NAME_1",
     },
     "salmon-id": {
       id: "salmon-id",
-      name: "Salmon",
+      name: "FISH_PARTY_NAME_2",
     },
   },
 };

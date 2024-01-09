@@ -3,15 +3,15 @@ import { PartyInterface } from "../types/party";
 export const COCKTAIL_PARTY: PartyInterface = {
   owner: {
     id: "your-id",
-    name: "You",
+    name: "PARTY_NAME_OWNER",
   },
-  name: "Cocktail party",
+  name: "COCKTAIL_PARTY_NAME",
   discount: 10.0,
   id: "cocktail-party-id",
   isPercentage: true,
   items: [
     {
-      name: "Whiskey sour",
+      name: "COCKTAIL_PARTY_ITEM_1",
       id: "whiskey-sour-id",
       price: 220.0,
       amount: 10,
@@ -29,7 +29,7 @@ export const COCKTAIL_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Long Island Ice Tea",
+      name: "COCKTAIL_PARTY_ITEM_2",
       id: "long-island-ice-tea-id",
       price: 160.0,
       amount: 3,
@@ -47,7 +47,7 @@ export const COCKTAIL_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Bloody mary",
+      name: "COCKTAIL_PARTY_ITEM_3",
       id: "hamburger-id",
       price: 180.0,
       amount: 1,
@@ -61,7 +61,7 @@ export const COCKTAIL_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Sparkling water",
+      name: "COCKTAIL_PARTY_ITEM_4",
       id: "water-id",
       price: 5.0,
       amount: 5,
@@ -86,15 +86,15 @@ export const COCKTAIL_PARTY: PartyInterface = {
   users: {
     "your-id": {
       id: "your-id",
-      name: "You",
+      name: "PARTY_NAME_OWNER",
     },
     "frogfish-id": {
       id: "frogfish-id",
-      name: "Frogfish",
+      name: "COCKTAIL_PARTY_NAME_1",
     },
     "goatfish-id": {
       id: "goatfish-id",
-      name: "Goatfish",
+      name: "COCKTAIL_PARTY_NAME_2",
     },
   },
 };

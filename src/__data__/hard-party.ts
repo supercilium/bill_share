@@ -3,15 +3,15 @@ import { PartyInterface } from "../types/party";
 export const HARD_PARTY: PartyInterface = {
   owner: {
     id: "your-id",
-    name: "You",
+    name: "PARTY_NAME_OWNER",
   },
-  name: "Hard party",
+  name: "HARD_PARTY_NAME",
   discount: 0.0,
   id: "hard-party-id",
   isPercentage: true,
   items: [
     {
-      name: "Whiskey",
+      name: "HARD_PARTY_ITEM_1",
       id: "whiskey-id",
       price: 250.0,
       amount: 10,
@@ -29,7 +29,7 @@ export const HARD_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Rum",
+      name: "HARD_PARTY_ITEM_2",
       id: "rum-id",
       price: 160.0,
       amount: 3,
@@ -47,7 +47,7 @@ export const HARD_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Vodka",
+      name: "HARD_PARTY_ITEM_3",
       id: "Vodka-id",
       price: 180.0,
       amount: 1,
@@ -61,7 +61,7 @@ export const HARD_PARTY: PartyInterface = {
       },
     },
     {
-      name: "Cola",
+      name: "HARD_PARTY_ITEM_4",
       id: "cola-id",
       price: 15.0,
       amount: 5,
@@ -86,15 +86,15 @@ export const HARD_PARTY: PartyInterface = {
   users: {
     "your-id": {
       id: "your-id",
-      name: "You",
+      name: "PARTY_NAME_OWNER",
     },
     "horsefish-id": {
       id: "horsefish-id",
-      name: "Horsefish",
+      name: "HARD_PARTY_NAME_1",
     },
     "herring-id": {
       id: "herring-id",
-      name: "Herring",
+      name: "HARD_PARTY_NAME_2",
     },
   },
 };

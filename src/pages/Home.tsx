@@ -84,7 +84,7 @@ const Home = () => {
                       >
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <a onClick={() => setActiveCase(key)}>
-                          {TAB_LABELS[key]}
+                          {t(TAB_LABELS[key])}
                         </a>
                       </li>
                     )
@@ -113,7 +113,7 @@ const Home = () => {
                         <span className="panel-icon">
                           <i>{item.amount}</i>
                         </span>
-                        {item.name}
+                        {t(item.name)}
                         <span className="ml-auto">{item.price.toFixed(2)}</span>
                       </a>
                     ))}
@@ -145,7 +145,7 @@ const Home = () => {
                   </nav>
                 </div>
                 <div key={party.id} className="column">
-                  <p className="title is-size-4">{party.name}</p>
+                  <p className="title is-size-4">{t(party.name)}</p>
                   <div className="with-scroll-horizontal pt-3">
                     <PartyFormLayout {...partyLayoutProps}>
                       <span className="is-size-6 has-text-grey">
@@ -182,9 +182,9 @@ const Home = () => {
                                   "text-overflow-hidden is-size-6",
                                   { "has-text-info": isCurrentUser }
                                 )}
-                                title={user.name}
+                                title={t(user.name)}
                               >
-                                {user.name}
+                                {t(user.name)}
                               </span>
                               {user.id === party.owner.id && (
                                 <i>
@@ -214,7 +214,7 @@ const Home = () => {
                           key={item.id}
                         >
                           <div className="is-size-6 is-flex ">
-                            <span>{item.name}</span>
+                            <span>{t(item.name)}</span>
                           </div>
                           <span className="is-size-6">{item.amount}</span>
                           <span className="is-size-6">
@@ -299,7 +299,7 @@ const Home = () => {
                       <i className="is-size-2 has-text-primary party-step mr-3">
                         {i + 1}
                       </i>
-                      {item.title}
+                      {t(item.title)}
                     </p>
                     <Card
                       image={{

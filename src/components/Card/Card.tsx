@@ -14,7 +14,6 @@ interface CardProps {
   content?: ReactNode;
 }
 
-// write function Card that doing the same as CardA but with using cx from classnames
 export const Card: FC<CardProps> = ({ image, content, card }) => {
   return (
     <div className={cx("card", { "card-fullheight": card?.isFullHeight })}>
