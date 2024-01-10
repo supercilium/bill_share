@@ -84,7 +84,7 @@ export const AddItemForm: FC<Props> = ({ isReadOnly = true }) => {
           }}
         />
         <Field
-          label={t("AMOUNT")}
+          label={t("PRICE")}
           error={errors.price}
           inputProps={{
             type: "number",

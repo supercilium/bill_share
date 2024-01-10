@@ -19,6 +19,7 @@ import { Transport } from "../../services/transport";
 import { UserFormLayout } from "../../components/UserFormLayout";
 import "./UserPartyForm.scss";
 import { useTranslation } from "react-i18next";
+import { OtherItem, OtherItemLayout } from "../../components/OtherItem";
 
 const DISCOUNT_COL_WIDTH = "85px";
 const AMOUNT_COL_WIDTH = "110px";
@@ -68,6 +69,15 @@ export const UserPartyForm: FC<{
       partyId,
       itemId: id,
       currentUser: currentUser.id,
+    });
+  };
+  const handleRemoveItem = (id: string) => {
+    Transport.sendEvent({
+      type: "remove item",
+      userId: currentUser.id,
+      currentUser: currentUser.id,
+      partyId,
+      itemId: id,
     });
   };
 
@@ -418,37 +428,20 @@ export const UserPartyForm: FC<{
               {restItems.length > 0 && (
                 <div className="box with-scroll-horizontal mt-4">
                   <p className="is-size-4">{t("MORE_ITEMS")}</p>
-                  <UserFormLayout>
+                  <OtherItemLayout>
                     <span className="is-size-6">{t("ITEM_NAME")}</span>
                     <span className="is-size-6">{t("AMOUNT")}</span>
                     <span className="is-size-6">{t("PRICE")}</span>
-                  </UserFormLayout>
+                  </OtherItemLayout>
                   {restItems.map((item) => (
-                    <div
+                    <OtherItem
+                      isReadOnly={isReadOnly}
+                      onAddItem={handleChangeUserInItem}
+                      onDeleteItem={handleRemoveItem}
+                      onChangeItem={handleChangeItem}
+                      item={item}
                       key={item.id}
-                      className={cx({
-                        "has-text-grey": item.isMuted,
-                        "is-clickable": !item.isMuted && !isReadOnly,
-                      })}
-                      onClick={() =>
-                        !isReadOnly &&
-                        !item.isMuted &&
-                        handleChangeUserInItem(item)
-                      }
-                      title={
-                        item.isMuted
-                          ? t("ALREADY_IN_BILL")
-                          : t("ADD_TO_BILL", { name: item.name })
-                      }
-                    >
-                      <UserFormLayout className="my-3" key={item.id}>
-                        <span className="text-overflow-hidden is-size-5">
-                          {item.name}
-                        </span>
-                        <span className="is-size-5">{item.amount}</span>
-                        <span className="is-size-5">{item.price}</span>
-                      </UserFormLayout>
-                    </div>
+                    />
                   ))}
                 </div>
               )}
