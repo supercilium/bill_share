@@ -57,29 +57,29 @@ export const createPartySchema = object({
   id: string().required(),
 }).required();
 
+export const itemSchema = object().shape({
+  name: string().required(),
+  price,
+  amount,
+  discount: number()
+    .typeError("Discount must be a number")
+    .min(0, "Discount should be positive!")
+    .max(100, "Should not exceed 100%")
+    .default(0),
+  users: array()
+    .nullable()
+    .of(
+      object().shape({
+        value: number()
+          .typeError("Amount must be a number")
+          .min(0, "Amount should be positive!")
+          .integer(),
+      })
+    ),
+});
+
 export const itemsSchema = object({
-  items: array().of(
-    object().shape({
-      name: string().required(),
-      price,
-      amount,
-      discount: number()
-        .typeError("Discount must be a number")
-        .min(0, "Discount should be positive!")
-        .max(100, "Should not exceed 100%")
-        .default(0),
-      users: array()
-        .nullable()
-        .of(
-          object().shape({
-            value: number()
-              .typeError("Amount must be a number")
-              .min(0, "Amount should be positive!")
-              .integer(),
-          })
-        ),
-    })
-  ),
+  items: array().of(itemSchema),
 }).required();
 
 export const addUserSchema = object({

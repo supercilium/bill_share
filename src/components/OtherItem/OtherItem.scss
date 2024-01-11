@@ -1,0 +1,40 @@
+@import "../../../node_modules/bulma/sass/utilities/initial-variables.sass";
+@import "../../../node_modules/bulma/sass/utilities/mixins.sass";
+
+.other-item-row {
+  transition: all 0.3s ease;
+  width: fit-content;
+
+  .icon {
+    transition: all 0.3s ease;
+    color: $grey-light;
+  }
+
+  &:nth-child(even) {
+    background-color: $white-bis;
+  }
+  &:hover,
+  &.active {
+    background-color: $white-ter;
+
+    & .icon {
+      color: $grey;
+    }
+  }
+
+  @include from($tablet) {
+    width: 100%;
+  }
+}
+
+.other-item {
+  display: grid;
+  grid-template-columns: 200px 85px 90px auto;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.dropdown-item-menu {
+  position: fixed;
+  display: block;
+}

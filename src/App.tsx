@@ -21,6 +21,7 @@ import {
   faPencil,
   faUpload,
   faShareNodes,
+  faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { UISettingsProvider } from "./contexts/UIsettings";
 import { UserProvider } from "./contexts/UserContext";
@@ -59,7 +60,8 @@ library.add(
   faEnvelope,
   faPencil,
   faUpload,
-  faShareNodes
+  faShareNodes,
+  faEllipsisVertical
 );
 
 const router = createBrowserRouter([
