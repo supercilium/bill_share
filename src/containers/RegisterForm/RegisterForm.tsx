@@ -43,9 +43,9 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       onRegister?.();
       setXSRF();
 
-      setUser && setUser(data);
+      setUser?.(data);
 
-      if (data.status === 206) {
+      if (data.status === 201) {
         addAlert({
           mode: "warning",
           text: t("ALERT_REGISTER_MAIL_SERVER_ERROR"),
