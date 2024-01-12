@@ -43,7 +43,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
       onRegister?.();
       setXSRF();
 
-      setUser && setUser(data);
+      setUser?.(data);
 
       if (data.status === 201) {
         addAlert({
