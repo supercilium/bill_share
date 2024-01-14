@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FormSettings } from "../contexts/PartySettingsContext";
 import { PartyInterface } from "../types/party";
-import { getBaseTotal } from "../utils/calculation";
+import { getBaseTotal, getTotalDiscount } from "../utils/calculation";
 import { itemsSchema } from "../services/validation";
 
 interface Params {
@@ -21,7 +21,9 @@ export const useParty = ({ party }: Params) => {
   useEffect(() => {
     handlers.reset(party);
     const total = getBaseTotal(party.items);
+    const totalItemsDiscount = getTotalDiscount(party.items);
     setValue("total", total);
+    setValue("totalItemsDiscount", totalItemsDiscount);
     setValue(
       "discountPercent",
       party.isPercentage
