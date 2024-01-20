@@ -2,7 +2,6 @@ import {
   ForgotPasswordInterface,
   LoginInterface,
   ResetPasswordInterface,
-  User,
 } from "../types/user";
 import { fetchAPI } from "./helpers";
 
@@ -12,13 +11,13 @@ export interface CSRF_TOKEN {
 }
 
 export const fetchRegister = (input: LoginInterface) =>
-  fetchAPI<User>("/auth/local/register", {
+  fetchAPI<void>("/auth/local/register", {
     method: "POST",
     body: JSON.stringify(input),
   });
 
 export const fetchLogin = async (input: LoginInterface) =>
-  fetchAPI<User>("/auth/local", {
+  fetchAPI<void>("/auth/local", {
     method: "POST",
     body: JSON.stringify(input),
   });
@@ -45,7 +44,7 @@ export type ResetPasswordDTO = Omit<
 >;
 
 export const resetPassword = async (input: ResetPasswordDTO) =>
-  fetchAPI<User>(`/auth/reset-password`, {
+  fetchAPI<void>(`/auth/reset-password`, {
     method: "POST",
     body: JSON.stringify(input),
   });

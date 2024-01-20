@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import cx from "classnames";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ResetPasswordInterface, User } from "../../types/user";
+import { ResetPasswordInterface } from "../../types/user";
 import { resetPassword, ResetPasswordDTO } from "../../__api__/auth";
 import {
   getValidationErrorsFromREsponse,
@@ -24,7 +24,7 @@ interface RegisterFormProps {
 
 export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { refetch } = useUser();
   const { addAlert } = useNotifications();
   const {
     setError,
@@ -40,14 +40,14 @@ export const ResetPasswordForm: FC<RegisterFormProps> = ({ code }) => {
   });
 
   const { status, mutate, isLoading, error } = useMutation<
-    User,
+    void,
     ErrorRequest,
     ResetPasswordDTO,
     unknown
   >(resetPassword, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       setXSRF();
-      setUser(data);
+      refetch();
       addAlert({
         mode: "success",
         text: t("ALERT_PASSWORD_RESET"),
