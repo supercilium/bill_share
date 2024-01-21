@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useTranslation } from "react-i18next";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginInterface, User } from "../../types/user";
+import { LoginInterface } from "../../types/user";
 import { fetchLogin } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
 import {
@@ -33,18 +33,18 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin, closePopup }) => {
     resolver: yupResolver(loginSchema),
     mode: "all",
   });
-  const { setUser } = useUser();
+  const { setUser, refetch } = useUser();
   const [hasForgotPassword, setHasForgotPassword] = useState(false);
   const { mutate, isLoading, error } = useMutation<
-    User,
+    void,
     ErrorRequest,
     LoginInterface,
     unknown
   >(fetchLogin, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       onLogin?.();
       setXSRF();
-      setUser && setUser(data);
+      refetch();
     },
     onError: async (error) => {
       if (error.status === 401) {

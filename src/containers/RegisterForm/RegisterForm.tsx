@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import cx from "classnames";
 import { Field } from "../../components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { RegisterInterface, User } from "../../types/user";
+import { RegisterInterface } from "../../types/user";
 import { fetchRegister } from "../../__api__/auth";
 import { useUser } from "../../contexts/UserContext";
 import {
@@ -30,11 +30,11 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     resolver: yupResolver(signInSchema),
     mode: "all",
   });
-  const { setUser } = useUser();
+  const { setUser, refetch } = useUser();
   const { addAlert } = useNotifications();
   const { t } = useTranslation();
   const { mutate, isLoading, error } = useMutation<
-    User & { status?: number },
+    { status?: number },
     ErrorRequest,
     RegisterInterface,
     unknown
@@ -42,8 +42,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     onSuccess: (data) => {
       onRegister?.();
       setXSRF();
-
-      setUser?.(data);
+      refetch();
 
       if (data.status === 201) {
         addAlert({

@@ -51,8 +51,12 @@ export const fetchAPI: FetchType = async (input, init) => {
       if (response.status === 204) {
         return;
       }
-      const data = await response.json();
-      return { status: response.status, ...data };
+      try {
+        const data = await response.json();
+        return { status: response.status, ...data };
+      } catch (_err) {
+        return { status: response.status };
+      }
     } else {
       if (response.status === 401) {
         return Promise.reject<ErrorRequest>({
