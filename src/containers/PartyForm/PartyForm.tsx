@@ -13,6 +13,7 @@ import { useParty } from "../../hooks/useParty";
 import { PartyFormLayout } from "../../components/PartyFormLayout";
 import "./PartyForm.scss";
 import { useTranslation } from "react-i18next";
+import { usePartySettingsContext } from "../../contexts/PartyModalContext";
 
 export const PartyForm: FC<{
   party: PartyInterface;
@@ -27,9 +28,20 @@ export const PartyForm: FC<{
   const { watch, setValue } = useFormContext<FormSettings>();
   const partySettings = watch();
   const { t } = useTranslation();
+  const { setAddItemModalVisibility } = usePartySettingsContext();
 
   if (!party.items.length || !partyId) {
-    return <EmptyPartyLayout />;
+    return (
+      <EmptyPartyLayout>
+        <button
+          type="button"
+          className="button is-primary ml-4"
+          onClick={() => setAddItemModalVisibility(true)}
+        >
+          {t("TITLE_ADD_ITEM")}
+        </button>
+      </EmptyPartyLayout>
+    );
   }
   const handleChangeItem = async ({
     id,
@@ -92,7 +104,20 @@ export const PartyForm: FC<{
   };
 
   return (
-    <Block title={t("TITLE_FULL_BILL")}>
+    <Block
+      title={
+        <div className="is-flex is-align-items-center">
+          <p>{t("TITLE_FULL_BILL")}</p>
+          <button
+            type="button"
+            className="button ml-2"
+            onClick={() => setAddItemModalVisibility(true)}
+          >
+            {t("TITLE_ADD_ITEM")}
+          </button>
+        </div>
+      }
+    >
       <PartyFormLayout {...partyLayoutProps}>
         <span className="is-size-6">{t("ITEM_NAME")}</span>
         <span className="is-size-6">{t("AMOUNT")}</span>

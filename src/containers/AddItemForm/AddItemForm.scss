@@ -8,20 +8,13 @@
   align-items: flex-start;
 
   @include from($tablet) {
-    grid-template-columns: 200px 60px 100px 100px;
+    grid-template-columns: 200px 60px 100px;
     grid-template-rows: none;
   }
 }
 
 .add-item-button {
-  grid-column-start: 2;
-  grid-column-end: 4;
   margin-top: calc(24px + 0.5em);
-
-  @include from($tablet) {
-    grid-column-start: auto;
-    grid-column-end: auto;
-  }
 }
 
 .wide-track {
