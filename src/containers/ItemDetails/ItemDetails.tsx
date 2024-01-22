@@ -16,17 +16,20 @@ import { FormSettings } from "../../contexts/PartySettingsContext";
 import "./ItemDetails.scss";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { itemSchema } from "../../services/validation";
+import { useParams } from "react-router";
+import { Transport } from "../../services/transport";
 
 interface ItemDetailsProps {
-  handleChangeItem: (value: Partial<Item>) => Promise<void>;
   isReadOnly?: boolean;
   item: Item;
   users: PartyInterface["users"];
   onClose: () => void;
 }
 
+// TODO need to add an event to change multiple items
+const SHOULD_DISABLE_USERS = true;
+
 export const ItemDetails: FC<ItemDetailsProps> = ({
-  handleChangeItem,
   isReadOnly = true,
   item: defaultValues,
   users,
@@ -41,6 +44,8 @@ export const ItemDetails: FC<ItemDetailsProps> = ({
   const { register, formState, watch, setValue } = handlers;
   const { isValid, errors } = formState;
   const { watch: watchSettings } = useFormContext<FormSettings>();
+  const { partyId } = useParams();
+  const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}") || {};
 
   const item = watch();
 
@@ -72,9 +77,54 @@ export const ItemDetails: FC<ItemDetailsProps> = ({
     );
   };
 
+  if (!partyId) {
+    return null;
+  }
+
+  const handleRemoveItem = (id: string) => {
+    Transport.sendEvent({
+      type: "remove item",
+      userId: currentUser.id,
+      currentUser: currentUser.id,
+      partyId,
+      itemId: id,
+    });
+  };
+
+  const handleChangeItem = async ({
+    id,
+    ...data
+  }: Partial<Omit<Item, "users">>) => {
+    if (!isValid) {
+      return;
+    }
+    Transport.sendEvent({
+      type: "update item",
+      userId: currentUser.id,
+      currentUser: currentUser.id,
+      partyId,
+      itemId: id as string,
+      ...data,
+    });
+  };
+
   return createPortal(
     <Modal onClose={onClose} isOpen={true}>
-      <Block title={t("TITLE_EDITING_ITEM", { item: item.name })}>
+      <Block
+        title={
+          <p className="is-flex is-align-items-center is-justify-content-space-between">
+            {t("TITLE_EDITING_ITEM", { item: item.name })}{" "}
+            <button
+              type="button"
+              className="button"
+              onClick={() => handleRemoveItem(item.id)}
+              disabled={isReadOnly}
+            >
+              {t("BUTTON_REMOVE_ITEM")}
+            </button>
+          </p>
+        }
+      >
         <Field
           label={t("ITEM_NAME")}
           error={errors?.name}
@@ -168,11 +218,16 @@ export const ItemDetails: FC<ItemDetailsProps> = ({
             <div className="details-column">
               <span>{t("TOTAL_ITEM_WITH_DISCOUNT")}</span>
               <span className="has-text-weight-semibold">
-                {(itemTotalWithDiscount * (1 - discountFull)).toFixed(2)}
+                {(isPercentage
+                  ? itemTotalWithDiscount - discountFull
+                  : itemTotalWithDiscount * (1 - discountFull)
+                ).toFixed(2)}
               </span>
             </div>
           </div>
           <div className="user-row">
+            <p className="is-size-5">User</p>
+            <p className="is-size-5">{t("TOTAL")}</p>
             {Object.keys(users).map((id) => {
               const [userItems] = splitItems([item], id);
 
@@ -182,24 +237,24 @@ export const ItemDetails: FC<ItemDetailsProps> = ({
                     <Field
                       label={` ${users[id].name}`}
                       inputProps={{
-                        disabled: isReadOnly,
+                        disabled: isReadOnly || SHOULD_DISABLE_USERS,
                         type: "checkbox",
-                        checked:
-                          item.users?.[id] && "value" in item.users?.[id],
+                        checked: item.users?.[id].checked,
                         onChange: (event) => {
-                          if (event.target.checked) {
-                            setValue(`users.${id}.value`, 1);
-                          } else {
-                            const usersItem = { ...item.users[id] };
-                            delete usersItem.value;
-                            setValue(`users.${id}`, usersItem);
-                          }
+                          setValue(`users.${id}.checked`, event.target.checked);
                           return new Promise(() => {});
                         },
                       }}
                     />
                     <div>
-                      <span>{userItems?.[0]?.total.toFixed(2) || "-"}</span>
+                      <span>
+                        {userItems?.[0]?.total
+                          ? (isPercentage
+                              ? userItems?.[0]?.total - discountFull
+                              : userItems?.[0]?.total * (1 - discountFull)
+                            ).toFixed(2)
+                          : "-"}
+                      </span>
                     </div>
                   </Fragment>
                 );
@@ -215,12 +270,18 @@ export const ItemDetails: FC<ItemDetailsProps> = ({
                       id: `users.${id}`,
                       placeholder: "0",
                       min: 0,
-                      disabled: isReadOnly,
+                      disabled: isReadOnly || SHOULD_DISABLE_USERS,
                       ...register(`users.${id}.value`),
                     }}
                   />
                   <div>
-                    <span>{userItems?.[0]?.total.toFixed(2) || "-"}</span>
+                    <span>
+                      {userItems?.[0]?.total
+                        ? (userItems?.[0]?.total * (1 - discountFull)).toFixed(
+                            2
+                          )
+                        : "-"}
+                    </span>
                   </div>
                 </Fragment>
               );

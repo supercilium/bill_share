@@ -6,6 +6,7 @@ import { FormSettings } from "../../contexts/PartySettingsContext";
 import { PartyInterface } from "../../types/party";
 import {
   getBaseTotal,
+  getFullDiscount,
   getPartyTotal,
   getPartyUserBaseTotal,
   getPartyUserDiscount,
@@ -30,9 +31,11 @@ export const PartyTotals: FC<{
     baseTotal.toString().length >= 11 ? "is-size-7" : "is-size-6";
   const shouldRotate = baseTotal.toString().length >= 8 && !hasPartial;
 
-  const discount = partySettings.isPercentage
-    ? +baseTotal * (partySettings.discount ?? 0) * 0.01
-    : partySettings.discount;
+  const discount = getFullDiscount(
+    +baseTotal,
+    partySettings.discount ?? 0,
+    partySettings.isPercentage
+  );
 
   return (
     <Block>

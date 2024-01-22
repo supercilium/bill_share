@@ -391,7 +391,6 @@ export const PartyForm: FC<{
       </Block>
       {editingItem ? (
         <ItemDetails
-          handleChangeItem={handleChangeItem}
           item={editingItem}
           isReadOnly={isReadOnly}
           users={party.users}

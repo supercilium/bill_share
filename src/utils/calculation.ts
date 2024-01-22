@@ -108,3 +108,17 @@ export const splitItems = (
 
   return [userItems, restItems];
 };
+
+/**
+ * Returns absolute amount of discount
+ */
+export const getFullDiscount = (
+  baseTotal: number,
+  discount: number,
+  isPercentage: boolean
+) => {
+  if (isPercentage) {
+    return baseTotal * (discount ?? 0) * 0.01;
+  }
+  return discount;
+};
