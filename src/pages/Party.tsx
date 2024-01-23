@@ -34,6 +34,12 @@ import { useTranslation } from "react-i18next";
 import i18n from "../services/i18next";
 import { SharePartyModal } from "../containers/SharePartyModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createPortal } from "react-dom";
+import { Modal } from "../components/Modal";
+import {
+  PartySettingsContextProvider,
+  usePartySettingsContext,
+} from "../contexts/PartyModalContext";
 
 const EVENTS_SHOULD_NOTIFY: PartyEvents[] = [
   "add user",
@@ -322,7 +328,10 @@ export const Party = () => {
     );
   }
 
-  const renderMain = () => {
+  const PartyMain = () => {
+    const { isAddItemModalOpen, setAddItemModalVisibility } =
+      usePartySettingsContext();
+
     return (
       <>
         <MainFormView
@@ -341,7 +350,18 @@ export const Party = () => {
             />
           )}
         />
-        <AddItemForm isReadOnly={isReadOnly} />
+        {createPortal(
+          <Modal
+            onClose={() => setAddItemModalVisibility(false)}
+            isOpen={isAddItemModalOpen}
+          >
+            <AddItemForm
+              isReadOnly={isReadOnly}
+              onClose={() => setAddItemModalVisibility(false)}
+            />
+          </Modal>,
+          document.body
+        )}
       </>
     );
   };
@@ -369,7 +389,13 @@ export const Party = () => {
             />
           </Header>
         }
-        Main={<Main>{renderMain()}</Main>}
+        Main={
+          <Main>
+            <PartySettingsContextProvider>
+              <PartyMain />
+            </PartySettingsContextProvider>
+          </Main>
+        }
         Aside={
           !isNoUser &&
           !isReadOnly && (

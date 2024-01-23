@@ -85,6 +85,7 @@
     "BUTTON_CANCEL": "Cancel",
     "BUTTON_START_PARTY": "Start party",
     "BUTTON_ADD_ITEM": "Add item",
+    "TITLE_ADD_ITEM": "Add an item",
     "TITLE_ADD_ITEM_FORM": "Add new item to share",
     "TITLE_EDIT_ITEM_FORM": "Edit item",
     "LABEL_FULL_PRICE": "Enter full price",

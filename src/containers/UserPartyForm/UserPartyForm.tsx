@@ -20,6 +20,7 @@ import { UserFormLayout } from "../../components/UserFormLayout";
 import "./UserPartyForm.scss";
 import { useTranslation } from "react-i18next";
 import { OtherItem, OtherItemLayout } from "../../components/OtherItem";
+import { usePartySettingsContext } from "../../contexts/PartyModalContext";
 
 const DISCOUNT_COL_WIDTH = "85px";
 const AMOUNT_COL_WIDTH = "110px";
@@ -37,6 +38,7 @@ export const UserPartyForm: FC<{
   const partySettings = watch();
   const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}") || {};
   const { t } = useTranslation();
+  const { setAddItemModalVisibility } = usePartySettingsContext();
 
   useEffect(() => {
     window.requestAnimationFrame(() => {
@@ -144,17 +146,35 @@ export const UserPartyForm: FC<{
       }
     >
       {!party.items?.length ? (
-        <EmptyPartyLayout />
+        <EmptyPartyLayout>
+          <button
+            type="button"
+            className="button is-primary ml-4"
+            onClick={() => setAddItemModalVisibility(true)}
+          >
+            {t("TITLE_ADD_ITEM")}
+          </button>
+        </EmptyPartyLayout>
       ) : (
         <form key={userId} noValidate={true}>
           <Columns containerProps={{ className: "is-flex-wrap-wrap" }}>
             <div className="is-translated">
               <div className="box with-scroll-horizontal mt-4">
+                <div className="is-flex is-align-items-center">
+                  <p className="is-size-5-touch is-size-4-desktop">
+                    {t("IN_YOUR_BILL")}
+                  </p>
+                  <button
+                    type="button"
+                    className="button ml-2"
+                    onClick={() => setAddItemModalVisibility(true)}
+                  >
+                    {t("TITLE_ADD_ITEM")}
+                  </button>
+                </div>
+
                 {userItems.length ? (
                   <>
-                    <p className="is-size-5-touch is-size-4-desktop">
-                      {t("IN_YOUR_BILL")}
-                    </p>
                     <UserFormLayout>
                       <span className="is-size-6">{t("ITEM_NAME")}</span>
                       <span className="is-size-6">{t("AMOUNT")}</span>

@@ -1,7 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-export const EmptyPartyLayout = () => {
+export const EmptyPartyLayout: FC<{ children?: ReactNode }> = ({
+  children,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -10,6 +13,7 @@ export const EmptyPartyLayout = () => {
       <span className="ml-1 icon has-text-grey-light">
         <FontAwesomeIcon icon="beer-mug-empty" bounce={true} />
       </span>
+      {children}
     </p>
   );
 };

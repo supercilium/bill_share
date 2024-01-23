@@ -19,9 +19,10 @@ type PriceType = "per item" | "full";
 
 interface Props {
   isReadOnly?: boolean;
+  onClose: () => void;
 }
 
-export const AddItemForm: FC<Props> = ({ isReadOnly = true }) => {
+export const AddItemForm: FC<Props> = ({ isReadOnly = true, onClose }) => {
   const { partyId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}") || {};
   const [priceType, setPriceType] = useState<PriceType>("full");
@@ -95,13 +96,6 @@ export const AddItemForm: FC<Props> = ({ isReadOnly = true }) => {
             ...formHandlers.register("price"),
           }}
         />
-        <button
-          type="submit"
-          className="button add-item-button mb-3"
-          disabled={!isValid || !isDirty || isReadOnly}
-        >
-          {t("BUTTON_ADD_ITEM")}
-        </button>
         <div className="wide-track">
           <Field
             label={t("LABEL_SHARE_FOR_ALL")}
@@ -145,6 +139,26 @@ export const AddItemForm: FC<Props> = ({ isReadOnly = true }) => {
             </label>
           </div>
         </div>
+      </div>
+      <div>
+        <button
+          type="submit"
+          className="button is-primary add-item-button mb-3  mr-3"
+          disabled={!isValid || !isDirty || isReadOnly}
+          onClick={() => {
+            formHandlers.handleSubmit(handleAddItem)();
+            onClose();
+          }}
+        >
+          {t("BUTTON_ADD_ITEM")}
+        </button>
+        <button
+          onClick={onClose}
+          type="button"
+          className="button add-item-button mb-3"
+        >
+          {t("BUTTON_CANCEL")}
+        </button>
       </div>
     </Block>
   );
