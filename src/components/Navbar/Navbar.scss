@@ -1,5 +1,23 @@
+@import "../../../node_modules/bulma/sass/utilities/derived-variables.sass";
+
 .sticky-navbar {
   position: sticky;
   top: 0;
   z-index: 1;
+}
+
+.navbar.is-transparent .navbar-dropdown a.navbar-item {
+  &.is-active {
+    color: $info !important;
+    background-color: hsla(0, 0%, 0%, 0.252) !important;
+
+    &:hover {
+      background-color: hsla(0, 0%, 0%, 0.315) !important;
+    }
+  }
+
+  &:hover {
+    color: $info-dark !important;
+    background-color: hsla(0, 0%, 0%, 0.083) !important;
+  }
 }
