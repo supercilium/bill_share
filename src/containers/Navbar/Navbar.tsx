@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { NavLink } from "react-router-dom";
@@ -14,6 +15,7 @@ import { Block } from "../../components";
 import { User } from "../../types/user";
 import { Transport } from "../../services/transport";
 import { Modal } from "../../components/Modal";
+import { SUPPORTED_LANGUAGES } from "../../services/constants";
 
 interface NavbarProps {
   shouldShowAuthButtons?: boolean;
@@ -28,7 +30,7 @@ export const Navbar: FC<NavbarProps> = ({
   shouldShowAuthButtons = true,
   navbarProps,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { setUser, user } = useUser();
   const [openedPopup, setOpenedPopup] = useState<
     "login" | "registration" | null
@@ -55,8 +57,10 @@ export const Navbar: FC<NavbarProps> = ({
   const renderUserMenu = useCallback(
     (user: User) => (
       <div className="navbar-item has-dropdown is-hoverable">
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-        <a className="navbar-link">{user.name}</a>
+        <a className="navbar-link">
+          <FontAwesomeIcon className="mr-3" icon="circle-user" />
+          {user.name}
+        </a>
 
         <div
           className={cx("navbar-dropdown", {
@@ -102,42 +106,74 @@ export const Navbar: FC<NavbarProps> = ({
     ),
     [navbarProps?.isTransparent, t, hasUserLinks]
   );
+  const displayNames = new Intl.DisplayNames([i18n.language], {
+    type: "language",
+  });
 
   return (
     <>
       <NavbarUI
         NavbarEndItems={
-          user ? (
-            <>
-              {renderUserMenu(user)}
-              <div className="buttons is-justify-content-flex-end">
-                <button onClick={() => refetch()} className="button is-light">
-                  <FontAwesomeIcon
-                    className="mr-3"
-                    icon="arrow-right-from-bracket"
-                  />
-                  {t("BUTTON_LOG_OUT")}
-                </button>
+          <>
+            <div className="navbar-item has-dropdown is-hoverable">
+              <a className="navbar-link is-capitalized">
+                <FontAwesomeIcon className="mr-3" icon="earth-europe" />
+
+                {displayNames.of(i18n.language)}
+              </a>
+
+              <div
+                className={cx("navbar-dropdown", {
+                  "is-boxed has-background-dark": navbarProps?.isTransparent,
+                })}
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => {
+                  return (
+                    <a
+                      onClick={() => i18n.changeLanguage(lang)}
+                      key={lang}
+                      className={cx("navbar-item is-capitalized", {
+                        "is-active": i18n.resolvedLanguage === lang,
+                      })}
+                    >
+                      {`${displayNames.of(lang)}`}
+                    </a>
+                  );
+                })}
               </div>
-            </>
-          ) : (
-            shouldShowAuthButtons && (
-              <div className="buttons is-justify-content-flex-end">
-                <button
-                  onClick={() => setOpenedPopup("registration")}
-                  className="button is-primary"
-                >
-                  <strong>{t("BUTTON_SIGN_UP")}</strong>
-                </button>
-                <button
-                  onClick={() => setOpenedPopup("login")}
-                  className="button is-light"
-                >
-                  {t("BUTTON_SIGN_IN")}
-                </button>
-              </div>
-            )
-          )
+            </div>
+            {user ? (
+              <>
+                {renderUserMenu(user)}
+                <div className="buttons is-justify-content-flex-end">
+                  <button onClick={() => refetch()} className="button is-light">
+                    <FontAwesomeIcon
+                      className="mr-3"
+                      icon="arrow-right-from-bracket"
+                    />
+                    {t("BUTTON_LOG_OUT")}
+                  </button>
+                </div>
+              </>
+            ) : (
+              shouldShowAuthButtons && (
+                <div className="buttons is-justify-content-flex-end">
+                  <button
+                    onClick={() => setOpenedPopup("registration")}
+                    className="button is-primary"
+                  >
+                    <strong>{t("BUTTON_SIGN_UP")}</strong>
+                  </button>
+                  <button
+                    onClick={() => setOpenedPopup("login")}
+                    className="button is-light"
+                  >
+                    {t("BUTTON_SIGN_IN")}
+                  </button>
+                </div>
+              )
+            )}
+          </>
         }
         navbarProps={navbarProps}
       />
@@ -145,7 +181,6 @@ export const Navbar: FC<NavbarProps> = ({
         <div className="tabs is-large">
           <ul>
             <li className={cx({ "is-active": openedPopup === "login" })}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a role="button" onClick={() => setOpenedPopup("login")}>
                 {t("BUTTON_LOG_IN")}
               </a>
@@ -155,7 +190,6 @@ export const Navbar: FC<NavbarProps> = ({
                 "is-active": openedPopup === "registration",
               })}
             >
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a onClick={() => setOpenedPopup("registration")}>
                 {t("BUTTON_REGISTER")}
               </a>

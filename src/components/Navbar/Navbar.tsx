@@ -54,7 +54,7 @@ export const Navbar: FC<NavbarProps> = ({
                 }
                 icon="champagne-glasses"
               />
-              {t("TITLE_HEADER")}
+              Bill share
             </span>
           </Link>
           {(NavbarEndItems || NavbarStartItems) && (
