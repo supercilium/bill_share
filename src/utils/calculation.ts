@@ -2,7 +2,7 @@ import { Item } from "../types/item";
 
 export const getItemParticipants = (item: Item) =>
   item.equally
-    ? Object.values(item.users).filter((user) => "value" in user)
+    ? Object.values(item.users).filter((user) => user.checked)
     : Object.values(item.users).filter((user) => (user?.value ?? 0) > 0);
 
 export const getItemBaseTotal = (item: Item, amount?: number) =>
@@ -30,30 +30,30 @@ export const getPartyTotal = (items: Item[]) =>
 export const getPartyUserBaseTotal = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    // it's -1 for tha shared items because there is no value
-    if ((item.users[id]?.value ?? -1) >= 0) {
-      return (
-        acc +
-        (item.equally
-          ? getItemBaseTotal(item, item.amount) / participants.length
-          : getItemBaseTotal(item, item.users[id]?.value))
-      );
+    if (!item.users[id]?.value && !item.users[id]?.checked) {
+      return acc;
     }
-    return acc;
+    return (
+      acc +
+      (item.equally
+        ? getItemBaseTotal(item, item.amount) / participants.length
+        : getItemBaseTotal(item, item.users[id]?.value))
+    );
   }, 0);
 
 export const getPartyUserDiscount = (items: Item[], id: string) =>
   items.reduce((acc, item) => {
     const participants = getItemParticipants(item);
-    if ((item.users[id]?.value ?? -1) >= 0) {
-      return (
-        acc +
-        (item.equally
-          ? getItemDiscount(item, item.amount) / participants.length
-          : getItemDiscount(item, item.users[id].value))
-      );
+    if (!item.users[id]?.value && !item.users[id]?.checked) {
+      return acc;
     }
-    return acc;
+
+    return (
+      acc +
+      (item.equally
+        ? getItemDiscount(item, item.amount) / participants.length
+        : getItemDiscount(item, item.users[id].value))
+    );
   }, 0);
 
 export const getPartyUserTotal = (items: Item[], id: string) =>
@@ -86,7 +86,7 @@ export const splitItems = (
     if (
       item.users[userId] &&
       (item.equally
-        ? item.users[userId] && "value" in item.users[userId]
+        ? item.users[userId].checked
         : (item.users[userId].value ?? 0) > 0)
     ) {
       const participants = getItemParticipants(item);

@@ -21,10 +21,12 @@ export const COCKTAIL_PARTY: PartyInterface = {
         "frogfish-id": {
           id: "frogfish-id",
           value: 1,
+          checked: true,
         },
         "goatfish-id": {
           id: "goatfish-id",
           value: 1,
+          checked: true,
         },
       },
     },

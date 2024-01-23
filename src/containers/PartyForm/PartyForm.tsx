@@ -349,7 +349,7 @@ export const PartyForm: FC<{
                         type="checkbox"
                         className="is-size-4 checkbox"
                         disabled={isReadOnly}
-                        checked={itemUsers?.[id] && "value" in itemUsers[id]}
+                        checked={itemUsers?.[id]?.checked}
                         onChange={({ target }) =>
                           handleChangeUserInItem(target.checked, id, item.id)
                         }

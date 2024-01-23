@@ -31,6 +31,7 @@ const buggyParty = {
           id: "044b5e8a-0805-4728-a728-dba35c0c6458",
           name: "kljlj",
           value: 0,
+          checked: true,
         },
         "307d2524-bfb3-4192-bc60-62e460ebf0bb": {
           id: "307d2524-bfb3-4192-bc60-62e460ebf0bb",
@@ -39,6 +40,7 @@ const buggyParty = {
           id: "de1d5da9-dcad-4cab-ae42-cd28d93be8f5",
           name: "marusel",
           value: 0,
+          checked: true,
         },
       },
     },
@@ -175,10 +177,12 @@ describe("getItemParticipants", () => {
       "3d17f607-5e69-4794-9c20-9a65a09c4c4b": {
         ...PARTY.items[0].users["3d17f607-5e69-4794-9c20-9a65a09c4c4b"],
         value: 2,
+        checked: true,
       },
       "4c086579-760b-4593-96bc-04c485adcb17": {
         ...PARTY.items[0].users["4c086579-760b-4593-96bc-04c485adcb17"],
         value: 0,
+        checked: true,
       },
     },
     equally: true,
@@ -248,10 +252,12 @@ describe("getPartyUserDiscount", () => {
           "3d17f607-5e69-4794-9c20-9a65a09c4c4b": {
             ...PARTY.items[0].users["3d17f607-5e69-4794-9c20-9a65a09c4c4b"],
             value: 2,
+            checked: true,
           },
           "4c086579-760b-4593-96bc-04c485adcb17": {
             ...PARTY.items[0].users["4c086579-760b-4593-96bc-04c485adcb17"],
             value: 0,
+            checked: true,
           },
         },
         equally: true,
@@ -332,6 +338,7 @@ const items: Item[] = [
       "4c086579-760b-4593-96bc-04c485adcb17": {
         id: "4c086579-760b-4593-96bc-04c485adcb17",
         value: 0,
+        checked: true,
       },
     },
   },
@@ -393,6 +400,7 @@ describe("splitItems", () => {
             "4c086579-760b-4593-96bc-04c485adcb17": {
               id: "4c086579-760b-4593-96bc-04c485adcb17",
               value: 0,
+              checked: true,
             },
           },
         },
@@ -457,6 +465,7 @@ describe("splitItems", () => {
               id: "044b5e8a-0805-4728-a728-dba35c0c6458",
               name: "kljlj",
               value: 0,
+              checked: true,
             },
             "307d2524-bfb3-4192-bc60-62e460ebf0bb": {
               id: "307d2524-bfb3-4192-bc60-62e460ebf0bb",
@@ -465,6 +474,7 @@ describe("splitItems", () => {
               id: "de1d5da9-dcad-4cab-ae42-cd28d93be8f5",
               name: "marusel",
               value: 0,
+              checked: true,
             },
           },
         },
