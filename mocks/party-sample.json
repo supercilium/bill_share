@@ -17,7 +17,8 @@
       "users": [
         {
           "id": "c7dd71eb-44f7-4463-9416-5d4482e8be3a",
-          "value": 3
+          "value": 3,
+          "checked": true
         }
       ]
     }

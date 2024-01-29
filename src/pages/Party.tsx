@@ -376,7 +376,7 @@ export const Party = () => {
               onClick={() => setSharingModalOpen(true)}
             >
               {t("TITLE_WELCOME_TO_PARTY", {
-                name: currentUser.name ? `, ${currentUser.name}` : "",
+                name: currentUser.name ? currentUser.name : "",
                 party: party?.name,
               })}
               <span className="icon has-text-info ml-2">
