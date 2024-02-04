@@ -241,7 +241,7 @@ const Home = () => {
                             if (item.equally) {
                               return (
                                 <span key={id} className="is-size-6">
-                                  {itemUsers?.[id] ? "✅" : "❌"}
+                                  {itemUsers?.[id]?.checked ? "✅" : "❌"}
                                 </span>
                               );
                             }

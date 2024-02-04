@@ -135,7 +135,7 @@
     "ALERT_INFO_ITEM_REMOVED": "{{name}} removed {{item}}",
     "ERROR_NO_CONNECTION": "No connection ",
     "BUTTON_RECONNECT": "re-connect",
-    "TITLE_WELCOME_TO_PARTY": "Hello{{name}}! Welcome to {{party}}",
+    "TITLE_WELCOME_TO_PARTY": "Hello, {{name}}! Welcome to {{party}}",
     "LINK_HOME": "home page",
     "ERROR_SUBTITLE_NO_PARTY": "Try to refresh the page or go to ",
     "SHOWCASE_TITLE": "Memento hangover!",

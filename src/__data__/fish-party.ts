@@ -21,14 +21,17 @@ export const FISH_PARTY: PartyInterface = {
         "salmon-id": {
           id: "salmon-id",
           value: 1,
+          checked: true,
         },
         "your-id": {
           id: "your-id",
           value: 0,
+          checked: true,
         },
         "bonito-id": {
           id: "bonito-id",
           value: 1,
+          checked: true,
         },
       },
     },
@@ -43,14 +46,17 @@ export const FISH_PARTY: PartyInterface = {
         "salmon-id": {
           id: "salmon-id",
           value: 1,
+          checked: true,
         },
         "your-id": {
           id: "your-id",
           value: 0,
+          checked: true,
         },
         "bonito-id": {
           id: "bonito-id",
           value: 1,
+          checked: true,
         },
       },
     },
@@ -65,6 +71,7 @@ export const FISH_PARTY: PartyInterface = {
         "your-id": {
           id: "your-id",
           value: 1,
+          checked: true,
         },
       },
     },

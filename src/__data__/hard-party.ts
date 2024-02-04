@@ -21,10 +21,12 @@ export const HARD_PARTY: PartyInterface = {
         "horsefish-id": {
           id: "horsefish-id",
           value: 1,
+          checked: true,
         },
         "herring-id": {
           id: "herring-id",
           value: 1,
+          checked: true,
         },
       },
     },

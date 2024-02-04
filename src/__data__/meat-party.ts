@@ -21,10 +21,12 @@ export const MEAT_PARTY: PartyInterface = {
         "devil-ray-id": {
           id: "devil-ray-id",
           value: 1,
+          checked: true,
         },
         "firefish-id": {
           id: "firefish-id",
           value: 1,
+          checked: true,
         },
       },
     },
@@ -39,14 +41,17 @@ export const MEAT_PARTY: PartyInterface = {
         "your-id": {
           id: "your-id",
           value: 1,
+          checked: true,
         },
         "devil-ray-id": {
           id: "devil-ray-id",
           value: 2,
+          checked: true,
         },
         "firefish-id": {
           id: "firefish-id",
           value: 2,
+          checked: true,
         },
       },
     },
