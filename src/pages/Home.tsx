@@ -270,6 +270,7 @@ const Home = () => {
                         total: total,
                         isOnline: false,
                         discount: party.discount,
+                        totalItemsDiscount: 0,
                         discountPercent: party.isPercentage
                           ? party.discount
                           : Number(

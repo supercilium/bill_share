@@ -81,6 +81,7 @@ export const Field: FC<{
         {label && type === "checkbox" && (
           <label className={cx(classNameLabel)}>
             <input
+              type="checkbox"
               className={cx(classNameInput, { "is-danger": error })}
               {...inputProps}
             />

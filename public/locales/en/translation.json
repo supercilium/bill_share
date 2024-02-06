@@ -199,5 +199,13 @@
     "FISH_PARTY_NAME_2": "Salmon",
     "FISH_PARTY_ITEM_1": "Beer",
     "FISH_PARTY_ITEM_2": "Chips",
-    "FISH_PARTY_ITEM_3": "Fish"
+    "FISH_PARTY_ITEM_3": "Fish",
+    "TITLE_EDITING_ITEM": "Editing Item {{item}}",
+    "TITLE_ITEM_DETAILS": "Details: {{item}}",
+    "AMOUNT_OF_ITEMS": "Items:",
+    "PRICE_PER_POSITION": "Price per position:",
+    "TOTAL_PRICE": "Total price:",
+    "DISCOUNT_FOR_BILL": "Discount for bill:",
+    "DISCOUNT_FOR_ITEM": "Discount for item:",
+    "TOTAL_ITEM_WITH_DISCOUNT": "Total price with discount:"
 }

@@ -14,6 +14,7 @@ export interface FormSettings {
   isPercentage: boolean;
   discountPercent?: number;
   total: number;
+  totalItemsDiscount: number;
   isOnline: boolean;
 }
 const LS_USER_SETTINGS_KEY = "userSettings";
@@ -24,6 +25,7 @@ const DEFAULT_USER_SETTINGS: FormSettings = {
   view: "user",
   user: undefined,
   total: 0,
+  totalItemsDiscount: 0,
   discountPercent: 0,
   discount: 0,
   isPercentage: true,
