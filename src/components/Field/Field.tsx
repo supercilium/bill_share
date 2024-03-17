@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 import cx from "classnames";
+import "./Field.scss";
 
 const getBulmaInputClassName = (
   type: React.InputHTMLAttributes<HTMLInputElement>["type"]
@@ -36,10 +37,11 @@ export const Field: FC<{
   label?: string;
   labels?: string[];
   error?: FieldError;
+  layout?: "vertical" | "horizontal";
   onEnter?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   inputProps: React.InputHTMLAttributes<HTMLInputElement> &
     Partial<UseFormRegisterReturn>;
-}> = ({ label, labels, inputProps, error, onEnter }) => {
+}> = ({ label, labels, inputProps, error, layout = "vertical", onEnter }) => {
   const { type } = inputProps;
   const classNameInput = getBulmaInputClassName(type);
   const classNameLabel = getBulmaLabelClassName(type);
@@ -47,11 +49,15 @@ export const Field: FC<{
   if (type === "radio" && Array.isArray(inputProps.value)) {
     return (
       <div className={cx("field")}>
-        <div className={cx("control")}>
+        <div
+          className={cx("control is-flex field-control", {
+            "is-flex-direction-column": layout === "vertical",
+          })}
+        >
           {inputProps.value.map((value, i) => (
             <React.Fragment key={value}>
               {labels && (
-                <label className={cx(classNameLabel, "mr-2")}>
+                <label className={cx(classNameLabel)}>
                   <input {...inputProps} value={value} />
                   {labels?.[i]}
                 </label>

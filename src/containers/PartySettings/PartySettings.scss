@@ -5,6 +5,25 @@
   max-height: 100vh;
   overflow-y: auto;
 
+  .settings-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    @include from($tablet) {
+      align-items: baseline;
+      flex-direction: row;
+    }
+  }
+
+  .settings-columns {
+    gap: 3rem;
+  }
+
+  .add-user-layout button {
+    margin-top: 0;
+  }
+
   @include from($tablet) {
     padding-bottom: 5rem;
   }

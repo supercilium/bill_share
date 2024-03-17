@@ -1,0 +1,7 @@
+.field-control {
+  gap: 0.5rem;
+
+  & .radio + .radio {
+    margin-left: 0;
+  }
+}

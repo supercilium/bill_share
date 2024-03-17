@@ -19,8 +19,12 @@ export const Card: FC<CardProps> = ({ image, content, card }) => {
     <div className={cx("card", { "card-fullheight": card?.isFullHeight })}>
       {image?.imageUrl && (
         <div className="card-image">
-          <figure className={cx("image", image.className || "is-4by3")}>
-            <img src={image.imageUrl} alt={image.imageAlt || "It's an image"} />
+          <figure className={cx("image", image.className ?? "is-4by3")}>
+            <img
+              loading="lazy"
+              src={image.imageUrl}
+              alt={image.imageAlt ?? "It's an image"}
+            />
           </figure>
         </div>
       )}

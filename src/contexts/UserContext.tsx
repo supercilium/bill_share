@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo } from "react";
+import React, { FC, useContext, useMemo } from "react";
 import { User } from "../types/user";
 import { useQuery, useQueryClient } from "react-query";
 import { fetchUser } from "../__api__/users";
@@ -29,15 +29,14 @@ export const UserProvider: FC<{
       : null,
     refetchOnMount: false,
     staleTime: USER_STALE_TIMEOUT,
-  });
-
-  useEffect(() => {
-    if (query.data) {
-      window.localStorage.setItem(USER_KEY, JSON.stringify(query.data));
-    } else {
+    onError: (err) => {
+      console.log(err);
       window.localStorage.removeItem(USER_KEY);
-    }
-  }, [query.data]);
+    },
+    onSuccess: (data) => {
+      window.localStorage.setItem(USER_KEY, JSON.stringify(data));
+    },
+  });
 
   const value = useMemo(
     () => ({
@@ -46,8 +45,7 @@ export const UserProvider: FC<{
         queryClient.setQueryData(["user"], data),
       refetch: () => query.refetch(),
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [query.data, queryClient.setQueryData, query.refetch]
+    [query?.data, queryClient?.setQueryData, query.refetch]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

@@ -1,0 +1,10 @@
+@import "../../node_modules/bulma/sass/utilities/mixins.sass";
+
+.empty-text {
+  flex-direction: row;
+
+  @include mobile {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

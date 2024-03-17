@@ -69,8 +69,8 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   };
 
   const header = (
-    <div className="is-flex is-justify-content-space-between">
-      <div className="is-flex is-align-items-baseline">
+    <div className="is-flex mb-5 is-justify-content-space-between is-align-items-flex-start">
+      <div className="is-flex settings-header">
         <span className="mr-5">{t("TITLE_PARTY_SETTINGS")}</span>
         <Field
           label={t("LABEL_SHOW_HINTS")}
@@ -102,7 +102,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
   return (
     <div className="box settings-root">
       <Block title={header}>
-        <Columns>
+        <Columns containerProps={{ className: "settings-columns" }}>
           <div>
             <Block>
               <p className="has-text-grey-dark is-size-5 mb-3">
@@ -155,7 +155,7 @@ export const PartySettings: FC<{ party: PartyInterface }> = ({ party }) => {
               />
             </Block>
           </div>
-          <div className="ml-6">
+          <div>
             <Block>
               <AddUserForm />
             </Block>
