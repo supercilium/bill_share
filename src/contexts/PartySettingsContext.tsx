@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { User } from "../types/user";
@@ -36,20 +36,22 @@ export const PartySettingsProvider: FC<{
   children: React.ReactNode;
   isOnline: boolean;
 }> = ({ children, isOnline }) => {
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
-  const userSettings =
-    JSON.parse(localStorage.getItem(LS_USER_SETTINGS_KEY) || "{}") || {};
-
   const { partyId } = useParams();
 
-  const defaultValues =
-    Object.values(userSettings).length > 0 && userSettings.partyId === partyId
+  const defaultValues = useMemo(() => {
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}") || {};
+    const userSettings =
+      JSON.parse(localStorage.getItem(LS_USER_SETTINGS_KEY) || "{}") || {};
+
+    return Object.values(userSettings).length > 0 &&
+      userSettings.partyId === partyId
       ? { ...DEFAULT_USER_SETTINGS, ...userSettings, isOnline }
       : {
           ...DEFAULT_USER_SETTINGS,
           user: currentUser,
           isOnline,
         };
+  }, [isOnline, partyId]);
 
   const handlers = useForm<FormSettings>({
     defaultValues,

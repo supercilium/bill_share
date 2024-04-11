@@ -13,6 +13,24 @@
   }
 }
 
+.shared {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.user {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  & > div {
+    gap: 0.5rem;
+  }
+
+  @include from($tablet) {
+    grid-column-start: auto;
+    grid-column-end: auto;
+  }
+}
+
 .add-item-button {
   margin-top: calc(24px + 0.5em);
 }

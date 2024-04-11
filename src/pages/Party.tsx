@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import uuid from "uuidv4";
 import { Aside, Columns, Header, Main } from "../components";
@@ -57,7 +57,46 @@ const mapEventToText: Partial<
   "remove item": "ALERT_INFO_ITEM_REMOVED",
 };
 
-const CONNECTION_ERROR_PROMPT_ID = "no_socket_connection";
+interface PartyMainProps {
+  isReadOnly: boolean;
+  party: PartyInterface;
+  currentUser: User;
+}
+
+const PartyMain: FC<PartyMainProps> = ({ isReadOnly, party, currentUser }) => {
+  const { isAddItemModalOpen, setAddItemModalVisibility } =
+    usePartySettingsContext();
+
+  return (
+    <>
+      <MainFormView
+        UserView={({ user }) => (
+          <UserPartyForm
+            isReadOnly={isReadOnly}
+            party={party}
+            user={user ?? currentUser}
+          />
+        )}
+        PartyView={() => (
+          <PartyView isReadOnly={isReadOnly} party={party} user={currentUser} />
+        )}
+      />
+      {createPortal(
+        <Modal
+          onClose={() => setAddItemModalVisibility(false)}
+          isOpen={isAddItemModalOpen}
+        >
+          <AddItemForm
+            partyUsers={Object.values(party.users)}
+            isReadOnly={isReadOnly}
+            onClose={() => setAddItemModalVisibility(false)}
+          />
+        </Modal>,
+        document.body
+      )}
+    </>
+  );
+};
 
 const getAlertData = (event: EventResponseDTO): Notification | null => {
   if (event.type === "error") {
@@ -241,18 +280,32 @@ export const Party = () => {
 
   useEffect(() => {
     const handleReconnect = () => {
-      partyId && user && Transport.connect(partyId);
+      if (
+        socketState === SOCKET_STATE.open ||
+        socketState === SOCKET_STATE.connecting
+      ) {
+        return;
+      }
+      if (!user) {
+        navigate(`/login?returnPath=${pathname}`);
+        return;
+      }
+      partyId && Transport.connect(partyId);
     };
     const handleDisconnect = () => {
       Transport.terminate();
     };
 
     window.addEventListener("online", handleReconnect);
+    window.addEventListener("pageshow", handleReconnect);
     window.addEventListener("offline", handleDisconnect);
+    window.addEventListener("pagehide", handleDisconnect);
 
     return () => {
       window.removeEventListener("online", handleReconnect);
       window.removeEventListener("offline", handleReconnect);
+      window.removeEventListener("pagehide", handleReconnect);
+      window.removeEventListener("pageshow", handleReconnect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -263,24 +316,12 @@ export const Party = () => {
 
   useEffect(() => {
     if (status === "loading" || socketState === SOCKET_STATE.connecting) {
-      removePrompt(CONNECTION_ERROR_PROMPT_ID);
       return;
     }
 
     if (socketState === SOCKET_STATE.closed) {
-      addPrompt({
-        title: t("ERROR_DEFAULT_TITLE"),
-        text: t("ERROR_NO_CONNECTION"),
-        confirmLabel: t("BUTTON_RECONNECT"),
-        id: CONNECTION_ERROR_PROMPT_ID,
-        onConfirm: () => {
-          partyId && Transport.connect(partyId);
-        },
-      });
-    } else {
-      removePrompt(CONNECTION_ERROR_PROMPT_ID);
+      partyId && Transport.connect(partyId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketState, status, isReadOnly, partyId]);
 
   if (status === "loading" || socketState === SOCKET_STATE.connecting) {
@@ -328,44 +369,6 @@ export const Party = () => {
     );
   }
 
-  const PartyMain = () => {
-    const { isAddItemModalOpen, setAddItemModalVisibility } =
-      usePartySettingsContext();
-
-    return (
-      <>
-        <MainFormView
-          UserView={({ user }) => (
-            <UserPartyForm
-              isReadOnly={isReadOnly}
-              party={party}
-              user={user ?? currentUser}
-            />
-          )}
-          PartyView={() => (
-            <PartyView
-              isReadOnly={isReadOnly}
-              party={party}
-              user={currentUser}
-            />
-          )}
-        />
-        {createPortal(
-          <Modal
-            onClose={() => setAddItemModalVisibility(false)}
-            isOpen={isAddItemModalOpen}
-          >
-            <AddItemForm
-              isReadOnly={isReadOnly}
-              onClose={() => setAddItemModalVisibility(false)}
-            />
-          </Modal>,
-          document.body
-        )}
-      </>
-    );
-  };
-
   return (
     <PartySettingsProvider isOnline={socketState === SOCKET_STATE.open}>
       <PlainLayout
@@ -392,7 +395,11 @@ export const Party = () => {
         Main={
           <Main>
             <PartySettingsContextProvider>
-              <PartyMain />
+              <PartyMain
+                isReadOnly={isReadOnly}
+                currentUser={currentUser}
+                party={party}
+              />
             </PartySettingsContextProvider>
           </Main>
         }

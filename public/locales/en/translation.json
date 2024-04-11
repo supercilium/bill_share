@@ -109,6 +109,8 @@
     "LABEL_DISCOUNT_TYPE": " Discount is in percentage",
     "LABEL_DISCOUNT_VALUE_PERCENT": "Discount (%)",
     "LABEL_DISCOUNT_VALUE_ABSOLUTE": "Discount (absolute amount)",
+    "LABEL_SELECT_USER": "Select user(s)",
+    "PLACEHOLDER_SELECT": "Please select...",
     "HINT_VISIBILITY": "We hid unimportant columns, because the form already has a lot of stuff and we do not have a designer to make it fits the screen (at least for now). So you can choose to show discount and is shared columns here.",
     "HINT_SHARED": "Is shared - means items will shared between all participants (guys with checked checkboxes), in the other way you will have an opportunity to write amounts of items to each member.",
     "HINT_VIEW": "You can switch view to see full party with all participants and tons of checkboxes or only your items. Clicking on member's name or totals will switch the form to that member's view. Press U/P keys to switch between them.",
