@@ -7,8 +7,6 @@ import { addItemSchema } from "../../services/validation";
 import { FC, memo, useCallback, useMemo, useState } from "react";
 import "./AddItemForm.scss";
 import { useTranslation } from "react-i18next";
-import type { User } from "../../types/user";
-import { SelectField } from "../../components/SelectField";
 
 interface ItemCreationInterface {
   name: string;

@@ -1,4 +1,6 @@
 import cx from "classnames";
+import { UseFormRegisterReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 export interface SelectProps<T> {
   isMultiple?: boolean;
@@ -7,19 +9,27 @@ export interface SelectProps<T> {
   placeholder?: string;
   getLabel?: (v: T) => string;
   getValue?: (v: T) => string | string[];
+  selectProps?: React.InputHTMLAttributes<HTMLSelectElement> &
+    Partial<UseFormRegisterReturn>;
 }
 
 const defaultGetValue = (v: string) => v;
 
 export const Select = <T extends unknown>(props: SelectProps<T>) => {
+  const { t } = useTranslation();
+
   return (
     <div
-      className={cx("select full-width", { "is-multiple": props.isMultiple })}
+      className={cx("select is-fullwidth", { "is-multiple": props.isMultiple })}
     >
       <select
         className="full-width"
-        placeholder={props.placeholder || "standard placeholder"}
+        multiple={props.isMultiple}
+        size={props.options.length}
+        placeholder={props.placeholder || t("PLACEHOLDER_SELECT")}
         disabled={props.disabled}
+        onChange={props.selectProps?.onChange}
+        value={props.selectProps?.value}
       >
         {props.options.length ? (
           props.options.map((option, i) => {
