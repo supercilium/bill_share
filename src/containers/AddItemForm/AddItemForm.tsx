@@ -129,7 +129,7 @@ export const AddItemForm: FC<Props> = memo(
                   key={user.id}
                   label={` ${user.name}`}
                   inputProps={{
-                    disabled: isReadOnly || true,
+                    disabled: isReadOnly,
                     type: "checkbox",
                     value: user.id,
                     ...formHandlers.register("users"),
