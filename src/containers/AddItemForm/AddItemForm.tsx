@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Transport } from "../../services/transport";
 import { addItemSchema } from "../../services/validation";
-import { FC, memo, useCallback, useMemo, useState } from "react";
+import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import "./AddItemForm.scss";
 import { useTranslation } from "react-i18next";
 
@@ -46,6 +46,15 @@ export const AddItemForm: FC<Props> = memo(
       defaultValues,
       mode: "all",
     });
+
+    useEffect(() => {
+      const subscription = formHandlers.watch((value, { name }) => {
+        if (name === "users") {
+          formHandlers.setValue("equally", (value.users?.length ?? 0) > 1);
+        }
+      });
+      return () => subscription.unsubscribe();
+    }, [formHandlers]);
 
     const { isValid, isDirty, errors } = formHandlers.formState;
 
@@ -114,7 +123,8 @@ export const AddItemForm: FC<Props> = memo(
             <Field
               label={t("LABEL_SHARE_FOR_ALL")}
               inputProps={{
-                disabled: isReadOnly,
+                disabled:
+                  isReadOnly || (formHandlers.watch("users")?.length || 0) > 1,
                 type: "checkbox",
                 ...formHandlers.register("equally"),
               }}
